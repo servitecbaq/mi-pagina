@@ -141,10 +141,6 @@ body.nav-open {
   overflow: hidden;
 }
 
-/* ============================================
-   TEXTURAS DE FONDO (3 capas)
-   ============================================ */
-
 /* Capa 1: Gradientes animados */
 body::before {
   content: "";
@@ -294,7 +290,6 @@ body::after {
   transform: translateZ(0);
 }
 
-/* Anillo expansivo */
 .whatsapp-float::before {
   content: "";
   position: absolute;
@@ -369,7 +364,6 @@ body::after {
   display: inline-block;
 }
 
-/* Subrayado pulsante */
 .logo span::after {
   content: "";
   position: absolute;
@@ -464,7 +458,6 @@ body::after {
   animation: gradientMove 15s ease infinite alternate;
 }
 
-/* Aura 1: pulso suave */
 .hero::before {
   content: "";
   position: absolute;
@@ -481,7 +474,6 @@ body::after {
   will-change: transform, opacity;
 }
 
-/* Aura 2: gradiente cónico girando lentamente */
 .hero::after {
   content: "";
   position: absolute;
@@ -1871,43 +1863,61 @@ section {
 }
 
 /* ============================================
-   MÓVIL - SIN BLUR, SIN ANIMACIONES PESADAS
+   MÓVIL - BLUR OFF, ANIMACIONES DECORATIVAS ON
    ============================================ */
 @media (max-width: 640px) {
   :root {
     --header-offset: 64px;
-    --whatsapp-pulse: none;
+    --whatsapp-pulse: none; /* El pulso grande del botón principal apagado */
   }
 
-  /* Capas de fondo más simples */
+  /* Fondos simplificados pero animados */
   body::before {
-    animation: none;
     background:
       radial-gradient(400px circle at 20% 10%, rgba(0,184,212,0.15), transparent 50%),
       radial-gradient(500px circle at 80% 40%, rgba(11,31,58,0.08), transparent 50%);
+    animation-duration: 30s; /* Más lento en móvil */
   }
   body::after {
-    opacity: 0.2;
-    animation: none;
+    opacity: 0.3;
+    animation-duration: 10s; /* Pulso más lento */
   }
 
-  /* Auras del hero apagadas (consumen batería) */
+  /* Aura giratoria desactivada (conic-gradient rotando es muy caro) */
   .hero::after { display: none; }
-  .hero::before { display: none; }
-  .hero { animation: none; }
 
-  /* Badges del hero: sin flotación */
-  .hero-badges span { animation: none; }
-
-  /* Logo: subrayado sin pulso */
-  .logo span::after {
-    animation: none;
-    transform: scaleX(1);
-    opacity: 0.7;
+  /* Aura pulsante activa pero más pequeña */
+  .hero::before {
+    width: 400px;
+    height: 400px;
+    filter: blur(50px);
   }
 
-  /* WhatsApp: sin anillo expansivo */
-  .whatsapp-float::before { display: none; }
+  /* Animación del gradiente del hero más lenta */
+  .hero { animation-duration: 20s; }
+
+  /* Badges del hero: flotación más lenta */
+  .hero-badges span {
+    animation-duration: 5s;
+  }
+
+  /* Logo: pulso más lento */
+  .logo span::after {
+    animation-duration: 4s;
+  }
+
+  /* WhatsApp: anillo expansivo más lento */
+  .whatsapp-float::before {
+    animation-duration: 4s;
+  }
+
+  /* Feedback táctil en tarjetas al tocar */
+  .service-card:active,
+  .app-card:active,
+  .contact-card:active {
+    transform: scale(0.98);
+    transition: transform 0.15s var(--ease-out);
+  }
 
   /* Desactivar blur */
   .header,
@@ -2071,7 +2081,6 @@ section {
     height: 54px;
     bottom: 18px;
     right: 18px;
-    animation: none;
   }
   .whatsapp-float svg { width: 28px; height: 28px; }
 
@@ -2118,6 +2127,32 @@ section {
 }
 
 /* ============================================
+   DISPOSITIVOS DE GAMA BAJA
+   El JS añade .low-power si detecta pocos núcleos/RAM
+   ============================================ */
+.low-power .logo span::after,
+.low-power .hero-badges span,
+.low-power .hero::before,
+.low-power .whatsapp-float::before,
+.low-power body::before,
+.low-power body::after {
+  animation: none !important;
+}
+
+.low-power .hero-badges span {
+  transform: none !important;
+}
+
+.low-power .logo span::after {
+  opacity: 0.7;
+  transform: scaleX(1);
+}
+
+.low-power .whatsapp-float::before {
+  display: none;
+}
+
+/* ============================================
    ACCESIBILIDAD
    ============================================ */
 @media (prefers-reduced-motion: reduce) {
@@ -2129,8 +2164,10 @@ section {
   .whatsapp-float { animation: none !important; }
   .logo span::after,
   .hero-badges span,
+  .hero::before,
   .hero::after,
   .whatsapp-float::before,
+  body::before,
   body::after {
     animation: none !important;
   }
