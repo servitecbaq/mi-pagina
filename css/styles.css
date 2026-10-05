@@ -860,6 +860,80 @@ section { padding: 80px 0; position: relative; z-index: 1; }
 }
 
 /* ============================================
+   CERTIFICACIONES VERIFICADAS (Credly)
+   ============================================ */
+.founder-certs {
+  margin-bottom: 26px;
+  padding-top: 22px;
+  border-top: 1px solid var(--color-border);
+}
+
+.founder-certs-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-text-light);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.founder-certs-title span {
+  font-size: 1.05rem;
+  letter-spacing: 0;
+}
+
+.founder-certs-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.cert-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-width: 150px;
+  transition: transform 0.3s var(--ease-material);
+}
+
+.cert-badge:hover {
+  transform: translateY(-4px);
+}
+
+.cert-embed {
+  width: 150px;
+  height: 270px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--acrylic-bg);
+  border: 1px solid var(--acrylic-border);
+  box-shadow: var(--elev-2);
+  transition: box-shadow 0.3s var(--ease-material), border-color 0.3s var(--ease-material);
+}
+
+.cert-badge:hover .cert-embed {
+  box-shadow: var(--elev-4);
+  border-color: var(--color-accent);
+}
+
+.cert-embed iframe {
+  display: block;
+  border: 0;
+}
+
+.cert-name {
+  font-size: 0.78rem;
+  color: var(--color-text-light);
+  text-align: center;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+/* ============================================
    COBERTURA
    ============================================ */
 .coverage {
@@ -1644,6 +1718,9 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   }
   .founder-photo { max-width: 160px; margin: 0 auto; }
   .founder-skills { justify-content: center; }
+  .founder-certs { text-align: center; }
+  .founder-certs-title { justify-content: center; }
+  .founder-certs-grid { justify-content: center; }
 
   .whatsapp-float { width: 54px; height: 54px; bottom: 18px; right: 18px; }
   .whatsapp-float svg { width: 28px; height: 28px; }
@@ -1677,7 +1754,8 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   }
   .reveal { opacity: 1; transform: none; }
   .faq-content, .faq-answer, .faq-icon, .faq-item::before,
-  .app-card, .app-logo, .apps-filter, .apps-search-input {
+  .app-card, .app-logo, .apps-filter, .apps-search-input,
+  .cert-badge, .cert-embed {
     transition: none !important;
   }
 }
