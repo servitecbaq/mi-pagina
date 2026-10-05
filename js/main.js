@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* ============================================
-     7. TIPS (sin autoplay en móvil)
+     7. TIPS
      ============================================ */
   const tipTrack = document.getElementById('tipTrack');
   const tipDots = document.getElementById('tipDots');
@@ -535,6 +535,68 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
       loadGrWidget();
     }
+  }
+
+  /* ============================================
+     12. FORMULARIO DE CONTACTO (Web3Forms)
+     ============================================ */
+  const contactForm = document.getElementById('contactForm');
+  const formStatus = document.getElementById('formStatus');
+  const formSubmit = document.getElementById('formSubmit');
+
+  if (contactForm) {
+    contactForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      // Estado: enviando
+      formSubmit.disabled = true;
+      formSubmit.textContent = '⏳ Enviando…';
+      if (formStatus) {
+        formStatus.hidden = true;
+        formStatus.className = 'form-status';
+        formStatus.textContent = '';
+      }
+
+      const formData = new FormData(contactForm);
+
+      fetch(contactForm.action, {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      })
+        .then(function (response) { return response.json(); })
+        .then(function (data) {
+          if (data.success) {
+            // Éxito
+            if (formStatus) {
+              formStatus.hidden = false;
+              formStatus.className = 'form-status success';
+              formStatus.textContent = '¡Gracias! Hemos recibido tu mensaje. Te responderemos lo antes posible.';
+            }
+            contactForm.reset();
+
+            formSubmit.disabled = false;
+            formSubmit.textContent = '✉️ Enviar mensaje';
+
+            // Ocultar el mensaje después de 8 segundos
+            setTimeout(function () {
+              if (formStatus) formStatus.hidden = true;
+            }, 8000);
+          } else {
+            throw new Error(data.message || 'Error al enviar');
+          }
+        })
+        .catch(function (error) {
+          console.error('Error formulario:', error);
+          if (formStatus) {
+            formStatus.hidden = false;
+            formStatus.className = 'form-status error';
+            formStatus.textContent = 'Hubo un problema al enviar. Intenta de nuevo o escríbenos por WhatsApp al +57 315 850 5020.';
+          }
+          formSubmit.disabled = false;
+          formSubmit.textContent = '✉️ Enviar mensaje';
+        });
+    });
   }
 
 });
