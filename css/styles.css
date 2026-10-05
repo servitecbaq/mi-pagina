@@ -8,7 +8,7 @@
 }
 
 /* ============================================
-   VARIABLES - MODO CLARO (Marca Servitec.baq)
+   VARIABLES - MODO CLARO
    ============================================ */
 :root {
   --md-primary: #0B1F3A;
@@ -35,6 +35,7 @@
   --color-bg: var(--md-surface);
   --color-bg-alt: var(--md-surface-1);
   --color-card-bg: rgba(255,255,255,0.72);
+  --color-card-solid: #ffffff;
   --color-header-bg: rgba(255,255,255,0.6);
   --color-hero-gradient: linear-gradient(135deg, #E6F4F8 0%, #F2FAFC 50%, #ffffff 100%);
   --color-border: var(--md-outline);
@@ -59,6 +60,9 @@
   --ease-material: cubic-bezier(0.4, 0, 0.2, 1);
 
   --header-offset: 72px;
+
+  /* WhatsApp: pulso suave con transform (barato para GPU) */
+  --whatsapp-pulse: pulseScale 3s ease-in-out infinite;
 }
 
 /* ============================================
@@ -88,6 +92,7 @@
   --color-bg: var(--md-surface);
   --color-bg-alt: var(--md-surface-1);
   --color-card-bg: rgba(20,40,68,0.72);
+  --color-card-solid: #142844;
   --color-header-bg: rgba(10,21,36,0.6);
   --color-hero-gradient: linear-gradient(135deg, #0F1E33 0%, #0A1524 50%, #0A1524 100%);
   --color-border: var(--md-outline);
@@ -102,7 +107,7 @@
 }
 
 /* ============================================
-   BASE + TEXTURAS
+   BASE
    ============================================ */
 html {
   scroll-behavior: smooth;
@@ -124,7 +129,10 @@ body {
   overflow-x: hidden;
 }
 
-body.modal-open { overflow: hidden; }
+body.modal-open,
+body.nav-open {
+  overflow: hidden;
+}
 
 body::before {
   content: "";
@@ -187,6 +195,10 @@ body::after {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-8px); }
 }
+@keyframes pulseScale {
+  0%, 100% { transform: translateZ(0) scale(1); }
+  50%      { transform: translateZ(0) scale(1.05); }
+}
 @keyframes pulseRing {
   0%   { box-shadow: 0 0 0 0 rgba(37,211,102,0.5); }
   70%  { box-shadow: 0 0 0 18px rgba(37,211,102,0); }
@@ -203,6 +215,10 @@ body::after {
 @keyframes shimmer {
   0%   { background-position: -200% 0; }
   100% { background-position: 200% 0; }
+}
+@keyframes navFadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ============================================
@@ -224,7 +240,6 @@ body::after {
 .reveal-delay-7 { transition-delay: 0.56s; }
 .reveal-delay-8 { transition-delay: 0.64s; }
 
-/* Los tips y las apps NO usan reveal para evitar titileo en móvil */
 .tip-card,
 .tip-mini,
 .app-card {
@@ -233,6 +248,7 @@ body::after {
 
 /* ============================================
    WHATSAPP FLOTANTE
+   (con transform GPU-friendly, sin repintado)
    ============================================ */
 .whatsapp-float {
   position: fixed;
@@ -249,11 +265,12 @@ body::after {
   box-shadow: 0 8px 24px rgba(37,211,102,0.4), 0 4px 8px rgba(0,0,0,0.12);
   z-index: 9999;
   text-decoration: none;
-  transition: transform 0.25s var(--transition), box-shadow 0.25s var(--transition);
-  animation: pulseRing 2.5s infinite;
+  transition: box-shadow 0.25s var(--transition), color 0.25s var(--transition);
+  animation: var(--whatsapp-pulse);
+  will-change: transform;
+  transform: translateZ(0);
 }
 .whatsapp-float:hover {
-  transform: scale(1.1) translateY(-2px);
   box-shadow: 0 12px 32px rgba(37,211,102,0.55), 0 6px 12px rgba(0,0,0,0.18);
   color: #fff;
   animation-play-state: paused;
@@ -272,7 +289,6 @@ body::after {
   border-bottom: 1px solid var(--acrylic-border);
   z-index: 100;
   transition: background-color 0.3s var(--transition), box-shadow 0.3s var(--transition);
-  animation: fadeIn 0.5s var(--ease-out);
 }
 .header.scrolled { box-shadow: var(--elev-3); }
 
@@ -282,6 +298,7 @@ body::after {
   justify-content: space-between;
   padding: 14px 0;
   gap: 16px;
+  position: relative;
 }
 
 .logo {
@@ -291,6 +308,7 @@ body::after {
   text-decoration: none;
   letter-spacing: -0.02em;
   position: relative;
+  z-index: 2;
 }
 .logo span {
   color: var(--color-accent);
@@ -334,7 +352,7 @@ body::after {
 }
 .nav a:hover::after { transform: scaleX(1); }
 
-.header-actions { display: flex; align-items: center; gap: 8px; }
+.header-actions { display: flex; align-items: center; gap: 8px; position: relative; z-index: 2; }
 
 .theme-toggle {
   background: var(--acrylic-bg);
@@ -371,8 +389,12 @@ body::after {
   height: 40px;
   cursor: pointer;
   color: var(--color-text);
-  font-size: 1.2rem;
+  font-size: 1.3rem;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s var(--transition), background 0.25s var(--transition);
 }
+.nav-toggle:active { transform: scale(0.94); }
 
 /* ============================================
    HERO
@@ -1315,6 +1337,8 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
   text-decoration: none;
   color: var(--color-text);
+  will-change: auto;
+  transform: translateZ(0);
 }
 
 .app-card::before {
@@ -1328,7 +1352,7 @@ section { padding: 80px 0; position: relative; z-index: 1; }
 }
 
 .app-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-6px) translateZ(0);
   box-shadow: var(--elev-4);
   border-color: var(--color-accent);
 }
@@ -1728,55 +1752,62 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   .nav a { margin-left: 10px; font-size: 0.78rem; }
 }
 
+/* ============================================
+   MÓVIL (max-width: 640px)
+   ============================================ */
 @media (max-width: 640px) {
-  :root { --header-offset: 64px; }
-
-  /* Reducir costo del backdrop-filter en móvil (evita parpadeos) */
-  .service-card,
-  .feature,
-  .app-card,
-  .contact-card,
-  .testimonial,
-  .faq-item,
-  .tip-mini,
-  .tip-card,
-  .grwidget-wrapper,
-  .founder-card,
-  .header,
-  .theme-toggle,
-  .nav-toggle,
-  .hero-badges span,
-  .founder-skills span,
-  .cert-embed,
-  .modal-box,
-  .tip-nav,
-  .apps-search-input,
-  .apps-filter,
-  .lang-switch {
-    backdrop-filter: blur(10px) saturate(160%);
-    -webkit-backdrop-filter: blur(10px) saturate(160%);
+  :root {
+    --header-offset: 64px;
+    --whatsapp-pulse: none; /* 🔴 Sin pulso en móvil */
+    --acrylic-blur: blur(10px) saturate(160%); /* Blur más liviano */
   }
 
+  /* ---- MENÚ MÓVIL MEJORADO ---- */
   .nav {
     display: none;
-    position: absolute;
-    top: 100%;
+    position: fixed;
+    top: 72px;
     left: 12px;
     right: 12px;
-    background: var(--acrylic-bg-strong);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background: var(--color-card-solid);
     flex-direction: column;
-    padding: 18px;
+    padding: 12px;
     border-radius: var(--radius);
     box-shadow: var(--elev-4);
-    border: 1px solid var(--acrylic-border);
-    animation: fadeUp 0.3s var(--ease-out);
+    border: 1px solid var(--color-border);
+    z-index: 9998;
+    max-height: calc(100vh - 90px);
+    overflow-y: auto;
+    animation: navFadeIn 0.25s var(--ease-out);
   }
   .nav.open { display: flex; }
-  .nav a { margin: 10px 0; font-size: 1rem; }
-  .nav-toggle { display: flex; align-items: center; justify-content: center; }
+  .nav a {
+    margin: 0;
+    padding: 14px 18px;
+    font-size: 1rem;
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    font-weight: 600;
+    border-bottom: 1px solid var(--color-border);
+    transition: background 0.2s var(--ease-material), color 0.2s var(--ease-material);
+  }
+  .nav a:last-child { border-bottom: none; }
+  .nav a:active {
+    background: var(--md-secondary-container);
+    color: var(--color-accent);
+  }
+  .nav a::after { display: none; } /* Sin subrayado en móvil */
 
+  /* El botón hamburguesa se convierte en ✕ */
+  .nav-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    transition: transform 0.25s var(--ease-material);
+  }
+
+  /* ---- RESTO ---- */
   .hero { padding: 60px 0 50px; }
   section { padding: 56px 0; }
 
@@ -1792,7 +1823,15 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   .founder-certs-title { justify-content: center; }
   .founder-certs-grid { justify-content: center; }
 
-  .whatsapp-float { width: 54px; height: 54px; bottom: 18px; right: 18px; }
+  .whatsapp-float {
+    width: 54px;
+    height: 54px;
+    bottom: 18px;
+    right: 18px;
+    animation: none;
+    will-change: auto;
+    transform: translateZ(0);
+  }
   .whatsapp-float svg { width: 28px; height: 28px; }
 
   .modal-box { padding: 30px 22px 24px; border-radius: var(--radius); }
@@ -1805,24 +1844,49 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   .tip-track { min-height: 340px; }
   .tips-grid { grid-template-columns: 1fr; }
 
+  /* ---- APPS SIN ACRYLIC EN MÓVIL ---- */
   .apps-grid { grid-template-columns: 1fr; }
   .apps-filters { gap: 6px; }
-  .apps-filter { font-size: 0.78rem; padding: 7px 14px; }
+  .apps-filter {
+    font-size: 0.78rem;
+    padding: 7px 14px;
+  }
+  .app-card {
+    background: var(--color-card-solid);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    will-change: auto;
+    transform: none;
+  }
+  .app-card:hover {
+    transform: none;
+    box-shadow: var(--elev-1);
+    border-color: var(--color-border);
+  }
+  .app-card:hover::before { opacity: 0; }
+  .app-card:hover .app-logo { transform: none; }
+  .app-card:hover .app-link { gap: 6px; }
 
+  /* ---- FAQ ---- */
   .faq-item > summary { padding: 18px 18px; font-size: 0.95rem; }
   .faq-answer { padding: 0 18px 18px; font-size: 0.9rem; }
   .faq-icon { width: 28px; height: 28px; font-size: 1rem; }
 
-  .grwidget-wrapper { padding: 22px 16px; }
+  /* ---- RESEÑAS ---- */
+  .grwidget-wrapper {
+    padding: 22px 16px;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: var(--color-card-solid);
+  }
   .reviews-cta-inner { padding: 32px 16px 0; }
 
+  /* ---- CERT ---- */
   .cert-embed { width: 130px; height: 234px; }
 }
 
 /* ============================================
-   DESACTIVAR HOVER EN PANTALLAS TÁCTILES
-   (evita que los estilos hover se disparen al tocar
-   y causen sensación de "titileo" en móvil)
+   PANTALLAS TÁCTILES (sin hover real)
    ============================================ */
 @media (hover: none) and (pointer: coarse) {
   .service-card:hover,
@@ -1862,6 +1926,14 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   .apps-filter:hover { transform: none; }
   .theme-toggle:hover { transform: none; box-shadow: none; }
   .tip-dot:hover:not(.active) { background: var(--color-border); transform: none; }
+
+  /* WhatsApp: sin animación */
+  .whatsapp-float {
+    animation: none;
+  }
+  .whatsapp-float:hover {
+    transform: translateZ(0) scale(1.04);
+  }
 }
 
 /* ============================================
@@ -1873,6 +1945,7 @@ section { padding: 80px 0; position: relative; z-index: 1; }
     animation: none !important;
   }
   .reveal { opacity: 1; transform: none; }
+  .whatsapp-float { animation: none !important; }
   .faq-content, .faq-answer, .faq-icon, .faq-item::before,
   .app-card, .app-logo, .apps-filter, .apps-search-input,
   .cert-badge, .cert-embed,

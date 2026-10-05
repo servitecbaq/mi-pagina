@@ -14,15 +14,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (toggle && nav) {
     toggle.addEventListener('click', function () {
-      nav.classList.toggle('open');
-      toggle.setAttribute('aria-expanded', nav.classList.contains('open'));
+      const isOpen = nav.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', isOpen);
+      document.body.classList.toggle('nav-open', isOpen);
+
+      // Cambia el ícono ☰ a ✕
+      if (isOpen) {
+        toggle.textContent = '✕';
+        toggle.setAttribute('aria-label', 'Cerrar menú');
+      } else {
+        toggle.textContent = '☰';
+        toggle.setAttribute('aria-label', 'Abrir menú');
+      }
     });
 
     nav.querySelectorAll('a').forEach(function (link) {
       link.addEventListener('click', function () {
         nav.classList.remove('open');
         toggle.setAttribute('aria-expanded', 'false');
+        toggle.textContent = '☰';
+        toggle.setAttribute('aria-label', 'Abrir menú');
+        document.body.classList.remove('nav-open');
       });
+    });
+
+    // Cerrar menú al hacer clic fuera
+    document.addEventListener('click', function (e) {
+      if (!nav.classList.contains('open')) return;
+      if (nav.contains(e.target)) return;
+      if (toggle.contains(e.target)) return;
+      nav.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.textContent = '☰';
+      toggle.setAttribute('aria-label', 'Abrir menú');
+      document.body.classList.remove('nav-open');
     });
   }
 
@@ -64,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* ============================================
      4. REVEAL ON SCROLL
-     (SOLO elementos que no estén dentro de tips o apps)
+     (Solo elementos que no estén dentro de tips o apps)
      ============================================ */
   const revealTargets = [
     '.service-card',
@@ -515,7 +540,7 @@ document.addEventListener('DOMContentLoaded', function () {
         card.target = '_blank';
         card.rel = 'noopener';
 
-        // NOTA: sin `style.animation` para evitar el titileo en móvil
+        // Sin animación de entrada para evitar titileo en móvil
 
         const badgesHTML = (app.badges || []).map(function (b) {
           const isFree = b.toLowerCase() === 'gratis' || b.toLowerCase() === 'free';
