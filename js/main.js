@@ -1,10 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-  /* ============================================
-     DETECCIÓN
-     ============================================ */
   const isMobile = window.matchMedia('(max-width: 640px)').matches;
-  const isTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ============================================
@@ -137,101 +133,14 @@ document.addEventListener('DOMContentLoaded', function () {
      6. MODAL DE SERVICIOS
      ============================================ */
   const servicesData = {
-    reparacion: {
-      icon: '💻',
-      title: 'Reparación de computadores',
-      description: 'Diagnosticamos y solucionamos problemas de hardware y software, tanto en equipos de escritorio como portátiles.',
-      items: [
-        'Diagnóstico completo del equipo',
-        'Cambio de piezas (disco, RAM, batería, teclado)',
-        'Reinstalación de sistema operativo',
-        'Eliminación de virus y malware',
-        'Recuperación de datos cuando sea posible'
-      ]
-    },
-    mantenimiento: {
-      icon: '⚡',
-      title: 'Mantenimiento preventivo y correctivo',
-      description: 'Prolongamos la vida útil de tus equipos con limpieza, optimización y revisiones periódicas.',
-      items: [
-        'Limpieza interna de polvo y ventiladores',
-        'Cambio de pasta térmica',
-        'Optimización del sistema operativo',
-        'Actualización de controladores y software',
-        'Revisión de temperaturas y rendimiento'
-      ]
-    },
-    redes: {
-      icon: '🌐',
-      title: 'Redes e Internet',
-      description: 'Configuramos y solucionamos problemas de conectividad en hogares y pequeñas empresas.',
-      items: [
-        'Configuración de routers y módems',
-        'Instalación de redes Wi-Fi y cableadas',
-        'Ampliación de cobertura con repetidores',
-        'Solución de cortes o lentitud de internet',
-        'Configuración de red para pequeñas oficinas'
-      ]
-    },
-    impresoras: {
-      icon: '🖨️',
-      title: 'Impresoras',
-      description: 'Instalamos, configuramos y reparamos impresoras de todas las marcas.',
-      items: [
-        'Instalación en Windows y Mac',
-        'Configuración en red o Wi-Fi',
-        'Solución de atascos y errores',
-        'Cambio de cartuchos y tóner',
-        'Impresión desde celular o tablet'
-      ]
-    },
-    instalacion: {
-      icon: '🔧',
-      title: 'Instalación y configuración',
-      description: 'Dejamos tus equipos listos para trabajar, estudiar o disfrutar, con todo lo necesario configurado.',
-      items: [
-        'Instalación de computadores nuevos',
-        'Configuración inicial de Windows, macOS o Linux',
-        'Instalación de programas esenciales',
-        'Configuración de cuentas y correo',
-        'Puesta a punto de equipos para oficina'
-      ]
-    },
-    seguridad: {
-      icon: '🔒',
-      title: 'Seguridad y respaldo',
-      description: 'Protegemos tu información y te enseñamos buenas prácticas para evitar pérdidas de datos.',
-      items: [
-        'Instalación de antivirus y firewall',
-        'Configuración de copias de seguridad automáticas',
-        'Respaldo en la nube o discos externos',
-        'Protección contra ransomware',
-        'Asesoría en contraseñas seguras'
-      ]
-    },
-    aplicativos: {
-      icon: '🧩',
-      title: 'Soporte de aplicativos',
-      description: 'Te ayudamos con la instalación, configuración y solución de problemas de los programas que usas a diario.',
-      items: [
-        'Instalación y configuración de programas',
-        'Actualización o reinstalación de aplicaciones',
-        'Solución de errores de programas (Office, sistemas contables, navegadores, etc.)',
-        'Configuración de correo y aplicaciones corporativas'
-      ]
-    },
-    desarrollo: {
-      icon: '👨‍💻',
-      title: 'Desarrollo de software',
-      description: 'Creamos soluciones a la medida para automatizar procesos y mejorar la operación de tu negocio.',
-      items: [
-        'Páginas web y landing pages',
-        'Automatización de tareas repetitivas',
-        'Scripts en PowerShell y Python',
-        'Integración de sistemas y APIs',
-        'Bases de datos SQL y reportes personalizados'
-      ]
-    }
+    reparacion: { icon: '💻', title: 'Reparación de computadores', description: 'Diagnosticamos y solucionamos problemas de hardware y software, tanto en equipos de escritorio como portátiles.', items: ['Diagnóstico completo del equipo','Cambio de piezas (disco, RAM, batería, teclado)','Reinstalación de sistema operativo','Eliminación de virus y malware','Recuperación de datos cuando sea posible'] },
+    mantenimiento: { icon: '⚡', title: 'Mantenimiento preventivo y correctivo', description: 'Prolongamos la vida útil de tus equipos con limpieza, optimización y revisiones periódicas.', items: ['Limpieza interna de polvo y ventiladores','Cambio de pasta térmica','Optimización del sistema operativo','Actualización de controladores y software','Revisión de temperaturas y rendimiento'] },
+    redes: { icon: '🌐', title: 'Redes e Internet', description: 'Configuramos y solucionamos problemas de conectividad en hogares y pequeñas empresas.', items: ['Configuración de routers y módems','Instalación de redes Wi-Fi y cableadas','Ampliación de cobertura con repetidores','Solución de cortes o lentitud de internet','Configuración de red para pequeñas oficinas'] },
+    impresoras: { icon: '🖨️', title: 'Impresoras', description: 'Instalamos, configuramos y reparamos impresoras de todas las marcas.', items: ['Instalación en Windows y Mac','Configuración en red o Wi-Fi','Solución de atascos y errores','Cambio de cartuchos y tóner','Impresión desde celular o tablet'] },
+    instalacion: { icon: '🔧', title: 'Instalación y configuración', description: 'Dejamos tus equipos listos para trabajar, estudiar o disfrutar, con todo lo necesario configurado.', items: ['Instalación de computadores nuevos','Configuración inicial de Windows, macOS o Linux','Instalación de programas esenciales','Configuración de cuentas y correo','Puesta a punto de equipos para oficina'] },
+    seguridad: { icon: '🔒', title: 'Seguridad y respaldo', description: 'Protegemos tu información y te enseñamos buenas prácticas para evitar pérdidas de datos.', items: ['Instalación de antivirus y firewall','Configuración de copias de seguridad automáticas','Respaldo en la nube o discos externos','Protección contra ransomware','Asesoría en contraseñas seguras'] },
+    aplicativos: { icon: '🧩', title: 'Soporte de aplicativos', description: 'Te ayudamos con la instalación, configuración y solución de problemas de los programas que usas a diario.', items: ['Instalación y configuración de programas','Actualización o reinstalación de aplicaciones','Solución de errores de programas (Office, sistemas contables, navegadores, etc.)','Configuración de correo y aplicaciones corporativas'] },
+    desarrollo: { icon: '👨‍💻', title: 'Desarrollo de software', description: 'Creamos soluciones a la medida para automatizar procesos y mejorar la operación de tu negocio.', items: ['Páginas web y landing pages','Automatización de tareas repetitivas','Scripts en PowerShell y Python','Integración de sistemas y APIs','Bases de datos SQL y reportes personalizados'] }
   };
 
   const modal = document.getElementById('serviceModal');
@@ -292,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* ============================================
-     7. TIPS (virtual, una sola tarjeta en el DOM)
+     7. TIPS (sin autoplay en móvil)
      ============================================ */
   const tipTrack = document.getElementById('tipTrack');
   const tipDots = document.getElementById('tipDots');
@@ -306,7 +215,8 @@ document.addEventListener('DOMContentLoaded', function () {
   let currentTip = 0;
   let tipsData = [];
   let autoplayTimer = null;
-  const AUTOPLAY_INTERVAL = isMobile ? 12000 : 8000;
+  const SHOULD_AUTOPLAY = !isMobile && !prefersReducedMotion;
+  const AUTOPLAY_INTERVAL = 8000;
 
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -323,9 +233,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!Array.isArray(data) || data.length === 0) return;
         tipsData = shuffleArray(data);
 
-        // Una sola tarjeta
         const card = document.createElement('article');
-        card.className = 'tip-card active';
+        card.className = 'tip-card';
         tipTrack.appendChild(card);
 
         function paintTip(tip, animate) {
@@ -335,7 +244,8 @@ document.addEventListener('DOMContentLoaded', function () {
             '<h3 class="tip-title">' + tip.title + '</h3>' +
             '<p class="tip-desc">' + tip.desc + '</p>' +
             '<span class="tip-benefit">✨ ' + tip.benefit + '</span>';
-          if (!animate || prefersReducedMotion) {
+
+          if (!animate || !SHOULD_AUTOPLAY || prefersReducedMotion) {
             card.innerHTML = html;
             return;
           }
@@ -348,7 +258,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         paintTip(tipsData[0], false);
 
-        // Dots
         tipsData.forEach(function (tip, i) {
           const dot = document.createElement('button');
           dot.className = 'tip-dot' + (i === 0 ? ' active' : '');
@@ -357,7 +266,6 @@ document.addEventListener('DOMContentLoaded', function () {
           tipDots.appendChild(dot);
         });
 
-        // Grid completa
         if (tipsGrid) {
           const frag = document.createDocumentFragment();
           tipsData.forEach(function (tip) {
@@ -386,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function () {
         function prevTip() { goToTip(currentTip - 1); }
 
         function startAutoplay() {
-          if (autoplayTimer || prefersReducedMotion) return;
+          if (autoplayTimer || !SHOULD_AUTOPLAY) return;
           autoplayTimer = setInterval(nextTip, AUTOPLAY_INTERVAL);
         }
         function stopAutoplay() {
@@ -420,16 +328,13 @@ document.addEventListener('DOMContentLoaded', function () {
           });
         }
 
-        // Autoplay solo si está visible
-        if ('IntersectionObserver' in window && carousel) {
+        if ('IntersectionObserver' in window && carousel && SHOULD_AUTOPLAY) {
           const playObserver = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {
               if (entry.isIntersecting) startAutoplay(); else stopAutoplay();
             });
           }, { threshold: 0.1 });
           playObserver.observe(carousel);
-        } else {
-          startAutoplay();
         }
       })
       .catch(function (error) {
@@ -462,7 +367,7 @@ document.addEventListener('DOMContentLoaded', function () {
           if (!categories.includes(app.category)) categories.push(app.category);
         });
 
-        const fragFilters = document.createDocumentFragment();
+        const frag = document.createDocumentFragment();
         categories.forEach(function (cat) {
           const btn = document.createElement('button');
           btn.className = 'apps-filter' + (cat === 'all' ? ' active' : '');
@@ -474,10 +379,10 @@ document.addEventListener('DOMContentLoaded', function () {
             activeCategory = cat;
             renderApps();
           });
-          fragFilters.appendChild(btn);
+          frag.appendChild(btn);
         });
         appsFilters.innerHTML = '';
-        appsFilters.appendChild(fragFilters);
+        appsFilters.appendChild(frag);
 
         renderApps();
       })
@@ -545,7 +450,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* ============================================
-     9. FAQ (con grid-template-rows, sin reflow)
+     9. FAQ
      ============================================ */
   const faqItems = document.querySelectorAll('.faq-item');
 
@@ -554,7 +459,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!answer) return;
     if (answer.parentElement.classList.contains('faq-content')) return;
 
-    // Nueva estructura: faq-content > div > faq-answer
     const wrapper = document.createElement('div');
     wrapper.className = 'faq-content';
     const inner = document.createElement('div');
@@ -562,4 +466,75 @@ document.addEventListener('DOMContentLoaded', function () {
     wrapper.appendChild(inner);
     inner.appendChild(answer);
   });
+
+  /* ============================================
+     10. LAZY LOAD: CREDLY
+     ============================================ */
+  const founderCerts = document.getElementById('founderCerts');
+  let credlyLoaded = false;
+
+  function loadCredly() {
+    if (credlyLoaded || !founderCerts) return;
+    credlyLoaded = true;
+
+    founderCerts.querySelectorAll('[data-credly-badge]').forEach(function (el) {
+      el.removeAttribute('data-credly-badge');
+    });
+
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.async = true;
+    script.src = 'https://cdn.credly.com/assets/utilities/embed.js';
+    document.body.appendChild(script);
+  }
+
+  if (founderCerts) {
+    if ('IntersectionObserver' in window) {
+      const credlyObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            loadCredly();
+            credlyObserver.disconnect();
+          }
+        });
+      }, { rootMargin: '200px 0px' });
+      credlyObserver.observe(founderCerts);
+    } else {
+      loadCredly();
+    }
+  }
+
+  /* ============================================
+     11. LAZY LOAD: GR WIDGET
+     ============================================ */
+  const reviewsSection = document.getElementById('resenas');
+  let grWidgetLoaded = false;
+
+  function loadGrWidget() {
+    if (grWidgetLoaded || !reviewsSection) return;
+    grWidgetLoaded = true;
+
+    const script = document.createElement('script');
+    script.src = 'https://grwidget.com/v1/grwidget.js';
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+  }
+
+  if (reviewsSection) {
+    if ('IntersectionObserver' in window) {
+      const grObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            loadGrWidget();
+            grObserver.disconnect();
+          }
+        });
+      }, { rootMargin: '300px 0px' });
+      grObserver.observe(reviewsSection);
+    } else {
+      loadGrWidget();
+    }
+  }
+
 });

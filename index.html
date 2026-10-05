@@ -18,11 +18,8 @@
   <meta property="og:locale" content="es_CO">
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
-
-  <!-- Preload del CSS -->
   <link rel="preload" href="css/styles.css" as="style">
 
-  <!-- Tema antes de pintar (evita FOUC) -->
   <script>
     (function() {
       try {
@@ -128,8 +125,8 @@
       </nav>
       <div class="header-actions">
         <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema claro/oscuro" title="Cambiar tema">
-          <span class="theme-icon-light">🌚</span>
-          <span class="theme-icon-dark">🌞</span>
+          <span class="theme-icon-light">☀️</span>
+          <span class="theme-icon-dark">🌙</span>
         </button>
         <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">☰</button>
       </div>
@@ -160,7 +157,7 @@
     </div>
   </section>
 
-  <!-- Cobertura (movida justo debajo del hero) -->
+  <!-- Cobertura -->
   <section class="coverage">
     <div class="container">
       <h2 class="section-title">📍 Atendemos en Barranquilla y área metropolitana</h2>
@@ -179,63 +176,54 @@
       <p class="section-subtitle">Desde problemas de rendimiento hasta instalación y configuración de equipos y redes. Haz clic en cada servicio para ver el detalle.</p>
 
       <div class="services-grid">
-
         <article class="service-card" data-service="reparacion" tabindex="0" role="button" aria-label="Ver detalle de Reparación de computadores">
           <div class="service-icon">💻</div>
           <h3>Reparación de computadores</h3>
           <p>Diagnosticamos y solucionamos problemas de hardware y software.</p>
           <span class="service-more">Ver detalles →</span>
         </article>
-
         <article class="service-card" data-service="mantenimiento" tabindex="0" role="button" aria-label="Ver detalle de Mantenimiento">
           <div class="service-icon">⚡</div>
           <h3>Mantenimiento</h3>
           <p>Limpieza, optimización y mantenimiento preventivo para prolongar la vida de tu equipo.</p>
           <span class="service-more">Ver detalles →</span>
         </article>
-
         <article class="service-card" data-service="redes" tabindex="0" role="button" aria-label="Ver detalle de Redes e Internet">
           <div class="service-icon">🌐</div>
           <h3>Redes e Internet</h3>
           <p>Configuración de Wi-Fi, routers, redes domésticas y pequeñas empresas.</p>
           <span class="service-more">Ver detalles →</span>
         </article>
-
         <article class="service-card" data-service="impresoras" tabindex="0" role="button" aria-label="Ver detalle de Impresoras">
           <div class="service-icon">🖨️</div>
           <h3>Impresoras</h3>
           <p>Instalación, configuración y solución de problemas de impresión.</p>
           <span class="service-more">Ver detalles →</span>
         </article>
-
         <article class="service-card" data-service="instalacion" tabindex="0" role="button" aria-label="Ver detalle de Instalación y configuración">
           <div class="service-icon">🔧</div>
           <h3>Instalación y configuración</h3>
           <p>Dejamos tus equipos listos para trabajar, estudiar o disfrutar.</p>
           <span class="service-more">Ver detalles →</span>
         </article>
-
         <article class="service-card" data-service="seguridad" tabindex="0" role="button" aria-label="Ver detalle de Seguridad y respaldo">
           <div class="service-icon">🔒</div>
           <h3>Seguridad y respaldo</h3>
           <p>Protección básica, copias de seguridad y buenas prácticas para tus equipos.</p>
           <span class="service-more">Ver detalles →</span>
         </article>
-
         <article class="service-card" data-service="aplicativos" tabindex="0" role="button" aria-label="Ver detalle de Soporte de aplicativos">
           <div class="service-icon">🧩</div>
           <h3>Soporte de aplicativos</h3>
           <p>Instalación, configuración y solución de problemas de programas y software.</p>
           <span class="service-more">Ver detalles →</span>
         </article>
-
         <article class="service-card" data-service="desarrollo" tabindex="0" role="button" aria-label="Ver detalle de Desarrollo de software">
           <div class="service-icon">👨‍💻</div>
           <h3>Desarrollo de software</h3>
           <p>Soluciones a la medida para automatizar procesos de tu negocio.</p>
           <span class="service-more">Ver detalles →</span>
         </article>
-
       </div>
     </div>
   </section>
@@ -297,7 +285,6 @@
             <span>ITIL</span>
           </div>
 
-          <!-- Certificaciones verificadas (lazy load con data-src) -->
           <div class="founder-certs" id="founderCerts">
             <h4 class="founder-certs-title">
               <span aria-hidden="true">🏅</span> Certificaciones verificadas
@@ -305,7 +292,6 @@
             <div class="founder-certs-grid">
               <div class="cert-badge">
                 <div class="cert-embed">
-                  <!-- Los datos del iframe se inyectan cuando la sección es visible -->
                   <div
                     data-credly-badge
                     data-iframe-width="150"
@@ -331,7 +317,7 @@
     </div>
   </section>
 
-  <!-- Módulo ¿Sabías que? -->
+  <!-- Tips -->
   <section class="tips" id="tips">
     <div class="container">
       <h2 class="section-title">💡 ¿Sabías que...?</h2>
@@ -356,7 +342,7 @@
     </div>
   </section>
 
-  <!-- Aplicativos Recomendados -->
+  <!-- Aplicativos -->
   <section class="apps" id="apps">
     <div class="container">
       <h2 class="section-title">🧰 Aplicativos que recomendamos</h2>
@@ -366,13 +352,9 @@
       </p>
 
       <div class="apps-search">
-        <input
-          type="search"
-          id="appsSearch"
-          class="apps-search-input"
-          placeholder="Buscar aplicativo… (ej: PowerToys, Wireshark)"
-          aria-label="Buscar aplicativo"
-        >
+        <input type="search" id="appsSearch" class="apps-search-input"
+               placeholder="Buscar aplicativo… (ej: PowerToys, Wireshark)"
+               aria-label="Buscar aplicativo">
       </div>
 
       <div class="apps-filters" id="appsFilters">
@@ -391,9 +373,7 @@
   <section class="faq" id="faq">
     <div class="container">
       <h2 class="section-title">Preguntas frecuentes</h2>
-      <p class="section-subtitle">
-        Las dudas más comunes que nos llegan por WhatsApp, resueltas al instante.
-      </p>
+      <p class="section-subtitle">Las dudas más comunes que nos llegan por WhatsApp, resueltas al instante.</p>
 
       <div class="faq-list">
         <details class="faq-item">
@@ -405,7 +385,6 @@
             Sí, trabajamos a domicilio en Barranquilla, Soledad, Puerto Colombia y municipios cercanos del área metropolitana.
           </div>
         </details>
-
         <details class="faq-item">
           <summary>
             <span>¿Cómo puedo pedir una cotización?</span>
@@ -415,7 +394,6 @@
             Puedes escribirnos por WhatsApp al +57 315 850 5020 y enviarnos una foto o descripción del problema. Te damos una idea del precio sin compromiso.
           </div>
         </details>
-
         <details class="faq-item">
           <summary>
             <span>¿Qué garantía tienen los servicios?</span>
@@ -425,7 +403,6 @@
             Te explicamos qué encontramos, qué vamos a hacer y qué incluye el servicio antes de realizarlo. Si algo no queda bien, lo revisamos.
           </div>
         </details>
-
         <details class="faq-item">
           <summary>
             <span>¿Cuánto tarda una reparación típica?</span>
@@ -435,7 +412,6 @@
             La mayoría de servicios se resuelven el mismo día o en un plazo de 24 a 48 horas, según la complejidad y la disponibilidad de repuestos.
           </div>
         </details>
-
         <details class="faq-item">
           <summary>
             <span>¿Trabajan con empresas o solo con hogares?</span>
@@ -449,18 +425,16 @@
     </div>
   </section>
 
-  <!-- Reseñas (fusionado: widget GR + CTA) -->
+  <!-- Reseñas -->
   <section class="reviews" id="resenas">
     <div class="container">
       <h2 class="section-title">Lo que dicen nuestros clientes</h2>
       <p class="section-subtitle">Reseñas reales de Google. Se actualizan automáticamente.</p>
 
-      <!-- Widget de GR (lazy load) -->
       <div class="grwidget-wrapper">
         <div class="grwidget-embed" data-grwidget-key="G0gOrv6WNkt5ry1ARyK4NQHH" id="grWidgetContainer"></div>
       </div>
 
-      <!-- CTA para dejar reseña -->
       <div class="reviews-cta-inner">
         <h3 class="reviews-cta-title">¿Ya usaste nuestros servicios?</h3>
         <p class="reviews-cta-subtitle">
@@ -522,7 +496,7 @@
     </div>
   </footer>
 
-  <!-- Modal de servicios -->
+  <!-- Modal -->
   <div class="modal" id="serviceModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-overlay" data-close-modal></div>
     <div class="modal-box" role="document">
@@ -532,8 +506,7 @@
       <p class="modal-desc" id="modalDesc">Descripción</p>
       <ul class="modal-list" id="modalList"></ul>
       <a href="https://wa.me/573158505020?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20este%20servicio"
-         class="btn btn-whatsapp modal-cta"
-         target="_blank" rel="noopener">
+         class="btn btn-whatsapp modal-cta" target="_blank" rel="noopener">
         💬 Consultar por WhatsApp
       </a>
     </div>
