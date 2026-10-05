@@ -1,10 +1,11 @@
 document.addEventListener('DOMContentLoaded', function () {
 
   /* ============================================
-     DETECCIÓN DE DISPOSITIVO
+     DETECCIÓN
      ============================================ */
   const isMobile = window.matchMedia('(max-width: 640px)').matches;
   const isTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ============================================
      1. MENÚ MÓVIL
@@ -12,47 +13,36 @@ document.addEventListener('DOMContentLoaded', function () {
   const toggle = document.getElementById('navToggle');
   const nav = document.getElementById('nav');
 
+  function closeNav() {
+    nav.classList.remove('open');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.textContent = '☰';
+    toggle.setAttribute('aria-label', 'Abrir menú');
+    document.body.classList.remove('nav-open');
+  }
+
   if (toggle && nav) {
     toggle.addEventListener('click', function () {
       const isOpen = nav.classList.toggle('open');
       toggle.setAttribute('aria-expanded', isOpen);
       document.body.classList.toggle('nav-open', isOpen);
-
-      // Cambia el ícono ☰ a ✕
-      if (isOpen) {
-        toggle.textContent = '✕';
-        toggle.setAttribute('aria-label', 'Cerrar menú');
-      } else {
-        toggle.textContent = '☰';
-        toggle.setAttribute('aria-label', 'Abrir menú');
-      }
+      toggle.textContent = isOpen ? '✕' : '☰';
+      toggle.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
     });
 
     nav.querySelectorAll('a').forEach(function (link) {
-      link.addEventListener('click', function () {
-        nav.classList.remove('open');
-        toggle.setAttribute('aria-expanded', 'false');
-        toggle.textContent = '☰';
-        toggle.setAttribute('aria-label', 'Abrir menú');
-        document.body.classList.remove('nav-open');
-      });
+      link.addEventListener('click', closeNav);
     });
 
-    // Cerrar menú al hacer clic fuera
     document.addEventListener('click', function (e) {
       if (!nav.classList.contains('open')) return;
-      if (nav.contains(e.target)) return;
-      if (toggle.contains(e.target)) return;
-      nav.classList.remove('open');
-      toggle.setAttribute('aria-expanded', 'false');
-      toggle.textContent = '☰';
-      toggle.setAttribute('aria-label', 'Abrir menú');
-      document.body.classList.remove('nav-open');
+      if (nav.contains(e.target) || toggle.contains(e.target)) return;
+      closeNav();
     });
   }
 
   /* ============================================
-     2. SCROLL SUAVE CON OFFSET DEL HEADER
+     2. SCROLL SUAVE
      ============================================ */
   document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
     anchor.addEventListener('click', function (e) {
@@ -64,13 +54,13 @@ document.addEventListener('DOMContentLoaded', function () {
         const header = document.querySelector('.header');
         const offset = header ? header.offsetHeight + 12 : 0;
         const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
-        window.scrollTo({ top: top, behavior: 'smooth' });
+        window.scrollTo({ top: top, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
       }
     });
   });
 
   /* ============================================
-     3. HEADER CON SOMBRA AL SCROLL
+     3. HEADER CON SOMBRA
      ============================================ */
   const header = document.querySelector('.header');
   if (header) {
@@ -78,8 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('scroll', function () {
       if (!ticking) {
         window.requestAnimationFrame(function () {
-          if (window.scrollY > 20) header.classList.add('scrolled');
-          else header.classList.remove('scrolled');
+          header.classList.toggle('scrolled', window.scrollY > 20);
           ticking = false;
         });
         ticking = true;
@@ -89,30 +78,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* ============================================
      4. REVEAL ON SCROLL
-     (Solo elementos que no estén dentro de tips o apps)
      ============================================ */
-  const revealTargets = [
-    '.service-card',
-    '.feature',
-    '.contact-card',
-    '.faq-item'
-  ];
-
+  const revealTargets = ['.service-card', '.feature', '.contact-card', '.faq-item'];
   revealTargets.forEach(function (selector) {
     document.querySelectorAll(selector).forEach(function (el, i) {
       el.classList.add('reveal');
       if (i < 8) el.classList.add('reveal-delay-' + ((i % 8) + 1));
     });
   });
-
   document.querySelectorAll('.section-title, .section-subtitle').forEach(function (el) {
     el.classList.add('reveal');
   });
-
   const founderCard = document.querySelector('.founder-card');
   if (founderCard) founderCard.classList.add('reveal');
 
-  if ('IntersectionObserver' in window) {
+  if ('IntersectionObserver' in window && !prefersReducedMotion) {
     const revealObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
@@ -120,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function () {
           revealObserver.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
 
     document.querySelectorAll('.reveal').forEach(function (el) {
       revealObserver.observe(el);
@@ -132,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* ============================================
-     5. TOGGLE DE TEMA CLARO / OSCURO
+     5. TOGGLE DE TEMA
      ============================================ */
   const themeToggle = document.getElementById('themeToggle');
   if (themeToggle) {
@@ -312,8 +292,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* ============================================
-     7. MÓDULO ¿SABÍAS QUE? — desde tips.json
-     Optimizado para evitar titileo en móvil
+     7. TIPS (virtual, una sola tarjeta en el DOM)
      ============================================ */
   const tipTrack = document.getElementById('tipTrack');
   const tipDots = document.getElementById('tipDots');
@@ -325,8 +304,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const tipsExpandText = tipsExpandBtn ? tipsExpandBtn.querySelector('.tips-expand-text') : null;
 
   let currentTip = 0;
+  let tipsData = [];
   let autoplayTimer = null;
-  // En móvil el autoplay es más lento para reducir repintados
   const AUTOPLAY_INTERVAL = isMobile ? 12000 : 8000;
 
   function shuffleArray(array) {
@@ -339,25 +318,38 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (tipTrack && tipDots) {
     fetch('tips.json')
-      .then(function (response) {
-        if (!response.ok) throw new Error('No se pudo cargar tips.json');
-        return response.json();
-      })
-      .then(function (tipsData) {
-        if (!Array.isArray(tipsData) || tipsData.length === 0) return;
-        shuffleArray(tipsData);
+      .then(function (r) { if (!r.ok) throw new Error('tips.json'); return r.json(); })
+      .then(function (data) {
+        if (!Array.isArray(data) || data.length === 0) return;
+        tipsData = shuffleArray(data);
 
-        tipsData.forEach(function (tip, i) {
-          const card = document.createElement('article');
-          card.className = 'tip-card' + (i === 0 ? ' active' : '');
-          card.innerHTML =
+        // Una sola tarjeta
+        const card = document.createElement('article');
+        card.className = 'tip-card active';
+        tipTrack.appendChild(card);
+
+        function paintTip(tip, animate) {
+          const html =
             '<span class="tip-category">' + tip.category + '</span>' +
             '<div class="tip-icon">' + tip.icon + '</div>' +
             '<h3 class="tip-title">' + tip.title + '</h3>' +
             '<p class="tip-desc">' + tip.desc + '</p>' +
             '<span class="tip-benefit">✨ ' + tip.benefit + '</span>';
-          tipTrack.appendChild(card);
+          if (!animate || prefersReducedMotion) {
+            card.innerHTML = html;
+            return;
+          }
+          card.classList.add('switching');
+          setTimeout(function () {
+            card.innerHTML = html;
+            card.classList.remove('switching');
+          }, 180);
+        }
 
+        paintTip(tipsData[0], false);
+
+        // Dots
+        tipsData.forEach(function (tip, i) {
           const dot = document.createElement('button');
           dot.className = 'tip-dot' + (i === 0 ? ' active' : '');
           dot.setAttribute('aria-label', 'Ir al tip ' + (i + 1));
@@ -365,7 +357,9 @@ document.addEventListener('DOMContentLoaded', function () {
           tipDots.appendChild(dot);
         });
 
+        // Grid completa
         if (tipsGrid) {
+          const frag = document.createDocumentFragment();
           tipsData.forEach(function (tip) {
             const mini = document.createElement('article');
             mini.className = 'tip-mini';
@@ -373,40 +367,32 @@ document.addEventListener('DOMContentLoaded', function () {
               '<span class="tip-mini-icon">' + tip.icon + '</span>' +
               '<h4>' + tip.title + '</h4>' +
               '<p>' + tip.desc + '</p>';
-            tipsGrid.appendChild(mini);
+            frag.appendChild(mini);
           });
+          tipsGrid.appendChild(frag);
         }
 
-        const cards = tipTrack.querySelectorAll('.tip-card');
         const dots = tipDots.querySelectorAll('.tip-dot');
 
         function goToTip(index) {
-          if (!cards.length || index === currentTip) return;
-          cards[currentTip].classList.remove('active');
+          if (index === currentTip || !tipsData.length) return;
           dots[currentTip].classList.remove('active');
-          currentTip = (index + cards.length) % cards.length;
-          cards[currentTip].classList.add('active');
+          currentTip = (index + tipsData.length) % tipsData.length;
           dots[currentTip].classList.add('active');
+          paintTip(tipsData[currentTip], true);
           restartAutoplay();
         }
-
         function nextTip() { goToTip(currentTip + 1); }
         function prevTip() { goToTip(currentTip - 1); }
 
         function startAutoplay() {
-          if (autoplayTimer) return;
+          if (autoplayTimer || prefersReducedMotion) return;
           autoplayTimer = setInterval(nextTip, AUTOPLAY_INTERVAL);
         }
         function stopAutoplay() {
-          if (autoplayTimer) {
-            clearInterval(autoplayTimer);
-            autoplayTimer = null;
-          }
+          if (autoplayTimer) { clearInterval(autoplayTimer); autoplayTimer = null; }
         }
-        function restartAutoplay() {
-          stopAutoplay();
-          startAutoplay();
-        }
+        function restartAutoplay() { stopAutoplay(); startAutoplay(); }
 
         if (tipNext) tipNext.addEventListener('click', nextTip);
         if (tipPrev) tipPrev.addEventListener('click', prevTip);
@@ -430,21 +416,15 @@ document.addEventListener('DOMContentLoaded', function () {
           tipsExpandBtn.addEventListener('click', function () {
             const isOpen = tipsGridWrapper.classList.toggle('open');
             tipsExpandBtn.setAttribute('aria-expanded', isOpen);
-            if (tipsExpandText) {
-              tipsExpandText.textContent = isOpen ? 'Ocultar tips' : 'Ver todos los tips';
-            }
+            if (tipsExpandText) tipsExpandText.textContent = isOpen ? 'Ocultar tips' : 'Ver todos los tips';
           });
         }
 
-        // Solo arranca el autoplay si el carrusel es visible
+        // Autoplay solo si está visible
         if ('IntersectionObserver' in window && carousel) {
           const playObserver = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {
-              if (entry.isIntersecting) {
-                startAutoplay();
-              } else {
-                stopAutoplay();
-              }
+              if (entry.isIntersecting) startAutoplay(); else stopAutoplay();
             });
           }, { threshold: 0.1 });
           playObserver.observe(carousel);
@@ -453,16 +433,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       })
       .catch(function (error) {
-        console.error('Error cargando tips:', error);
-        if (tipTrack) {
-          tipTrack.innerHTML = '<p style="text-align:center;color:var(--color-text-light);padding:40px 20px;">No se pudieron cargar los tips en este momento.</p>';
-        }
+        console.error('Error tips:', error);
+        if (tipTrack) tipTrack.innerHTML = '<p style="text-align:center;color:var(--color-text-light);padding:40px 20px;">No se pudieron cargar los tips.</p>';
       });
   }
 
   /* ============================================
-     8. APLICATIVOS RECOMENDADOS — desde apps.json
-     Optimizado: sin animación de entrada en cada filtro
+     8. APLICATIVOS
      ============================================ */
   const appsGrid = document.getElementById('appsGrid');
   const appsFilters = document.getElementById('appsFilters');
@@ -475,10 +452,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let searchTerm = '';
 
     fetch('apps.json')
-      .then(function (response) {
-        if (!response.ok) throw new Error('No se pudo cargar apps.json');
-        return response.json();
-      })
+      .then(function (r) { if (!r.ok) throw new Error('apps.json'); return r.json(); })
       .then(function (data) {
         if (!Array.isArray(data) || data.length === 0) return;
         allApps = data;
@@ -488,7 +462,7 @@ document.addEventListener('DOMContentLoaded', function () {
           if (!categories.includes(app.category)) categories.push(app.category);
         });
 
-        appsFilters.innerHTML = '';
+        const fragFilters = document.createDocumentFragment();
         categories.forEach(function (cat) {
           const btn = document.createElement('button');
           btn.className = 'apps-filter' + (cat === 'all' ? ' active' : '');
@@ -500,16 +474,16 @@ document.addEventListener('DOMContentLoaded', function () {
             activeCategory = cat;
             renderApps();
           });
-          appsFilters.appendChild(btn);
+          fragFilters.appendChild(btn);
         });
+        appsFilters.innerHTML = '';
+        appsFilters.appendChild(fragFilters);
 
         renderApps();
       })
       .catch(function (error) {
-        console.error('Error cargando apps:', error);
-        if (appsGrid) {
-          appsGrid.innerHTML = '<p class="apps-empty">No se pudieron cargar los aplicativos en este momento.</p>';
-        }
+        console.error('Error apps:', error);
+        if (appsGrid) appsGrid.innerHTML = '<p class="apps-empty">No se pudieron cargar los aplicativos.</p>';
       });
 
     function renderApps() {
@@ -517,12 +491,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const term = searchTerm.toLowerCase().trim();
       const filtered = allApps.filter(function (app) {
-        const matchesCategory = activeCategory === 'all' || app.category === activeCategory;
-        const matchesSearch = !term ||
+        const cat = activeCategory === 'all' || app.category === activeCategory;
+        const s = !term ||
           app.name.toLowerCase().includes(term) ||
           app.desc.toLowerCase().includes(term) ||
           app.category.toLowerCase().includes(term);
-        return matchesCategory && matchesSearch;
+        return cat && s;
       });
 
       appsGrid.innerHTML = '';
@@ -533,14 +507,13 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       if (appsEmpty) appsEmpty.hidden = true;
 
+      const frag = document.createDocumentFragment();
       filtered.forEach(function (app) {
         const card = document.createElement('a');
         card.className = 'app-card';
         card.href = app.url;
         card.target = '_blank';
         card.rel = 'noopener';
-
-        // Sin animación de entrada para evitar titileo en móvil
 
         const badgesHTML = (app.badges || []).map(function (b) {
           const isFree = b.toLowerCase() === 'gratis' || b.toLowerCase() === 'free';
@@ -554,8 +527,9 @@ document.addEventListener('DOMContentLoaded', function () {
           '<div class="app-meta">' + badgesHTML + '</div>' +
           '<span class="app-link">Sitio oficial →</span>';
 
-        appsGrid.appendChild(card);
+        frag.appendChild(card);
       });
+      appsGrid.appendChild(frag);
     }
 
     if (appsSearch) {
@@ -571,7 +545,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* ============================================
-     9. FAQ - Acordeón Material con animación suave
+     9. FAQ (con grid-template-rows, sin reflow)
      ============================================ */
   const faqItems = document.querySelectorAll('.faq-item');
 
@@ -580,151 +554,12 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!answer) return;
     if (answer.parentElement.classList.contains('faq-content')) return;
 
+    // Nueva estructura: faq-content > div > faq-answer
     const wrapper = document.createElement('div');
     wrapper.className = 'faq-content';
+    const inner = document.createElement('div');
     answer.parentNode.insertBefore(wrapper, answer);
-    wrapper.appendChild(answer);
-
-    item.dataset.animating = 'false';
+    wrapper.appendChild(inner);
+    inner.appendChild(answer);
   });
-
-  faqItems.forEach(function (item) {
-    const summary = item.querySelector('summary');
-    if (!summary) return;
-
-    summary.addEventListener('click', function (e) {
-      e.preventDefault();
-      toggleFaq(item);
-    });
-
-    summary.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        toggleFaq(item);
-      }
-    });
-  });
-
-  function toggleFaq(item) {
-    if (item.dataset.animating === 'true') return;
-
-    const isOpen = item.hasAttribute('open');
-    const content = item.querySelector('.faq-content');
-    if (!content) return;
-
-    item.dataset.animating = 'true';
-
-    if (isOpen) {
-      content.style.maxHeight = content.scrollHeight + 'px';
-      void content.offsetHeight;
-      content.style.maxHeight = '0px';
-      content.style.opacity = '0';
-
-      setTimeout(function () {
-        item.removeAttribute('open');
-        content.style.maxHeight = '';
-        content.style.opacity = '';
-        item.dataset.animating = 'false';
-      }, 400);
-    } else {
-      faqItems.forEach(function (other) {
-        if (other !== item && other.hasAttribute('open')) {
-          const otherContent = other.querySelector('.faq-content');
-          if (otherContent) {
-            otherContent.style.maxHeight = otherContent.scrollHeight + 'px';
-            void otherContent.offsetHeight;
-            otherContent.style.maxHeight = '0px';
-            otherContent.style.opacity = '0';
-            setTimeout(function () {
-              other.removeAttribute('open');
-              otherContent.style.maxHeight = '';
-              otherContent.style.opacity = '';
-            }, 400);
-          }
-        }
-      });
-
-      setTimeout(function () {
-        item.setAttribute('open', '');
-        content.style.maxHeight = content.scrollHeight + 'px';
-        content.style.opacity = '1';
-
-        setTimeout(function () {
-          content.style.maxHeight = 'none';
-          item.dataset.animating = 'false';
-        }, 400);
-      }, 100);
-    }
-  }
-
-  /* ============================================
-     10. LAZY LOAD: CREDLY
-     ============================================ */
-  const founderCerts = document.getElementById('founderCerts');
-  let credlyLoaded = false;
-
-  function loadCredly() {
-    if (credlyLoaded || !founderCerts) return;
-    credlyLoaded = true;
-
-    founderCerts.querySelectorAll('[data-credly-badge]').forEach(function (el) {
-      el.removeAttribute('data-credly-badge');
-    });
-
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.async = true;
-    script.src = 'https://cdn.credly.com/assets/utilities/embed.js';
-    document.body.appendChild(script);
-  }
-
-  if (founderCerts) {
-    if ('IntersectionObserver' in window) {
-      const credlyObserver = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            loadCredly();
-            credlyObserver.disconnect();
-          }
-        });
-      }, { rootMargin: '200px 0px' });
-      credlyObserver.observe(founderCerts);
-    } else {
-      loadCredly();
-    }
-  }
-
-  /* ============================================
-     11. LAZY LOAD: GR WIDGET
-     ============================================ */
-  const reviewsSection = document.getElementById('resenas');
-  let grWidgetLoaded = false;
-
-  function loadGrWidget() {
-    if (grWidgetLoaded || !reviewsSection) return;
-    grWidgetLoaded = true;
-
-    const script = document.createElement('script');
-    script.src = 'https://grwidget.com/v1/grwidget.js';
-    script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
-  }
-
-  if (reviewsSection) {
-    if ('IntersectionObserver' in window) {
-      const grObserver = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            loadGrWidget();
-            grObserver.disconnect();
-          }
-        });
-      }, { rootMargin: '300px 0px' });
-      grObserver.observe(reviewsSection);
-    } else {
-      loadGrWidget();
-    }
-  }
-
 });
