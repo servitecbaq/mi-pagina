@@ -200,8 +200,9 @@ body::after {
   0%   { transform: translateX(-120%) skewX(-20deg); }
   100% { transform: translateX(220%) skewX(-20deg); }
 }
-@keyframes spin {
-  to { transform: rotate(360deg); }
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 /* ============================================
@@ -222,6 +223,13 @@ body::after {
 .reveal-delay-6 { transition-delay: 0.48s; }
 .reveal-delay-7 { transition-delay: 0.56s; }
 .reveal-delay-8 { transition-delay: 0.64s; }
+
+/* Los tips y las apps NO usan reveal para evitar titileo en móvil */
+.tip-card,
+.tip-mini,
+.app-card {
+  will-change: auto;
+}
 
 /* ============================================
    WHATSAPP FLOTANTE
@@ -536,7 +544,7 @@ section { padding: 80px 0; position: relative; z-index: 1; }
 }
 
 /* ============================================
-   COBERTURA (ahora justo después del hero)
+   COBERTURA
    ============================================ */
 .coverage {
   background: var(--color-bg-alt);
@@ -965,7 +973,6 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   height: 100%;
 }
 
-/* Placeholder mientras carga Credly (evita salto de layout) */
 .cert-embed:empty::before {
   content: "";
   position: absolute;
@@ -973,11 +980,6 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   background: linear-gradient(90deg, transparent, var(--acrylic-border), transparent);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
-}
-
-@keyframes shimmer {
-  0%   { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
 }
 
 .cert-name {
@@ -1562,7 +1564,6 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   background: transparent;
 }
 
-/* Envoltorio del widget de GR */
 .grwidget-wrapper {
   max-width: 900px;
   margin: 0 auto 48px;
@@ -1600,7 +1601,6 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   border-radius: var(--radius-sm);
 }
 
-/* Placeholder mientras carga GR Widget */
 .grwidget-embed:empty::before {
   content: "";
   display: block;
@@ -1611,7 +1611,6 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   animation: shimmer 1.6s infinite;
 }
 
-/* CTA interno dentro de la sección de reseñas */
 .reviews-cta-inner {
   max-width: 800px;
   margin: 0 auto;
@@ -1732,6 +1731,32 @@ section { padding: 80px 0; position: relative; z-index: 1; }
 @media (max-width: 640px) {
   :root { --header-offset: 64px; }
 
+  /* Reducir costo del backdrop-filter en móvil (evita parpadeos) */
+  .service-card,
+  .feature,
+  .app-card,
+  .contact-card,
+  .testimonial,
+  .faq-item,
+  .tip-mini,
+  .tip-card,
+  .grwidget-wrapper,
+  .founder-card,
+  .header,
+  .theme-toggle,
+  .nav-toggle,
+  .hero-badges span,
+  .founder-skills span,
+  .cert-embed,
+  .modal-box,
+  .tip-nav,
+  .apps-search-input,
+  .apps-filter,
+  .lang-switch {
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+  }
+
   .nav {
     display: none;
     position: absolute;
@@ -1739,8 +1764,8 @@ section { padding: 80px 0; position: relative; z-index: 1; }
     left: 12px;
     right: 12px;
     background: var(--acrylic-bg-strong);
-    backdrop-filter: blur(30px) saturate(180%);
-    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     flex-direction: column;
     padding: 18px;
     border-radius: var(--radius);
@@ -1795,6 +1820,51 @@ section { padding: 80px 0; position: relative; z-index: 1; }
 }
 
 /* ============================================
+   DESACTIVAR HOVER EN PANTALLAS TÁCTILES
+   (evita que los estilos hover se disparen al tocar
+   y causen sensación de "titileo" en móvil)
+   ============================================ */
+@media (hover: none) and (pointer: coarse) {
+  .service-card:hover,
+  .feature:hover,
+  .app-card:hover,
+  .contact-card:hover,
+  .testimonial:hover,
+  .faq-item:hover,
+  .tip-mini:hover,
+  .cert-badge:hover,
+  .grwidget-wrapper:hover,
+  .founder-card:hover,
+  .hero-badges span:hover,
+  .founder-skills span:hover {
+    transform: none;
+  }
+  .service-card:hover { box-shadow: var(--elev-2); border-color: var(--acrylic-border); }
+  .service-card:hover::after { left: -60%; }
+  .service-card:hover::before { opacity: 0; }
+  .service-card:hover .service-icon { transform: none; }
+  .service-card:hover .service-more { transform: none; }
+  .app-card:hover { box-shadow: var(--elev-1); border-color: var(--acrylic-border); }
+  .app-card:hover::before { opacity: 0; }
+  .app-card:hover .app-logo { transform: none; }
+  .app-card:hover .app-link { gap: 6px; }
+  .contact-card:hover { box-shadow: var(--elev-2); border-color: var(--acrylic-border); }
+  .contact-card:hover::after { opacity: 0; }
+  .contact-card:hover .contact-icon { transform: none; }
+  .tip-mini:hover { box-shadow: var(--elev-1); border-color: var(--acrylic-border); }
+  .faq-item:hover { box-shadow: var(--elev-1); border-color: var(--acrylic-border); }
+  .cert-badge:hover { transform: none; }
+  .cert-badge:hover .cert-embed { box-shadow: var(--elev-2); border-color: var(--acrylic-border); }
+  .founder-card:hover { box-shadow: var(--elev-3); }
+  .founder-photo img:hover { transform: none; box-shadow: 0 8px 28px rgba(0,184,212,0.28); }
+  .logo:hover span::after { transform: scaleX(0); }
+  .nav a:hover::after { transform: scaleX(0); }
+  .apps-filter:hover { transform: none; }
+  .theme-toggle:hover { transform: none; box-shadow: none; }
+  .tip-dot:hover:not(.active) { background: var(--color-border); transform: none; }
+}
+
+/* ============================================
    ACCESIBILIDAD
    ============================================ */
 @media (prefers-reduced-motion: reduce) {
@@ -1807,7 +1877,8 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   .app-card, .app-logo, .apps-filter, .apps-search-input,
   .cert-badge, .cert-embed,
   .grwidget-wrapper, .grwidget-embed:empty::before,
-  .cert-embed:empty::before {
+  .cert-embed:empty::before,
+  .tip-card, .tip-mini {
     transition: none !important;
     animation: none !important;
   }
