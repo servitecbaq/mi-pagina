@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function () {
     anchor.addEventListener('click', function (e) {
       const targetId = this.getAttribute('href');
       if (targetId === '#' || targetId === '') return;
-
       const target = document.querySelector(targetId);
       if (target) {
         e.preventDefault();
@@ -37,19 +36,78 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   /* ============================================
-     3. SOMBRA DINÁMICA DEL HEADER
+     3. HEADER CON SOMBRA AL HACER SCROLL
      ============================================ */
   const header = document.querySelector('.header');
   if (header) {
     window.addEventListener('scroll', function () {
-      header.style.boxShadow = window.scrollY > 20
-        ? '0 2px 16px rgba(0,0,0,0.12)'
-        : '0 1px 8px rgba(0,0,0,0.06)';
+      if (window.scrollY > 20) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    }, { passive: true });
+  }
+
+  /* ============================================
+     4. REVEAL ON SCROLL (IntersectionObserver)
+     ============================================ */
+  const revealSelectors = [
+    '.hero h1', '.hero-subtitle', '.hero-cta', '.hero-badges',
+    '.section-title', '.section-subtitle',
+    '.service-card',
+    '.feature',
+    '.founder-card',
+    '.testimonial',
+    '.contact-card',
+    '.reviews-cta-buttons', '.reviews-note'
+  ];
+
+  // Añade la clase reveal con delays escalonados a las tarjetas
+  document.querySelectorAll('.service-card').forEach(function (el, i) {
+    el.classList.add('reveal');
+    if (i < 8) el.classList.add('reveal-delay-' + (i % 8 + 1));
+  });
+  document.querySelectorAll('.feature').forEach(function (el, i) {
+    el.classList.add('reveal', 'reveal-delay-' + (i + 1));
+  });
+  document.querySelectorAll('.testimonial').forEach(function (el, i) {
+    el.classList.add('reveal', 'reveal-delay-' + (i + 1));
+  });
+  document.querySelectorAll('.contact-card').forEach(function (el, i) {
+    el.classList.add('reveal', 'reveal-delay-' + (i + 1));
+  });
+  document.querySelectorAll('.section-title, .section-subtitle').forEach(function (el) {
+    el.classList.add('reveal');
+  });
+  const founderCard = document.querySelector('.founder-card');
+  if (founderCard) founderCard.classList.add('reveal');
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.12,
+      rootMargin: '0px 0px -40px 0px'
+    });
+
+    document.querySelectorAll('.reveal').forEach(function (el) {
+      observer.observe(el);
+    });
+  } else {
+    // Fallback navegadores antiguos
+    document.querySelectorAll('.reveal').forEach(function (el) {
+      el.classList.add('visible');
     });
   }
 
   /* ============================================
-     4. TOGGLE DE TEMA CLARO / OSCURO
+     5. TOGGLE DE TEMA CLARO / OSCURO
      ============================================ */
   const themeToggle = document.getElementById('themeToggle');
   if (themeToggle) {
@@ -71,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   /* ============================================
-     5. MODAL DE SERVICIOS
+     6. MODAL DE SERVICIOS
      ============================================ */
   const servicesData = {
     reparacion: {
@@ -213,9 +271,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   document.querySelectorAll('.service-card').forEach(function (card) {
     const key = card.getAttribute('data-service');
-
     card.addEventListener('click', function () { openModal(key); });
-
     card.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -229,11 +285,8 @@ document.addEventListener('DOMContentLoaded', function () {
     modal.querySelectorAll('[data-close-modal]').forEach(function (el) {
       el.addEventListener('click', closeModal);
     });
-
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && modal.classList.contains('open')) {
-        closeModal();
-      }
+      if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
     });
   }
 

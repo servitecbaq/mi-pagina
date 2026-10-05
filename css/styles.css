@@ -8,10 +8,9 @@
 }
 
 /* ============================================
-   VARIABLES - MODO CLARO (Material + Acrylic)
+   VARIABLES - MODO CLARO
    ============================================ */
 :root {
-  /* Colores Material 3 */
   --md-primary: #0a2540;
   --md-primary-container: #d3e3fd;
   --md-secondary: #25d366;
@@ -24,44 +23,44 @@
   --md-outline: rgba(0,0,0,0.08);
   --md-outline-strong: rgba(0,0,0,0.15);
 
-  /* Acrylic / Glass */
   --acrylic-bg: rgba(255,255,255,0.65);
   --acrylic-bg-strong: rgba(255,255,255,0.85);
-  --acrylic-border: rgba(255,255,255,0.4);
+  --acrylic-border: rgba(255,255,255,0.45);
   --acrylic-blur: blur(20px) saturate(180%);
 
-  /* Aliases (compatibilidad con tu CSS actual) */
   --color-primary: var(--md-primary);
   --color-accent: var(--md-secondary);
   --color-text: var(--md-on-surface);
   --color-text-light: var(--md-on-surface-variant);
   --color-bg: var(--md-surface);
   --color-bg-alt: var(--md-surface-1);
-  --color-card-bg: rgba(255,255,255,0.7);
+  --color-card-bg: rgba(255,255,255,0.72);
   --color-header-bg: rgba(255,255,255,0.6);
   --color-hero-gradient: linear-gradient(135deg, #e6f0ff 0%, #f5faff 50%, #ffffff 100%);
   --color-border: var(--md-outline);
 
-  /* Sombras Material (elevaciones) */
+  /* Textura: puntos sutiles */
+  --texture-dots: radial-gradient(circle, rgba(10,37,64,0.08) 1px, transparent 1px);
+  --texture-dots-size: 22px 22px;
+
   --elev-1: 0 1px 2px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
   --elev-2: 0 2px 6px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
   --elev-3: 0 6px 16px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.05);
   --elev-4: 0 12px 28px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06);
   --shadow: var(--elev-2);
 
-  /* Radios Material 3 */
   --radius: 16px;
   --radius-sm: 10px;
   --radius-lg: 24px;
   --radius-full: 999px;
 
-  /* Layout */
   --max-width: 1100px;
   --transition: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ============================================
-   VARIABLES - MODO OSCURO (Material + Acrylic)
+   VARIABLES - MODO OSCURO
    ============================================ */
 [data-theme="dark"] {
   --md-primary: #e6edf5;
@@ -86,10 +85,12 @@
   --color-text-light: var(--md-on-surface-variant);
   --color-bg: var(--md-surface);
   --color-bg-alt: var(--md-surface-1);
-  --color-card-bg: rgba(28,33,40,0.7);
+  --color-card-bg: rgba(28,33,40,0.72);
   --color-header-bg: rgba(13,17,23,0.6);
   --color-hero-gradient: linear-gradient(135deg, #161b22 0%, #0d1117 50%, #0d1117 100%);
   --color-border: var(--md-outline);
+
+  --texture-dots: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
 
   --elev-1: 0 1px 2px rgba(0,0,0,0.3);
   --elev-2: 0 2px 6px rgba(0,0,0,0.4);
@@ -99,7 +100,7 @@
 }
 
 /* ============================================
-   BASE
+   BASE + TEXTURAS DE FONDO
    ============================================ */
 html {
   scroll-behavior: smooth;
@@ -120,22 +121,44 @@ body {
   overflow-x: hidden;
 }
 
-/* Fondo decorativo tipo gradiente suave para que el acrylic se note */
+/* Capa 1: gradientes radiales suaves */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(600px circle at 10% 5%, rgba(37,211,102,0.06), transparent 40%),
-    radial-gradient(800px circle at 90% 20%, rgba(10,37,64,0.06), transparent 50%);
+    radial-gradient(600px circle at 10% 5%, rgba(37,211,102,0.10), transparent 45%),
+    radial-gradient(800px circle at 90% 20%, rgba(10,37,64,0.08), transparent 50%),
+    radial-gradient(700px circle at 50% 100%, rgba(37,211,102,0.06), transparent 50%);
   pointer-events: none;
   z-index: 0;
+  animation: bgShift 20s ease-in-out infinite alternate;
 }
 
 [data-theme="dark"] body::before {
   background:
-    radial-gradient(600px circle at 10% 5%, rgba(37,211,102,0.08), transparent 40%),
-    radial-gradient(800px circle at 90% 20%, rgba(100,150,255,0.06), transparent 50%);
+    radial-gradient(600px circle at 10% 5%, rgba(37,211,102,0.10), transparent 45%),
+    radial-gradient(800px circle at 90% 20%, rgba(100,150,255,0.08), transparent 50%),
+    radial-gradient(700px circle at 50% 100%, rgba(37,211,102,0.06), transparent 50%);
+}
+
+/* Capa 2: patrón de puntos tipo textura */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: var(--texture-dots);
+  background-size: var(--texture-dots-size);
+  opacity: 0.6;
+  pointer-events: none;
+  z-index: 0;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+}
+
+@keyframes bgShift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(-2%, -1%, 0) scale(1.05); }
 }
 
 .container {
@@ -147,7 +170,68 @@ body::before {
 }
 
 /* ============================================
-   BOTÓN FLOTANTE DE WHATSAPP
+   ANIMACIONES GLOBALES (keyframes)
+   ============================================ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+@keyframes pulseRing {
+  0%   { box-shadow: 0 0 0 0 rgba(37,211,102,0.5); }
+  70%  { box-shadow: 0 0 0 18px rgba(37,211,102,0); }
+  100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); }
+}
+
+@keyframes gradientMove {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+@keyframes shine {
+  0%   { transform: translateX(-120%) skewX(-20deg); }
+  100% { transform: translateX(220%) skewX(-20deg); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0.4; }
+  50%      { opacity: 1; }
+}
+
+/* ============================================
+   REVEAL ON SCROLL
+   ============================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+  will-change: opacity, transform;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.08s; }
+.reveal-delay-2 { transition-delay: 0.16s; }
+.reveal-delay-3 { transition-delay: 0.24s; }
+.reveal-delay-4 { transition-delay: 0.32s; }
+.reveal-delay-5 { transition-delay: 0.4s; }
+.reveal-delay-6 { transition-delay: 0.48s; }
+.reveal-delay-7 { transition-delay: 0.56s; }
+.reveal-delay-8 { transition-delay: 0.64s; }
+
+/* ============================================
+   BOTÓN FLOTANTE WHATSAPP (con pulso)
    ============================================ */
 .whatsapp-float {
   position: fixed;
@@ -156,7 +240,7 @@ body::before {
   width: 60px;
   height: 60px;
   background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
-  color: #ffffff;
+  color: #fff;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -165,11 +249,13 @@ body::before {
   z-index: 9999;
   text-decoration: none;
   transition: transform 0.25s var(--transition), box-shadow 0.25s var(--transition);
+  animation: pulseRing 2.5s infinite;
 }
 .whatsapp-float:hover {
   transform: scale(1.1) translateY(-2px);
   box-shadow: 0 12px 32px rgba(37,211,102,0.55), 0 6px 12px rgba(0,0,0,0.18);
-  color: #ffffff;
+  color: #fff;
+  animation-play-state: paused;
 }
 .whatsapp-float svg { width: 32px; height: 32px; display: block; }
 
@@ -185,6 +271,10 @@ body::before {
   border-bottom: 1px solid var(--acrylic-border);
   z-index: 100;
   transition: background-color 0.3s var(--transition), box-shadow 0.3s var(--transition);
+  animation: fadeIn 0.5s var(--ease-out);
+}
+.header.scrolled {
+  box-shadow: var(--elev-3);
 }
 .header-inner {
   display: flex;
@@ -199,8 +289,25 @@ body::before {
   color: var(--color-primary);
   text-decoration: none;
   letter-spacing: -0.02em;
+  position: relative;
 }
-.logo span { color: var(--color-accent); }
+.logo span {
+  color: var(--color-accent);
+  display: inline-block;
+  position: relative;
+}
+.logo span::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -2px;
+  height: 2px;
+  background: var(--color-accent);
+  border-radius: var(--radius-full);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s var(--ease-out);
+}
+.logo:hover span::after { transform: scaleX(1); }
 
 .nav { display: flex; align-items: center; }
 .nav a {
@@ -216,9 +323,7 @@ body::before {
 .nav a::after {
   content: "";
   position: absolute;
-  bottom: -6px;
-  left: 0;
-  right: 0;
+  bottom: -6px; left: 0; right: 0;
   height: 2px;
   background: var(--color-accent);
   border-radius: var(--radius-full);
@@ -268,16 +373,37 @@ body::before {
 }
 
 /* ============================================
-   HERO
+   HERO con animaciones
    ============================================ */
 .hero {
   padding: 100px 0 80px;
   background: var(--color-hero-gradient);
+  background-size: 200% 200%;
   text-align: center;
   position: relative;
   overflow: hidden;
   transition: background 0.3s var(--transition);
+  animation: gradientMove 12s ease infinite alternate;
 }
+
+/* Halo detrás del título */
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle, rgba(37,211,102,0.18), transparent 65%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+  animation: floatY 8s ease-in-out infinite;
+}
+
+.hero .container { position: relative; z-index: 1; }
+
 .hero h1 {
   font-size: clamp(1.9rem, 5vw, 3rem);
   font-weight: 800;
@@ -285,6 +411,7 @@ body::before {
   margin-bottom: 18px;
   line-height: 1.15;
   letter-spacing: -0.02em;
+  animation: fadeUp 0.9s var(--ease-out) both;
 }
 .hero-subtitle {
   font-size: 1.1rem;
@@ -292,6 +419,7 @@ body::before {
   max-width: 620px;
   margin: 0 auto 36px;
   line-height: 1.6;
+  animation: fadeUp 0.9s var(--ease-out) 0.12s both;
 }
 .hero-cta {
   display: flex;
@@ -299,6 +427,7 @@ body::before {
   justify-content: center;
   flex-wrap: wrap;
   margin-bottom: 32px;
+  animation: fadeUp 0.9s var(--ease-out) 0.24s both;
 }
 .hero-badges {
   display: flex;
@@ -307,6 +436,7 @@ body::before {
   flex-wrap: wrap;
   font-size: 0.9rem;
   color: var(--color-text-light);
+  animation: fadeUp 0.9s var(--ease-out) 0.36s both;
 }
 .hero-badges span {
   background: var(--acrylic-bg);
@@ -316,10 +446,15 @@ body::before {
   padding: 6px 14px;
   border-radius: var(--radius-full);
   box-shadow: var(--elev-1);
+  transition: transform 0.25s var(--transition), border-color 0.25s var(--transition);
+}
+.hero-badges span:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-accent);
 }
 
 /* ============================================
-   BOTONES (Material + ripple)
+   BOTONES
    ============================================ */
 .btn {
   display: inline-flex;
@@ -341,22 +476,27 @@ body::before {
 .btn:hover { transform: translateY(-2px); }
 .btn:active { transform: translateY(0) scale(0.98); }
 
-/* Ripple effect Material */
-.btn::after {
+/* Brillo deslizante */
+.btn::before {
   content: "";
   position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at center, rgba(255,255,255,0.4) 0%, transparent 60%);
-  opacity: 0;
-  transition: opacity 0.4s var(--transition);
+  top: 0; left: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  transform: translateX(-120%) skewX(-20deg);
   pointer-events: none;
 }
-.btn:hover::after { opacity: 0.3; }
+.btn:hover::before {
+  animation: shine 0.9s ease;
+}
 
 .btn-whatsapp {
   background: linear-gradient(135deg, #25d366 0%, #1da851 100%);
+  background-size: 200% 200%;
   color: #fff;
   box-shadow: 0 4px 14px rgba(37,211,102,0.35), var(--elev-2);
+  animation: gradientMove 6s ease infinite alternate;
 }
 .btn-whatsapp:hover {
   box-shadow: 0 8px 22px rgba(37,211,102,0.45), var(--elev-3);
@@ -387,7 +527,6 @@ body::before {
 .btn-review:hover {
   border-color: #fbbc04;
   box-shadow: 0 6px 18px rgba(251,188,4,0.3), var(--elev-3);
-  transform: translateY(-2px);
 }
 
 /* ============================================
@@ -412,10 +551,9 @@ section { padding: 80px 0; position: relative; z-index: 1; }
 }
 
 /* ============================================
-   SERVICIOS (tarjetas acrylic)
+   SERVICIOS
    ============================================ */
 .services { background: transparent; }
-
 .services-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -433,7 +571,7 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: transform 0.3s var(--transition), box-shadow 0.3s var(--transition), border-color 0.3s var(--transition);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
 }
 .service-card::before {
   content: "";
@@ -444,6 +582,20 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   opacity: 0;
   transition: opacity 0.3s var(--transition);
 }
+/* Destello al hover */
+.service-card::after {
+  content: "";
+  position: absolute;
+  top: 0; left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.7s var(--ease-out);
+  pointer-events: none;
+}
+.service-card:hover::after { left: 140%; }
+
 .service-card:hover {
   transform: translateY(-6px);
   box-shadow: var(--elev-4);
@@ -459,8 +611,13 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   font-size: 2.2rem;
   margin-bottom: 14px;
   display: inline-block;
+  transition: transform 0.4s var(--ease-out);
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
+.service-card:hover .service-icon {
+  transform: scale(1.15) rotate(-6deg);
+}
+
 .service-card h3 {
   font-size: 1.1rem;
   margin-bottom: 8px;
@@ -482,7 +639,7 @@ section { padding: 80px 0; position: relative; z-index: 1; }
 .service-card:hover .service-more { transform: translateX(6px); }
 
 /* ============================================
-   MODAL (Acrylic glass)
+   MODAL
    ============================================ */
 .modal {
   position: fixed;
@@ -521,7 +678,7 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   overflow-y: auto;
   box-shadow: var(--elev-4);
   transform: translateY(24px) scale(0.96);
-  transition: transform 0.35s var(--transition);
+  transition: transform 0.35s var(--ease-out);
 }
 .modal.open .modal-box { transform: translateY(0) scale(1); }
 
@@ -540,7 +697,7 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s var(--transition), color 0.2s var(--transition), transform 0.2s var(--transition);
+  transition: background 0.2s var(--transition), color 0.2s var(--transition), transform 0.3s var(--ease-out);
 }
 .modal-close:hover {
   background: var(--color-bg-alt);
@@ -548,7 +705,11 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   transform: rotate(90deg);
 }
 
-.modal-icon { font-size: 2.6rem; margin-bottom: 12px; }
+.modal-icon {
+  font-size: 2.6rem;
+  margin-bottom: 12px;
+  animation: floatY 3s ease-in-out infinite;
+}
 .modal-title {
   font-size: 1.4rem;
   color: var(--color-primary);
@@ -570,7 +731,16 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   font-size: 0.93rem;
   color: var(--color-text);
   line-height: 1.55;
+  opacity: 0;
+  transform: translateX(-8px);
+  animation: fadeUp 0.4s var(--ease-out) forwards;
 }
+.modal-list li:nth-child(1) { animation-delay: 0.05s; }
+.modal-list li:nth-child(2) { animation-delay: 0.1s; }
+.modal-list li:nth-child(3) { animation-delay: 0.15s; }
+.modal-list li:nth-child(4) { animation-delay: 0.2s; }
+.modal-list li:nth-child(5) { animation-delay: 0.25s; }
+.modal-list li:nth-child(6) { animation-delay: 0.3s; }
 .modal-list li::before {
   content: "✓";
   position: absolute;
@@ -598,7 +768,7 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   border: 1px solid var(--acrylic-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--elev-1);
-  transition: transform 0.3s var(--transition), box-shadow 0.3s var(--transition);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
 }
 .feature:hover {
   transform: translateY(-4px);
@@ -623,7 +793,7 @@ section { padding: 80px 0; position: relative; z-index: 1; }
 }
 
 /* ============================================
-   FUNDADOR (Acrylic card)
+   FUNDADOR
    ============================================ */
 .founder { background: transparent; }
 
@@ -641,7 +811,7 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   box-shadow: var(--elev-3);
   max-width: 900px;
   margin: 0 auto;
-  transition: transform 0.3s var(--transition), box-shadow 0.3s var(--transition);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
 }
 .founder-card:hover { box-shadow: var(--elev-4); }
 
@@ -652,7 +822,13 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   border-radius: 50%;
   border: 4px solid var(--color-accent);
   box-shadow: 0 8px 28px rgba(37,211,102,0.28);
+  transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
 }
+.founder-photo img:hover {
+  transform: scale(1.04) rotate(-2deg);
+  box-shadow: 0 14px 36px rgba(37,211,102,0.4);
+}
+
 .founder-info h3 {
   font-size: 1.6rem;
   color: var(--color-primary);
@@ -692,11 +868,14 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   border-radius: var(--radius-full);
   font-size: 0.82rem;
   font-weight: 500;
-  transition: transform 0.2s var(--transition), border-color 0.2s var(--transition);
+  transition: transform 0.25s var(--ease-out), border-color 0.25s var(--transition), background 0.25s var(--transition);
+  cursor: default;
 }
 .founder-skills span:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px) scale(1.05);
   border-color: var(--color-accent);
+  background: var(--md-secondary-container);
+  color: var(--color-text);
 }
 
 .btn-linkedin {
@@ -711,7 +890,7 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   font-size: 0.95rem;
   text-decoration: none;
   box-shadow: 0 4px 14px rgba(10,102,194,0.35), var(--elev-2);
-  transition: transform 0.2s var(--transition), box-shadow 0.2s var(--transition);
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
 }
 .btn-linkedin:hover {
   transform: translateY(-2px);
@@ -728,7 +907,19 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
   transition: background 0.3s var(--transition);
+  position: relative;
+  overflow: hidden;
 }
+.coverage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--texture-dots);
+  background-size: var(--texture-dots-size);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.coverage .container { position: relative; z-index: 1; }
 .coverage .section-title { color: var(--color-text); }
 .coverage .section-subtitle { color: var(--color-text-light); }
 
@@ -749,7 +940,19 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   box-shadow: var(--elev-2);
   border: 1px solid var(--acrylic-border);
   border-left: 4px solid var(--color-accent);
-  transition: transform 0.3s var(--transition), box-shadow 0.3s var(--transition);
+  position: relative;
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+}
+.testimonial::before {
+  content: "❝";
+  position: absolute;
+  top: 10px;
+  right: 18px;
+  font-size: 2.4rem;
+  color: var(--color-accent);
+  opacity: 0.25;
+  font-family: Georgia, serif;
+  line-height: 1;
 }
 .testimonial:hover {
   transform: translateY(-4px);
@@ -769,7 +972,7 @@ section { padding: 80px 0; position: relative; z-index: 1; }
 }
 
 /* ============================================
-   RESEÑAS EN GOOGLE
+   RESEÑAS
    ============================================ */
 .reviews-cta {
   background: var(--color-bg-alt);
@@ -814,14 +1017,35 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   border: 1px solid var(--acrylic-border);
   text-decoration: none;
   color: var(--color-text);
-  transition: transform 0.3s var(--transition), box-shadow 0.3s var(--transition), border-color 0.3s var(--transition);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
+}
+.contact-card::after {
+  content: "";
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(37,211,102,0.15), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-out);
+  pointer-events: none;
 }
 .contact-card:hover {
   transform: translateY(-6px);
   box-shadow: var(--elev-4);
   border-color: var(--color-accent);
 }
-.contact-icon { font-size: 2rem; display: block; margin-bottom: 12px; }
+.contact-card:hover::after { opacity: 1; }
+
+.contact-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 12px;
+  transition: transform 0.4s var(--ease-out);
+}
+.contact-card:hover .contact-icon { transform: scale(1.2) translateY(-4px); }
+
 .contact-card h3 {
   font-size: 1.05rem;
   color: var(--color-primary);
@@ -843,6 +1067,7 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   padding: 32px 0;
   font-size: 0.88rem;
   transition: background 0.3s var(--transition);
+  position: relative;
 }
 .footer a { color: var(--color-accent); text-decoration: none; font-weight: 500; }
 .footer a:hover { text-decoration: underline; }
@@ -865,6 +1090,7 @@ section { padding: 80px 0; position: relative; z-index: 1; }
     border-radius: var(--radius);
     box-shadow: var(--elev-4);
     border: 1px solid var(--acrylic-border);
+    animation: fadeUp 0.3s var(--ease-out);
   }
   .nav.open { display: flex; }
   .nav a { margin: 10px 0; font-size: 1rem; }
@@ -882,12 +1108,7 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   .founder-photo { max-width: 160px; margin: 0 auto; }
   .founder-skills { justify-content: center; }
 
-  .whatsapp-float {
-    width: 54px;
-    height: 54px;
-    bottom: 18px;
-    right: 18px;
-  }
+  .whatsapp-float { width: 54px; height: 54px; bottom: 18px; right: 18px; }
   .whatsapp-float svg { width: 28px; height: 28px; }
 
   .modal-box { padding: 30px 22px 24px; border-radius: var(--radius); }
@@ -902,9 +1123,10 @@ section { padding: 80px 0; position: relative; z-index: 1; }
     transition: none !important;
     animation: none !important;
   }
+  .reveal { opacity: 1; transform: none; }
 }
 
-/* Scrollbar personalizado (opcional) */
+/* Scrollbar */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: var(--color-bg-alt); }
 ::-webkit-scrollbar-thumb {
