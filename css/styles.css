@@ -11,23 +11,26 @@
    VARIABLES - MODO CLARO
    ============================================ */
 :root {
-  --md-primary: #0a2540;
-  --md-primary-container: #d3e3fd;
-  --md-secondary: #25d366;
-  --md-secondary-container: #c8f7d4;
+  /* Colores de marca Servitec.baq */
+  --md-primary: #0B1F3A;              /* Navy profundo */
+  --md-primary-container: #D6E4F0;
+  --md-secondary: #00B8D4;            /* Turquesa */
+  --md-secondary-container: #C9F0F7;
   --md-surface: #fefefe;
   --md-surface-1: #f7f9fc;
   --md-surface-2: #eef2f7;
-  --md-on-surface: #1a1a2e;
-  --md-on-surface-variant: #555;
-  --md-outline: rgba(0,0,0,0.08);
-  --md-outline-strong: rgba(0,0,0,0.15);
+  --md-on-surface: #0B1F3A;           /* Texto principal = navy */
+  --md-on-surface-variant: #5A6B7B;   /* Gris azulado */
+  --md-outline: rgba(11,31,58,0.08);
+  --md-outline-strong: rgba(11,31,58,0.18);
 
+  /* Acrylic / Glass */
   --acrylic-bg: rgba(255,255,255,0.65);
   --acrylic-bg-strong: rgba(255,255,255,0.85);
-  --acrylic-border: rgba(255,255,255,0.45);
+  --acrylic-border: rgba(11,31,58,0.10);
   --acrylic-blur: blur(20px) saturate(180%);
 
+  /* Aliases */
   --color-primary: var(--md-primary);
   --color-accent: var(--md-secondary);
   --color-text: var(--md-on-surface);
@@ -36,24 +39,27 @@
   --color-bg-alt: var(--md-surface-1);
   --color-card-bg: rgba(255,255,255,0.72);
   --color-header-bg: rgba(255,255,255,0.6);
-  --color-hero-gradient: linear-gradient(135deg, #e6f0ff 0%, #f5faff 50%, #ffffff 100%);
+  --color-hero-gradient: linear-gradient(135deg, #E6F4F8 0%, #F2FAFC 50%, #ffffff 100%);
   --color-border: var(--md-outline);
 
   /* Textura: puntos sutiles */
-  --texture-dots: radial-gradient(circle, rgba(10,37,64,0.08) 1px, transparent 1px);
+  --texture-dots: radial-gradient(circle, rgba(11,31,58,0.09) 1px, transparent 1px);
   --texture-dots-size: 22px 22px;
 
-  --elev-1: 0 1px 2px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
-  --elev-2: 0 2px 6px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
-  --elev-3: 0 6px 16px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.05);
-  --elev-4: 0 12px 28px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06);
+  /* Sombras Material */
+  --elev-1: 0 1px 2px rgba(11,31,58,0.06), 0 1px 3px rgba(11,31,58,0.04);
+  --elev-2: 0 2px 6px rgba(11,31,58,0.08), 0 1px 2px rgba(11,31,58,0.04);
+  --elev-3: 0 6px 16px rgba(11,31,58,0.10), 0 2px 4px rgba(11,31,58,0.05);
+  --elev-4: 0 12px 28px rgba(11,31,58,0.12), 0 4px 8px rgba(11,31,58,0.06);
   --shadow: var(--elev-2);
 
+  /* Radios */
   --radius: 16px;
   --radius-sm: 10px;
   --radius-lg: 24px;
   --radius-full: 999px;
 
+  /* Layout */
   --max-width: 1100px;
   --transition: cubic-bezier(0.2, 0, 0, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -63,21 +69,21 @@
    VARIABLES - MODO OSCURO
    ============================================ */
 [data-theme="dark"] {
-  --md-primary: #e6edf5;
-  --md-primary-container: #1f3a5f;
-  --md-secondary: #25d366;
-  --md-secondary-container: #1a4d2e;
-  --md-surface: #0d1117;
-  --md-surface-1: #161b22;
-  --md-surface-2: #1c2128;
-  --md-on-surface: #e6edf5;
-  --md-on-surface-variant: #a0aec0;
+  --md-primary: #E6F4F8;              /* Texto claro con tinte turquesa */
+  --md-primary-container: #1A3A5C;
+  --md-secondary: #00B8D4;
+  --md-secondary-container: #0F3A47;
+  --md-surface: #0A1524;              /* Fondo navy oscuro */
+  --md-surface-1: #0F1E33;
+  --md-surface-2: #142844;
+  --md-on-surface: #E6F4F8;
+  --md-on-surface-variant: #A0B8CC;
   --md-outline: rgba(255,255,255,0.08);
   --md-outline-strong: rgba(255,255,255,0.15);
 
-  --acrylic-bg: rgba(22,27,34,0.6);
-  --acrylic-bg-strong: rgba(22,27,34,0.85);
-  --acrylic-border: rgba(255,255,255,0.08);
+  --acrylic-bg: rgba(15,30,51,0.6);
+  --acrylic-bg-strong: rgba(15,30,51,0.85);
+  --acrylic-border: rgba(0,184,212,0.15);
 
   --color-primary: var(--md-primary);
   --color-accent: var(--md-secondary);
@@ -85,12 +91,12 @@
   --color-text-light: var(--md-on-surface-variant);
   --color-bg: var(--md-surface);
   --color-bg-alt: var(--md-surface-1);
-  --color-card-bg: rgba(28,33,40,0.72);
-  --color-header-bg: rgba(13,17,23,0.6);
-  --color-hero-gradient: linear-gradient(135deg, #161b22 0%, #0d1117 50%, #0d1117 100%);
+  --color-card-bg: rgba(20,40,68,0.72);
+  --color-header-bg: rgba(10,21,36,0.6);
+  --color-hero-gradient: linear-gradient(135deg, #0F1E33 0%, #0A1524 50%, #0A1524 100%);
   --color-border: var(--md-outline);
 
-  --texture-dots: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+  --texture-dots: radial-gradient(circle, rgba(0,184,212,0.08) 1px, transparent 1px);
 
   --elev-1: 0 1px 2px rgba(0,0,0,0.3);
   --elev-2: 0 2px 6px rgba(0,0,0,0.4);
@@ -121,15 +127,17 @@ body {
   overflow-x: hidden;
 }
 
-/* Capa 1: gradientes radiales suaves */
+body.modal-open { overflow: hidden; }
+
+/* Capa 1: gradientes radiales con tu paleta */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(600px circle at 10% 5%, rgba(37,211,102,0.10), transparent 45%),
-    radial-gradient(800px circle at 90% 20%, rgba(10,37,64,0.08), transparent 50%),
-    radial-gradient(700px circle at 50% 100%, rgba(37,211,102,0.06), transparent 50%);
+    radial-gradient(600px circle at 10% 5%, rgba(0,184,212,0.12), transparent 45%),
+    radial-gradient(800px circle at 90% 20%, rgba(11,31,58,0.08), transparent 50%),
+    radial-gradient(700px circle at 50% 100%, rgba(0,184,212,0.07), transparent 50%);
   pointer-events: none;
   z-index: 0;
   animation: bgShift 20s ease-in-out infinite alternate;
@@ -137,12 +145,12 @@ body::before {
 
 [data-theme="dark"] body::before {
   background:
-    radial-gradient(600px circle at 10% 5%, rgba(37,211,102,0.10), transparent 45%),
+    radial-gradient(600px circle at 10% 5%, rgba(0,184,212,0.15), transparent 45%),
     radial-gradient(800px circle at 90% 20%, rgba(100,150,255,0.08), transparent 50%),
-    radial-gradient(700px circle at 50% 100%, rgba(37,211,102,0.06), transparent 50%);
+    radial-gradient(700px circle at 50% 100%, rgba(0,184,212,0.08), transparent 50%);
 }
 
-/* Capa 2: patrón de puntos tipo textura */
+/* Capa 2: textura de puntos */
 body::after {
   content: "";
   position: fixed;
@@ -170,42 +178,32 @@ body::after {
 }
 
 /* ============================================
-   ANIMACIONES GLOBALES (keyframes)
+   KEYFRAMES
    ============================================ */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(28px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-
 @keyframes floatY {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-8px); }
 }
-
 @keyframes pulseRing {
   0%   { box-shadow: 0 0 0 0 rgba(37,211,102,0.5); }
   70%  { box-shadow: 0 0 0 18px rgba(37,211,102,0); }
   100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); }
 }
-
 @keyframes gradientMove {
   0%   { background-position: 0% 50%; }
   100% { background-position: 100% 50%; }
 }
-
 @keyframes shine {
   0%   { transform: translateX(-120%) skewX(-20deg); }
   100% { transform: translateX(220%) skewX(-20deg); }
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 0.4; }
-  50%      { opacity: 1; }
 }
 
 /* ============================================
@@ -231,7 +229,7 @@ body::after {
 .reveal-delay-8 { transition-delay: 0.64s; }
 
 /* ============================================
-   BOTÓN FLOTANTE WHATSAPP (con pulso)
+   BOTÓN FLOTANTE WHATSAPP (mantiene verde)
    ============================================ */
 .whatsapp-float {
   position: fixed;
@@ -260,7 +258,7 @@ body::after {
 .whatsapp-float svg { width: 32px; height: 32px; display: block; }
 
 /* ============================================
-   HEADER (Acrylic)
+   HEADER
    ============================================ */
 .header {
   position: sticky;
@@ -273,9 +271,8 @@ body::after {
   transition: background-color 0.3s var(--transition), box-shadow 0.3s var(--transition);
   animation: fadeIn 0.5s var(--ease-out);
 }
-.header.scrolled {
-  box-shadow: var(--elev-3);
-}
+.header.scrolled { box-shadow: var(--elev-3); }
+
 .header-inner {
   display: flex;
   align-items: center;
@@ -283,6 +280,7 @@ body::after {
   padding: 14px 0;
   gap: 16px;
 }
+
 .logo {
   font-weight: 800;
   font-size: 1.3rem;
@@ -373,7 +371,7 @@ body::after {
 }
 
 /* ============================================
-   HERO con animaciones
+   HERO
    ============================================ */
 .hero {
   padding: 100px 0 80px;
@@ -386,7 +384,6 @@ body::after {
   animation: gradientMove 12s ease infinite alternate;
 }
 
-/* Halo detrás del título */
 .hero::before {
   content: "";
   position: absolute;
@@ -395,7 +392,7 @@ body::after {
   transform: translateX(-50%);
   width: 520px;
   height: 520px;
-  background: radial-gradient(circle, rgba(37,211,102,0.18), transparent 65%);
+  background: radial-gradient(circle, rgba(0,184,212,0.20), transparent 65%);
   filter: blur(60px);
   pointer-events: none;
   z-index: 0;
@@ -476,7 +473,6 @@ body::after {
 .btn:hover { transform: translateY(-2px); }
 .btn:active { transform: translateY(0) scale(0.98); }
 
-/* Brillo deslizante */
 .btn::before {
   content: "";
   position: absolute;
@@ -487,9 +483,7 @@ body::after {
   transform: translateX(-120%) skewX(-20deg);
   pointer-events: none;
 }
-.btn:hover::before {
-  animation: shine 0.9s ease;
-}
+.btn:hover::before { animation: shine 0.9s ease; }
 
 .btn-whatsapp {
   background: linear-gradient(135deg, #25d366 0%, #1da851 100%);
@@ -582,7 +576,6 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   opacity: 0;
   transition: opacity 0.3s var(--transition);
 }
-/* Destello al hover */
 .service-card::after {
   content: "";
   position: absolute;
@@ -658,7 +651,7 @@ section { padding: 80px 0; position: relative; z-index: 1; }
 .modal-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(11,31,58,0.55);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
@@ -821,12 +814,12 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   object-fit: cover;
   border-radius: 50%;
   border: 4px solid var(--color-accent);
-  box-shadow: 0 8px 28px rgba(37,211,102,0.28);
+  box-shadow: 0 8px 28px rgba(0,184,212,0.28);
   transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
 }
 .founder-photo img:hover {
   transform: scale(1.04) rotate(-2deg);
-  box-shadow: 0 14px 36px rgba(37,211,102,0.4);
+  box-shadow: 0 14px 36px rgba(0,184,212,0.4);
 }
 
 .founder-info h3 {
@@ -868,7 +861,7 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   border-radius: var(--radius-full);
   font-size: 0.82rem;
   font-weight: 500;
-  transition: transform 0.25s var(--ease-out), border-color 0.25s var(--transition), background 0.25s var(--transition);
+  transition: transform 0.25s var(--ease-out), border-color 0.25s var(--transition), background 0.25s var(--transition), color 0.25s var(--transition);
   cursor: default;
 }
 .founder-skills span:hover {
@@ -1026,7 +1019,7 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   position: absolute;
   top: -50%; left: -50%;
   width: 200%; height: 200%;
-  background: radial-gradient(circle, rgba(37,211,102,0.15), transparent 60%);
+  background: radial-gradient(circle, rgba(0,184,212,0.18), transparent 60%);
   opacity: 0;
   transition: opacity 0.4s var(--ease-out);
   pointer-events: none;
@@ -1126,7 +1119,9 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   .reveal { opacity: 1; transform: none; }
 }
 
-/* Scrollbar */
+/* ============================================
+   SCROLLBAR
+   ============================================ */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: var(--color-bg-alt); }
 ::-webkit-scrollbar-thumb {
