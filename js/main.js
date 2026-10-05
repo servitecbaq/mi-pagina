@@ -62,6 +62,9 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.contact-card').forEach(function (el, i) {
     el.classList.add('reveal', 'reveal-delay-' + (i + 1));
   });
+  document.querySelectorAll('.faq-item').forEach(function (el, i) {
+    el.classList.add('reveal', 'reveal-delay-' + Math.min(i + 1, 6));
+  });
   document.querySelectorAll('.section-title, .section-subtitle').forEach(function (el) {
     el.classList.add('reveal');
   });
@@ -271,90 +274,18 @@ document.addEventListener('DOMContentLoaded', function () {
      7. MÓDULO ¿SABÍAS QUE?
      ============================================ */
   const tipsData = [
-    {
-      category: 'Seguridad',
-      icon: '🔐',
-      title: 'BitLocker cifra todo tu disco',
-      desc: 'Windows Pro incluye BitLocker para cifrar el disco completo. Si roban un portátil corporativo, los datos son ilegibles sin la clave.',
-      benefit: 'Evita filtraciones en caso de robo'
-    },
-    {
-      category: 'Seguridad',
-      icon: '🛡️',
-      title: 'LAPS: contraseña única por equipo',
-      desc: 'Local Administrator Password Solution (LAPS) asigna una contraseña distinta a cada PC, gestionada desde Active Directory. Adiós a la clave "Admin123" compartida.',
-      benefit: 'Bloquea movimientos laterales en la red'
-    },
-    {
-      category: 'Seguridad',
-      icon: '🚫',
-      title: 'Windows Defender Application Control',
-      desc: 'Bloquea la ejecución de programas no firmados. Es una de las defensas más efectivas contra ransomware en entornos corporativos.',
-      benefit: 'Detiene malware antes de que se ejecute'
-    },
-    {
-      category: 'Productividad',
-      icon: '⏰',
-      title: 'Task Scheduler + PowerShell',
-      desc: 'Automatiza backups, limpiezas, reportes y tareas repetitivas con scripts programados. Una vez configurado, trabaja solo.',
-      benefit: 'Ahorra horas de trabajo manual al mes'
-    },
-    {
-      category: 'Productividad',
-      icon: '🪟',
-      title: 'Snap Layouts con Win + Z',
-      desc: 'Organiza múltiples ventanas al instante en plantillas predefinidas. Perfecto para comparar documentos o trabajar con varias apps.',
-      benefit: 'Ahorra minutos en cada tarea'
-    },
-    {
-      category: 'Productividad',
-      icon: '🗂️',
-      title: 'Escritorios virtuales con Win + Tab',
-      desc: 'Separa contextos: un escritorio para "Trabajo", otro para "Reuniones", otro para "Personal". Cambias entre ellos al instante.',
-      benefit: 'Menos distracciones, más foco'
-    },
-    {
-      category: 'Redes',
-      icon: '🖥️',
-      title: 'RDP sobre VPN para soporte remoto',
-      desc: 'Administra equipos de sucursales sin desplazarte. Con RDP sobre VPN accedes al escritorio remoto de cualquier PC de la empresa.',
-      benefit: 'Soporte inmediato sin viajar'
-    },
-    {
-      category: 'Redes',
-      icon: '📋',
-      title: 'Group Policy (GPO) centraliza todo',
-      desc: 'Aplica configuraciones, restricciones y políticas a toda la empresa desde un solo lugar. Usuarios, contraseñas, permisos, todo.',
-      benefit: 'Gestión masiva desde un punto'
-    },
-    {
-      category: 'Redes',
-      icon: '🌐',
-      title: 'Reservas DHCP por MAC',
-      desc: 'Asigna una IP fija a un equipo sin configurarla manualmente. Ideal para impresoras, servidores y cámaras de seguridad.',
-      benefit: 'IPs estables sin tocar cada PC'
-    },
-    {
-      category: 'Datos',
-      icon: '💾',
-      title: 'File History + OneDrive KFM',
-      desc: 'Respaldo automático de Escritorio, Documentos e Imágenes con OneDrive Known Folder Move. Restauras un archivo borrado en segundos.',
-      benefit: 'Nunca más "se me borró el archivo"'
-    },
-    {
-      category: 'Datos',
-      icon: '🧹',
-      title: 'Storage Sense libera espacio solo',
-      desc: 'Windows elimina automáticamente archivos temporales, papelera y descargas antiguas. Útil en servidores y PCs con disco limitado.',
-      benefit: 'Menos mantenimiento manual'
-    },
-    {
-      category: 'Datos',
-      icon: '🕰️',
-      title: 'Versiones anteriores (Shadow Copies)',
-      desc: 'Recupera versiones previas de archivos o carpetas sin necesidad de backup externo. Windows las guarda por defecto si están activadas.',
-      benefit: 'Restauras archivos en segundos'
-    }
+    { category: 'Seguridad', icon: '🔐', title: 'BitLocker cifra todo tu disco', desc: 'Windows Pro incluye BitLocker para cifrar el disco completo. Si roban un portátil corporativo, los datos son ilegibles sin la clave.', benefit: 'Evita filtraciones en caso de robo' },
+    { category: 'Seguridad', icon: '🛡️', title: 'LAPS: contraseña única por equipo', desc: 'Local Administrator Password Solution (LAPS) asigna una contraseña distinta a cada PC, gestionada desde Active Directory. Adiós a la clave "Admin123" compartida.', benefit: 'Bloquea movimientos laterales en la red' },
+    { category: 'Seguridad', icon: '🚫', title: 'Windows Defender Application Control', desc: 'Bloquea la ejecución de programas no firmados. Es una de las defensas más efectivas contra ransomware en entornos corporativos.', benefit: 'Detiene malware antes de que se ejecute' },
+    { category: 'Productividad', icon: '⏰', title: 'Task Scheduler + PowerShell', desc: 'Automatiza backups, limpiezas, reportes y tareas repetitivas con scripts programados. Una vez configurado, trabaja solo.', benefit: 'Ahorra horas de trabajo manual al mes' },
+    { category: 'Productividad', icon: '🪟', title: 'Snap Layouts con Win + Z', desc: 'Organiza múltiples ventanas al instante en plantillas predefinidas. Perfecto para comparar documentos o trabajar con varias apps.', benefit: 'Ahorra minutos en cada tarea' },
+    { category: 'Productividad', icon: '🗂️', title: 'Escritorios virtuales con Win + Tab', desc: 'Separa contextos: un escritorio para "Trabajo", otro para "Reuniones", otro para "Personal". Cambias entre ellos al instante.', benefit: 'Menos distracciones, más foco' },
+    { category: 'Redes', icon: '🖥️', title: 'RDP sobre VPN para soporte remoto', desc: 'Administra equipos de sucursales sin desplazarte. Con RDP sobre VPN accedes al escritorio remoto de cualquier PC de la empresa.', benefit: 'Soporte inmediato sin viajar' },
+    { category: 'Redes', icon: '📋', title: 'Group Policy (GPO) centraliza todo', desc: 'Aplica configuraciones, restricciones y políticas a toda la empresa desde un solo lugar. Usuarios, contraseñas, permisos, todo.', benefit: 'Gestión masiva desde un punto' },
+    { category: 'Redes', icon: '🌐', title: 'Reservas DHCP por MAC', desc: 'Asigna una IP fija a un equipo sin configurarla manualmente. Ideal para impresoras, servidores y cámaras de seguridad.', benefit: 'IPs estables sin tocar cada PC' },
+    { category: 'Datos', icon: '💾', title: 'File History + OneDrive KFM', desc: 'Respaldo automático de Escritorio, Documentos e Imágenes con OneDrive Known Folder Move. Restauras un archivo borrado en segundos.', benefit: 'Nunca más "se me borró el archivo"' },
+    { category: 'Datos', icon: '🧹', title: 'Storage Sense libera espacio solo', desc: 'Windows elimina automáticamente archivos temporales, papelera y descargas antiguas. Útil en servidores y PCs con disco limitado.', benefit: 'Menos mantenimiento manual' },
+    { category: 'Datos', icon: '🕰️', title: 'Versiones anteriores (Shadow Copies)', desc: 'Recupera versiones previas de archivos o carpetas sin necesidad de backup externo. Windows las guarda por defecto si están activadas.', benefit: 'Restauras archivos en segundos' }
   ];
 
   const tipTrack = document.getElementById('tipTrack');
@@ -458,5 +389,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     startAutoplay();
   }
+
+  /* ============================================
+     8. FAQ: solo una pregunta abierta a la vez
+     ============================================ */
+  const faqItems = document.querySelectorAll('.faq-item');
+  faqItems.forEach(function (item) {
+    item.addEventListener('toggle', function () {
+      if (item.open) {
+        faqItems.forEach(function (other) {
+          if (other !== item) other.removeAttribute('open');
+        });
+      }
+    });
+  });
 
 });
