@@ -56,6 +56,8 @@
   --max-width: 1100px;
   --transition: cubic-bezier(0.2, 0, 0, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Curva Material Design 3 estándar */
+  --ease-material: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ============================================
@@ -1176,7 +1178,7 @@ section { padding: 80px 0; position: relative; z-index: 1; }
 }
 
 /* ============================================
-   SECCIÓN FAQ
+   SECCIÓN FAQ - Material Design + Acrylic
    ============================================ */
 .faq {
   background: transparent;
@@ -1199,20 +1201,47 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   border-radius: var(--radius);
   box-shadow: var(--elev-1);
   overflow: hidden;
-  transition: box-shadow 0.3s var(--ease-out), border-color 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+  position: relative;
+  transition:
+    box-shadow 0.3s var(--ease-material),
+    border-color 0.3s var(--ease-material),
+    transform 0.3s var(--ease-material),
+    background-color 0.3s var(--ease-material);
+}
+
+/* Barra lateral Material que crece al abrir */
+.faq-item::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 3px;
+  height: 0;
+  background: var(--color-accent);
+  border-radius: 0 3px 3px 0;
+  transform: translateY(-50%);
+  transition: height 0.4s var(--ease-material);
+  pointer-events: none;
+  z-index: 2;
 }
 
 .faq-item:hover {
-  box-shadow: var(--elev-2);
+  box-shadow: var(--elev-3);
   border-color: var(--color-accent);
+  transform: translateY(-2px);
 }
 
 .faq-item[open] {
-  box-shadow: var(--elev-3);
+  box-shadow: var(--elev-4);
   border-color: var(--color-accent);
+  transform: translateY(0);
 }
 
-.faq-item summary {
+.faq-item[open]::before {
+  height: 60%;
+}
+
+.faq-item > summary {
   list-style: none;
   cursor: pointer;
   padding: 20px 24px;
@@ -1223,19 +1252,31 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   font-weight: 600;
   font-size: 1rem;
   color: var(--color-primary);
-  transition: color 0.2s var(--transition);
+  transition: color 0.25s var(--ease-material);
   user-select: none;
+  position: relative;
+  z-index: 1;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.faq-item summary::-webkit-details-marker { display: none; }
-.faq-item summary::marker { display: none; content: ''; }
+.faq-item > summary::-webkit-details-marker { display: none; }
+.faq-item > summary::marker { display: none; content: ''; }
 
-.faq-item summary:hover { color: var(--color-accent); }
+.faq-item > summary:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+  border-radius: var(--radius);
+}
 
+.faq-item > summary:hover { color: var(--color-accent); }
+
+.faq-item[open] > summary { color: var(--color-accent); }
+
+/* Ícono + que rota 135° a × */
 .faq-icon {
   flex-shrink: 0;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: var(--md-secondary-container);
   color: var(--color-accent);
@@ -1243,15 +1284,32 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   line-height: 1;
-  transition: transform 0.3s var(--ease-out), background 0.3s var(--transition), color 0.3s var(--transition);
+  position: relative;
+  transition:
+    transform 0.4s var(--ease-material),
+    background-color 0.4s var(--ease-material),
+    color 0.4s var(--ease-material),
+    box-shadow 0.3s var(--ease-material);
 }
 
 .faq-item[open] .faq-icon {
-  transform: rotate(45deg);
+  transform: rotate(135deg);
   background: var(--color-accent);
   color: #fff;
+  box-shadow: 0 0 0 6px rgba(0, 184, 212, 0.12);
+}
+
+/* Contenedor del contenido animable */
+.faq-content {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition:
+    max-height 0.4s var(--ease-material),
+    opacity 0.3s var(--ease-material);
+  will-change: max-height, opacity;
 }
 
 .faq-answer {
@@ -1259,7 +1317,14 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   color: var(--color-text-light);
   font-size: 0.95rem;
   line-height: 1.7;
-  animation: fadeUp 0.35s var(--ease-out);
+  transform: translateY(-8px);
+  transition: transform 0.4s var(--ease-material) 0.05s;
+}
+
+.faq-item[open] .faq-answer { transform: translateY(0); }
+
+[data-theme="dark"] .faq-item[open] .faq-icon {
+  box-shadow: 0 0 0 6px rgba(0, 184, 212, 0.18);
 }
 
 /* ============================================
@@ -1390,8 +1455,9 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   .tip-track { min-height: 340px; }
   .tips-grid { grid-template-columns: 1fr; }
 
-  .faq-item summary { padding: 18px 18px; font-size: 0.95rem; }
+  .faq-item > summary { padding: 18px 18px; font-size: 0.95rem; }
   .faq-answer { padding: 0 18px 18px; font-size: 0.9rem; }
+  .faq-icon { width: 28px; height: 28px; font-size: 1rem; }
 }
 
 /* ============================================
@@ -1403,6 +1469,12 @@ section { padding: 80px 0; position: relative; z-index: 1; }
     animation: none !important;
   }
   .reveal { opacity: 1; transform: none; }
+  .faq-content,
+  .faq-answer,
+  .faq-icon,
+  .faq-item::before {
+    transition: none !important;
+  }
 }
 
 /* ============================================

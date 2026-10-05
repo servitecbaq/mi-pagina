@@ -1,0 +1,226 @@
+[
+  {
+    "category": "Seguridad",
+    "icon": "🔐",
+    "title": "BitLocker cifra todo tu disco",
+    "desc": "Windows Pro incluye BitLocker para cifrar el disco completo. Si roban un portátil corporativo, los datos son ilegibles sin la clave.",
+    "benefit": "Evita filtraciones en caso de robo"
+  },
+  {
+    "category": "Seguridad",
+    "icon": "🛡️",
+    "title": "LAPS: contraseña única por equipo",
+    "desc": "Local Administrator Password Solution (LAPS) asigna una contraseña distinta a cada PC, gestionada desde Active Directory. Adiós a la clave compartida.",
+    "benefit": "Bloquea movimientos laterales en la red"
+  },
+  {
+    "category": "Seguridad",
+    "icon": "🚫",
+    "title": "Windows Defender Application Control",
+    "desc": "Bloquea la ejecución de programas no firmados. Es una de las defensas más efectivas contra ransomware en entornos corporativos.",
+    "benefit": "Detiene malware antes de que se ejecute"
+  },
+  {
+    "category": "Seguridad",
+    "icon": "🔑",
+    "title": "Autenticación multifactor (MFA)",
+    "desc": "Activar MFA en Microsoft 365 reduce el riesgo de robo de cuentas en más del 99%. Es la medida más efectiva contra phishing.",
+    "benefit": "Bloquea accesos no autorizados"
+  },
+  {
+    "category": "Seguridad",
+    "icon": "📁",
+    "title": "Permisos NTFS bien configurados",
+    "desc": "Asignar permisos por grupos en lugar de usuarios individuales simplifica la gestión y reduce errores cuando alguien cambia de rol.",
+    "benefit": "Menos brechas por error humano"
+  },
+  {
+    "category": "Seguridad",
+    "icon": "🕵️",
+    "title": "Auditoría de eventos en Windows",
+    "desc": "Activar la auditoría de inicios de sesión permite detectar intentos fallidos y accesos sospechosos antes de que sea tarde.",
+    "benefit": "Visibilidad de qué pasa en tu red"
+  },
+  {
+    "category": "Seguridad",
+    "icon": "🧱",
+    "title": "Firewall con reglas de salida",
+    "desc": "El firewall de Windows no solo filtra entradas; también puedes bloquear salidas de aplicaciones no autorizadas que intenten enviar datos.",
+    "benefit": "Controla qué sale de tu red"
+  },
+  {
+    "category": "Productividad",
+    "icon": "⏰",
+    "title": "Task Scheduler + PowerShell",
+    "desc": "Automatiza backups, limpiezas, reportes y tareas repetitivas con scripts programados. Una vez configurado, trabaja solo.",
+    "benefit": "Ahorra horas de trabajo manual al mes"
+  },
+  {
+    "category": "Productividad",
+    "icon": "🪟",
+    "title": "Snap Layouts con Win + Z",
+    "desc": "Organiza múltiples ventanas al instante en plantillas predefinidas. Perfecto para comparar documentos o trabajar con varias apps.",
+    "benefit": "Ahorra minutos en cada tarea"
+  },
+  {
+    "category": "Productividad",
+    "icon": "🗂️",
+    "title": "Escritorios virtuales con Win + Tab",
+    "desc": "Separa contextos: un escritorio para 'Trabajo', otro para 'Reuniones', otro para 'Personal'. Cambias entre ellos al instante.",
+    "benefit": "Menos distracciones, más foco"
+  },
+  {
+    "category": "Productividad",
+    "icon": "⚡",
+    "title": "PowerToys de Microsoft",
+    "desc": "Suite gratuita con herramientas como PowerRename, FancyZones, Color Picker y Run. Aumenta la productividad sin costo.",
+    "benefit": "Funciones avanzadas gratis"
+  },
+  {
+    "category": "Productividad",
+    "icon": "🔎",
+    "title": "Búsqueda con Everything en vez de Windows Search",
+    "desc": "Everything indexa todos tus archivos en segundos y encuentra cualquier cosa al instante, sin consumir recursos.",
+    "benefit": "Encuentra archivos al instante"
+  },
+  {
+    "category": "Productividad",
+    "icon": "📋",
+    "title": "Portapapeles con historial (Win + V)",
+    "desc": "Windows guarda los últimos 25 elementos copiados. Puedes pegarlos sin volver a copiarlos uno por uno.",
+    "benefit": "Copiar y pegar sin límites"
+  },
+  {
+    "category": "Redes",
+    "icon": "🖥️",
+    "title": "RDP sobre VPN para soporte remoto",
+    "desc": "Administra equipos de sucursales sin desplazarte. Con RDP sobre VPN accedes al escritorio remoto de cualquier PC de la empresa.",
+    "benefit": "Soporte inmediato sin viajar"
+  },
+  {
+    "category": "Redes",
+    "icon": "📋",
+    "title": "Group Policy (GPO) centraliza todo",
+    "desc": "Aplica configuraciones, restricciones y políticas a toda la empresa desde un solo lugar. Usuarios, contraseñas, permisos, todo.",
+    "benefit": "Gestión masiva desde un punto"
+  },
+  {
+    "category": "Redes",
+    "icon": "🌐",
+    "title": "Reservas DHCP por MAC",
+    "desc": "Asigna una IP fija a un equipo sin configurarla manualmente. Ideal para impresoras, servidores y cámaras de seguridad.",
+    "benefit": "IPs estables sin tocar cada PC"
+  },
+  {
+    "category": "Redes",
+    "icon": "📡",
+    "title": "VLANs para separar tráfico",
+    "desc": "Separa la red de invitados de la red de trabajo con VLANs. Mejora la seguridad y el rendimiento del tráfico crítico.",
+    "benefit": "Red segmentada y más segura"
+  },
+  {
+    "category": "Redes",
+    "icon": "🛰️",
+    "title": "DNS con filtrado (Quad9, Cloudflare Family)",
+    "desc": "Cambiar el DNS por uno con filtrado bloquea dominios maliciosos antes de que lleguen a tu red. Gratis y muy efectivo.",
+    "benefit": "Bloquea sitios peligrosos en toda la red"
+  },
+  {
+    "category": "Redes",
+    "icon": "📶",
+    "title": "Análisis de canales Wi-Fi",
+    "desc": "En oficinas, varios APs en el mismo canal se interfieren. Un análisis de canales mejora la velocidad y cobertura sin cambiar hardware.",
+    "benefit": "Wi-Fi más rápido sin invertir"
+  },
+  {
+    "category": "Redes",
+    "icon": "🔒",
+    "title": "WPA3 en redes corporativas",
+    "desc": "WPA3 es el estándar más seguro de Wi-Fi actual. Si tu router lo soporta, úsalo en lugar de WPA2 o WEP.",
+    "benefit": "Conexión inalámbrica a prueba de ataques"
+  },
+  {
+    "category": "Datos",
+    "icon": "💾",
+    "title": "File History + OneDrive KFM",
+    "desc": "Respaldo automático de Escritorio, Documentos e Imágenes con OneDrive Known Folder Move. Restauras un archivo borrado en segundos.",
+    "benefit": "Nunca más 'se me borró el archivo'"
+  },
+  {
+    "category": "Datos",
+    "icon": "🧹",
+    "title": "Storage Sense libera espacio solo",
+    "desc": "Windows elimina automáticamente archivos temporales, papelera y descargas antiguas. Útil en servidores y PCs con disco limitado.",
+    "benefit": "Menos mantenimiento manual"
+  },
+  {
+    "category": "Datos",
+    "icon": "🕰️",
+    "title": "Versiones anteriores (Shadow Copies)",
+    "desc": "Recupera versiones previas de archivos o carpetas sin necesidad de backup externo. Windows las guarda por defecto si están activadas.",
+    "benefit": "Restauras archivos en segundos"
+  },
+  {
+    "category": "Datos",
+    "icon": "🔁",
+    "title": "Regla 3-2-1 de respaldo",
+    "desc": "3 copias de los datos, en 2 medios distintos, con 1 copia fuera del sitio. Es el estándar de oro contra pérdida total.",
+    "benefit": "Protección real contra desastres"
+  },
+  {
+    "category": "Datos",
+    "icon": "☁️",
+    "title": "OneDrive con versionado",
+    "desc": "OneDrive guarda hasta 500 versiones de cada archivo por 30 días. Recupera cualquier estado anterior sin perder trabajo.",
+    "benefit": "Sin miedo a sobrescribir por error"
+  },
+  {
+    "category": "Datos",
+    "icon": "🔐",
+    "title": "Cifrado de carpetas con EFS",
+    "desc": "EFS (Encrypting File System) permite cifrar carpetas específicas sin cifrar todo el disco. Útil para datos sensibles.",
+    "benefit": "Datos críticos protegidos con contraseña"
+  },
+  {
+    "category": "Datos",
+    "icon": "🗄️",
+    "title": "Compresión NTFS para archivos poco usados",
+    "desc": "Windows puede comprimir carpetas completas sin perder acceso. Ideal para datos históricos que ocupan mucho disco.",
+    "benefit": "Más espacio sin eliminar nada"
+  },
+  {
+    "category": "Sistemas",
+    "icon": "⚙️",
+    "title": "Windows Update for Business",
+    "desc": "Controla cuándo y cómo se actualizan los equipos de la empresa. Evita reinicios en horario laboral.",
+    "benefit": "Actualizaciones sin interrupciones"
+  },
+  {
+    "category": "Sistemas",
+    "icon": "🖱️",
+    "title": "Imagen de sistema con DISM",
+    "desc": "DISM permite crear y aplicar imágenes completas de Windows. Restauras un equipo en minutos, no en horas.",
+    "benefit": "Reinstalaciones ultrarrápidas"
+  },
+  {
+    "category": "Sistemas",
+    "icon": "🧪",
+    "title": "Sandbox de Windows para pruebas",
+    "desc": "Windows Sandbox crea un entorno aislado para ejecutar software dudoso sin arriesgar el sistema real.",
+    "benefit": "Prueba sin riesgo de infección"
+  },
+  {
+    "category": "Sistemas",
+    "icon": "🧰",
+    "title": "Sysinternals Suite para diagnóstico",
+    "desc": "Suite gratuita de Microsoft con Process Explorer, Autoruns, TCPView y más. Diagnostica cualquier problema de sistema.",
+    "benefit": "Diagnóstico profesional gratis"
+  },
+  {
+    "category": "Sistemas",
+    "icon": "📊",
+    "title": "Performance Monitor en Windows",
+    "desc": "Permon permite ver en tiempo real CPU, RAM, disco y red. Identifica cuellos de botella antes de que se vuelvan quejas.",
+    "benefit": "Detecta problemas antes de que crezcan"
+  }
+]

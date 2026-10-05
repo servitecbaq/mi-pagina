@@ -271,23 +271,8 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* ============================================
-     7. MÓDULO ¿SABÍAS QUE?
+     7. MÓDULO ¿SABÍAS QUE? — Cargado desde tips.json
      ============================================ */
-  const tipsData = [
-    { category: 'Seguridad', icon: '🔐', title: 'BitLocker cifra todo tu disco', desc: 'Windows Pro incluye BitLocker para cifrar el disco completo. Si roban un portátil corporativo, los datos son ilegibles sin la clave.', benefit: 'Evita filtraciones en caso de robo' },
-    { category: 'Seguridad', icon: '🛡️', title: 'LAPS: contraseña única por equipo', desc: 'Local Administrator Password Solution (LAPS) asigna una contraseña distinta a cada PC, gestionada desde Active Directory. Adiós a la clave "Admin123" compartida.', benefit: 'Bloquea movimientos laterales en la red' },
-    { category: 'Seguridad', icon: '🚫', title: 'Windows Defender Application Control', desc: 'Bloquea la ejecución de programas no firmados. Es una de las defensas más efectivas contra ransomware en entornos corporativos.', benefit: 'Detiene malware antes de que se ejecute' },
-    { category: 'Productividad', icon: '⏰', title: 'Task Scheduler + PowerShell', desc: 'Automatiza backups, limpiezas, reportes y tareas repetitivas con scripts programados. Una vez configurado, trabaja solo.', benefit: 'Ahorra horas de trabajo manual al mes' },
-    { category: 'Productividad', icon: '🪟', title: 'Snap Layouts con Win + Z', desc: 'Organiza múltiples ventanas al instante en plantillas predefinidas. Perfecto para comparar documentos o trabajar con varias apps.', benefit: 'Ahorra minutos en cada tarea' },
-    { category: 'Productividad', icon: '🗂️', title: 'Escritorios virtuales con Win + Tab', desc: 'Separa contextos: un escritorio para "Trabajo", otro para "Reuniones", otro para "Personal". Cambias entre ellos al instante.', benefit: 'Menos distracciones, más foco' },
-    { category: 'Redes', icon: '🖥️', title: 'RDP sobre VPN para soporte remoto', desc: 'Administra equipos de sucursales sin desplazarte. Con RDP sobre VPN accedes al escritorio remoto de cualquier PC de la empresa.', benefit: 'Soporte inmediato sin viajar' },
-    { category: 'Redes', icon: '📋', title: 'Group Policy (GPO) centraliza todo', desc: 'Aplica configuraciones, restricciones y políticas a toda la empresa desde un solo lugar. Usuarios, contraseñas, permisos, todo.', benefit: 'Gestión masiva desde un punto' },
-    { category: 'Redes', icon: '🌐', title: 'Reservas DHCP por MAC', desc: 'Asigna una IP fija a un equipo sin configurarla manualmente. Ideal para impresoras, servidores y cámaras de seguridad.', benefit: 'IPs estables sin tocar cada PC' },
-    { category: 'Datos', icon: '💾', title: 'File History + OneDrive KFM', desc: 'Respaldo automático de Escritorio, Documentos e Imágenes con OneDrive Known Folder Move. Restauras un archivo borrado en segundos.', benefit: 'Nunca más "se me borró el archivo"' },
-    { category: 'Datos', icon: '🧹', title: 'Storage Sense libera espacio solo', desc: 'Windows elimina automáticamente archivos temporales, papelera y descargas antiguas. Útil en servidores y PCs con disco limitado.', benefit: 'Menos mantenimiento manual' },
-    { category: 'Datos', icon: '🕰️', title: 'Versiones anteriores (Shadow Copies)', desc: 'Recupera versiones previas de archivos o carpetas sin necesidad de backup externo. Windows las guarda por defecto si están activadas.', benefit: 'Restauras archivos en segundos' }
-  ];
-
   const tipTrack = document.getElementById('tipTrack');
   const tipDots = document.getElementById('tipDots');
   const tipPrev = document.getElementById('tipPrev');
@@ -301,107 +286,215 @@ document.addEventListener('DOMContentLoaded', function () {
   let autoplayTimer = null;
   const AUTOPLAY_INTERVAL = 8000;
 
-  if (tipTrack && tipDots) {
-    tipsData.forEach(function (tip, i) {
-      const card = document.createElement('article');
-      card.className = 'tip-card' + (i === 0 ? ' active' : '');
-      card.innerHTML =
-        '<span class="tip-category">' + tip.category + '</span>' +
-        '<div class="tip-icon">' + tip.icon + '</div>' +
-        '<h3 class="tip-title">' + tip.title + '</h3>' +
-        '<p class="tip-desc">' + tip.desc + '</p>' +
-        '<span class="tip-benefit">✨ ' + tip.benefit + '</span>';
-      tipTrack.appendChild(card);
-
-      const dot = document.createElement('button');
-      dot.className = 'tip-dot' + (i === 0 ? ' active' : '');
-      dot.setAttribute('aria-label', 'Ir al tip ' + (i + 1));
-      dot.addEventListener('click', function () { goToTip(i); });
-      tipDots.appendChild(dot);
-    });
-
-    if (tipsGrid) {
-      tipsData.forEach(function (tip) {
-        const mini = document.createElement('article');
-        mini.className = 'tip-mini';
-        mini.innerHTML =
-          '<span class="tip-mini-icon">' + tip.icon + '</span>' +
-          '<h4>' + tip.title + '</h4>' +
-          '<p>' + tip.desc + '</p>';
-        tipsGrid.appendChild(mini);
-      });
+  // Mezcla aleatoria (Fisher-Yates)
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
     }
-
-    const cards = tipTrack.querySelectorAll('.tip-card');
-    const dots = tipDots.querySelectorAll('.tip-dot');
-
-    function goToTip(index) {
-      if (index === currentTip) return;
-      cards[currentTip].classList.remove('active');
-      dots[currentTip].classList.remove('active');
-      currentTip = (index + cards.length) % cards.length;
-      cards[currentTip].classList.add('active');
-      dots[currentTip].classList.add('active');
-      restartAutoplay();
-    }
-
-    function nextTip() { goToTip(currentTip + 1); }
-    function prevTip() { goToTip(currentTip - 1); }
-
-    function startAutoplay() {
-      autoplayTimer = setInterval(nextTip, AUTOPLAY_INTERVAL);
-    }
-    function stopAutoplay() {
-      if (autoplayTimer) clearInterval(autoplayTimer);
-    }
-    function restartAutoplay() {
-      stopAutoplay();
-      startAutoplay();
-    }
-
-    if (tipNext) tipNext.addEventListener('click', nextTip);
-    if (tipPrev) tipPrev.addEventListener('click', prevTip);
-
-    const carousel = document.getElementById('tipCarousel');
-    if (carousel) {
-      carousel.addEventListener('mouseenter', stopAutoplay);
-      carousel.addEventListener('mouseleave', startAutoplay);
-    }
-
-    document.addEventListener('keydown', function (e) {
-      if (!carousel) return;
-      const rect = carousel.getBoundingClientRect();
-      const inView = rect.top < window.innerHeight && rect.bottom > 0;
-      if (!inView) return;
-      if (e.key === 'ArrowRight') nextTip();
-      if (e.key === 'ArrowLeft') prevTip();
-    });
-
-    if (tipsExpandBtn && tipsGridWrapper) {
-      tipsExpandBtn.addEventListener('click', function () {
-        const isOpen = tipsGridWrapper.classList.toggle('open');
-        tipsExpandBtn.setAttribute('aria-expanded', isOpen);
-        if (tipsExpandText) {
-          tipsExpandText.textContent = isOpen ? 'Ocultar tips' : 'Ver todos los tips';
-        }
-      });
-    }
-
-    startAutoplay();
+    return array;
   }
 
+  // Cargar tips desde tips.json
+  fetch('tips.json')
+    .then(function (response) {
+      if (!response.ok) throw new Error('No se pudo cargar tips.json');
+      return response.json();
+    })
+    .then(function (tipsData) {
+      if (!Array.isArray(tipsData) || tipsData.length === 0) return;
+
+      // Mezclar al azar
+      shuffleArray(tipsData);
+
+      // Renderizar carrusel
+      if (tipTrack && tipDots) {
+        tipsData.forEach(function (tip, i) {
+          const card = document.createElement('article');
+          card.className = 'tip-card' + (i === 0 ? ' active' : '');
+          card.innerHTML =
+            '<span class="tip-category">' + tip.category + '</span>' +
+            '<div class="tip-icon">' + tip.icon + '</div>' +
+            '<h3 class="tip-title">' + tip.title + '</h3>' +
+            '<p class="tip-desc">' + tip.desc + '</p>' +
+            '<span class="tip-benefit">✨ ' + tip.benefit + '</span>';
+          tipTrack.appendChild(card);
+
+          const dot = document.createElement('button');
+          dot.className = 'tip-dot' + (i === 0 ? ' active' : '');
+          dot.setAttribute('aria-label', 'Ir al tip ' + (i + 1));
+          dot.addEventListener('click', function () { goToTip(i); });
+          tipDots.appendChild(dot);
+        });
+      }
+
+      // Renderizar grid completa
+      if (tipsGrid) {
+        tipsData.forEach(function (tip) {
+          const mini = document.createElement('article');
+          mini.className = 'tip-mini';
+          mini.innerHTML =
+            '<span class="tip-mini-icon">' + tip.icon + '</span>' +
+            '<h4>' + tip.title + '</h4>' +
+            '<p>' + tip.desc + '</p>';
+          tipsGrid.appendChild(mini);
+        });
+      }
+
+      const cards = tipTrack ? tipTrack.querySelectorAll('.tip-card') : [];
+      const dots = tipDots ? tipDots.querySelectorAll('.tip-dot') : [];
+
+      function goToTip(index) {
+        if (!cards.length || index === currentTip) return;
+        cards[currentTip].classList.remove('active');
+        dots[currentTip].classList.remove('active');
+        currentTip = (index + cards.length) % cards.length;
+        cards[currentTip].classList.add('active');
+        dots[currentTip].classList.add('active');
+        restartAutoplay();
+      }
+
+      function nextTip() { goToTip(currentTip + 1); }
+      function prevTip() { goToTip(currentTip - 1); }
+
+      function startAutoplay() {
+        autoplayTimer = setInterval(nextTip, AUTOPLAY_INTERVAL);
+      }
+      function stopAutoplay() {
+        if (autoplayTimer) clearInterval(autoplayTimer);
+      }
+      function restartAutoplay() {
+        stopAutoplay();
+        startAutoplay();
+      }
+
+      if (tipNext) tipNext.addEventListener('click', nextTip);
+      if (tipPrev) tipPrev.addEventListener('click', prevTip);
+
+      const carousel = document.getElementById('tipCarousel');
+      if (carousel) {
+        carousel.addEventListener('mouseenter', stopAutoplay);
+        carousel.addEventListener('mouseleave', startAutoplay);
+      }
+
+      document.addEventListener('keydown', function (e) {
+        if (!carousel) return;
+        const rect = carousel.getBoundingClientRect();
+        const inView = rect.top < window.innerHeight && rect.bottom > 0;
+        if (!inView) return;
+        if (e.key === 'ArrowRight') nextTip();
+        if (e.key === 'ArrowLeft') prevTip();
+      });
+
+      if (tipsExpandBtn && tipsGridWrapper) {
+        tipsExpandBtn.addEventListener('click', function () {
+          const isOpen = tipsGridWrapper.classList.toggle('open');
+          tipsExpandBtn.setAttribute('aria-expanded', isOpen);
+          if (tipsExpandText) {
+            tipsExpandText.textContent = isOpen ? 'Ocultar tips' : 'Ver todos los tips';
+          }
+        });
+      }
+
+      startAutoplay();
+    })
+    .catch(function (error) {
+      console.error('Error cargando tips:', error);
+      if (tipTrack) {
+        tipTrack.innerHTML = '<p style="text-align:center;color:var(--color-text-light);padding:40px 20px;">No se pudieron cargar los tips en este momento.</p>';
+      }
+    });
+
   /* ============================================
-     8. FAQ: solo una pregunta abierta a la vez
+     8. FAQ - Acordeón Material con animación suave
      ============================================ */
   const faqItems = document.querySelectorAll('.faq-item');
+
+  // Envolver el contenido de cada respuesta en un contenedor animable
   faqItems.forEach(function (item) {
-    item.addEventListener('toggle', function () {
-      if (item.open) {
-        faqItems.forEach(function (other) {
-          if (other !== item) other.removeAttribute('open');
-        });
+    const answer = item.querySelector('.faq-answer');
+    if (!answer) return;
+    if (answer.parentElement.classList.contains('faq-content')) return;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'faq-content';
+    answer.parentNode.insertBefore(wrapper, answer);
+    wrapper.appendChild(answer);
+
+    item.dataset.animating = 'false';
+  });
+
+  // Interceptar comportamiento nativo de <details>
+  faqItems.forEach(function (item) {
+    const summary = item.querySelector('summary');
+    if (!summary) return;
+
+    summary.addEventListener('click', function (e) {
+      e.preventDefault();
+      toggleFaq(item);
+    });
+
+    summary.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleFaq(item);
       }
     });
   });
+
+  function toggleFaq(item) {
+    if (item.dataset.animating === 'true') return;
+
+    const isOpen = item.hasAttribute('open');
+    const content = item.querySelector('.faq-content');
+    if (!content) return;
+
+    item.dataset.animating = 'true';
+
+    if (isOpen) {
+      // --- Cerrar ---
+      content.style.maxHeight = content.scrollHeight + 'px';
+      void content.offsetHeight;
+      content.style.maxHeight = '0px';
+      content.style.opacity = '0';
+
+      setTimeout(function () {
+        item.removeAttribute('open');
+        content.style.maxHeight = '';
+        content.style.opacity = '';
+        item.dataset.animating = 'false';
+      }, 400);
+    } else {
+      // --- Cerrar los demás primero ---
+      faqItems.forEach(function (other) {
+        if (other !== item && other.hasAttribute('open')) {
+          const otherContent = other.querySelector('.faq-content');
+          if (otherContent) {
+            otherContent.style.maxHeight = otherContent.scrollHeight + 'px';
+            void otherContent.offsetHeight;
+            otherContent.style.maxHeight = '0px';
+            otherContent.style.opacity = '0';
+            setTimeout(function () {
+              other.removeAttribute('open');
+              otherContent.style.maxHeight = '';
+              otherContent.style.opacity = '';
+            }, 400);
+          }
+        }
+      });
+
+      // --- Abrir ---
+      setTimeout(function () {
+        item.setAttribute('open', '');
+        content.style.maxHeight = content.scrollHeight + 'px';
+        content.style.opacity = '1';
+
+        setTimeout(function () {
+          content.style.maxHeight = 'none';
+          item.dataset.animating = 'false';
+        }, 400);
+      }, 100);
+    }
+  }
 
 });
