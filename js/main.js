@@ -1,6 +1,12 @@
 document.addEventListener('DOMContentLoaded', function () {
 
   /* ============================================
+     DETECCIÓN DE DISPOSITIVO
+     ============================================ */
+  const isMobile = window.matchMedia('(max-width: 640px)').matches;
+  const isTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+
+  /* ============================================
      1. MENÚ MÓVIL
      ============================================ */
   const toggle = document.getElementById('navToggle');
@@ -43,31 +49,41 @@ document.addEventListener('DOMContentLoaded', function () {
      ============================================ */
   const header = document.querySelector('.header');
   if (header) {
+    let ticking = false;
     window.addEventListener('scroll', function () {
-      if (window.scrollY > 20) header.classList.add('scrolled');
-      else header.classList.remove('scrolled');
+      if (!ticking) {
+        window.requestAnimationFrame(function () {
+          if (window.scrollY > 20) header.classList.add('scrolled');
+          else header.classList.remove('scrolled');
+          ticking = false;
+        });
+        ticking = true;
+      }
     }, { passive: true });
   }
 
   /* ============================================
      4. REVEAL ON SCROLL
+     (SOLO elementos que no estén dentro de tips o apps)
      ============================================ */
-  document.querySelectorAll('.service-card').forEach(function (el, i) {
-    el.classList.add('reveal');
-    if (i < 8) el.classList.add('reveal-delay-' + (i % 8 + 1));
+  const revealTargets = [
+    '.service-card',
+    '.feature',
+    '.contact-card',
+    '.faq-item'
+  ];
+
+  revealTargets.forEach(function (selector) {
+    document.querySelectorAll(selector).forEach(function (el, i) {
+      el.classList.add('reveal');
+      if (i < 8) el.classList.add('reveal-delay-' + ((i % 8) + 1));
+    });
   });
-  document.querySelectorAll('.feature').forEach(function (el, i) {
-    el.classList.add('reveal', 'reveal-delay-' + (i + 1));
-  });
-  document.querySelectorAll('.contact-card').forEach(function (el, i) {
-    el.classList.add('reveal', 'reveal-delay-' + (i + 1));
-  });
-  document.querySelectorAll('.faq-item').forEach(function (el, i) {
-    el.classList.add('reveal', 'reveal-delay-' + Math.min(i + 1, 6));
-  });
+
   document.querySelectorAll('.section-title, .section-subtitle').forEach(function (el) {
     el.classList.add('reveal');
   });
+
   const founderCard = document.querySelector('.founder-card');
   if (founderCard) founderCard.classList.add('reveal');
 
@@ -272,6 +288,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* ============================================
      7. MÓDULO ¿SABÍAS QUE? — desde tips.json
+     Optimizado para evitar titileo en móvil
      ============================================ */
   const tipTrack = document.getElementById('tipTrack');
   const tipDots = document.getElementById('tipDots');
@@ -284,7 +301,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   let currentTip = 0;
   let autoplayTimer = null;
-  const AUTOPLAY_INTERVAL = 8000;
+  // En móvil el autoplay es más lento para reducir repintados
+  const AUTOPLAY_INTERVAL = isMobile ? 12000 : 8000;
 
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -351,10 +369,14 @@ document.addEventListener('DOMContentLoaded', function () {
         function prevTip() { goToTip(currentTip - 1); }
 
         function startAutoplay() {
+          if (autoplayTimer) return;
           autoplayTimer = setInterval(nextTip, AUTOPLAY_INTERVAL);
         }
         function stopAutoplay() {
-          if (autoplayTimer) clearInterval(autoplayTimer);
+          if (autoplayTimer) {
+            clearInterval(autoplayTimer);
+            autoplayTimer = null;
+          }
         }
         function restartAutoplay() {
           stopAutoplay();
@@ -389,7 +411,21 @@ document.addEventListener('DOMContentLoaded', function () {
           });
         }
 
-        startAutoplay();
+        // Solo arranca el autoplay si el carrusel es visible
+        if ('IntersectionObserver' in window && carousel) {
+          const playObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                startAutoplay();
+              } else {
+                stopAutoplay();
+              }
+            });
+          }, { threshold: 0.1 });
+          playObserver.observe(carousel);
+        } else {
+          startAutoplay();
+        }
       })
       .catch(function (error) {
         console.error('Error cargando tips:', error);
@@ -401,6 +437,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* ============================================
      8. APLICATIVOS RECOMENDADOS — desde apps.json
+     Optimizado: sin animación de entrada en cada filtro
      ============================================ */
   const appsGrid = document.getElementById('appsGrid');
   const appsFilters = document.getElementById('appsFilters');
@@ -471,13 +508,14 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       if (appsEmpty) appsEmpty.hidden = true;
 
-      filtered.forEach(function (app, i) {
+      filtered.forEach(function (app) {
         const card = document.createElement('a');
         card.className = 'app-card';
         card.href = app.url;
         card.target = '_blank';
         card.rel = 'noopener';
-        card.style.animation = 'fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) ' + Math.min(i * 0.04, 0.4) + 's both';
+
+        // NOTA: sin `style.animation` para evitar el titileo en móvil
 
         const badgesHTML = (app.badges || []).map(function (b) {
           const isFree = b.toLowerCase() === 'gratis' || b.toLowerCase() === 'free';
@@ -595,7 +633,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* ============================================
-     10. LAZY LOAD: CREDLY (solo cuando #fundador es visible)
+     10. LAZY LOAD: CREDLY
      ============================================ */
   const founderCerts = document.getElementById('founderCerts');
   let credlyLoaded = false;
@@ -604,12 +642,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if (credlyLoaded || !founderCerts) return;
     credlyLoaded = true;
 
-    // Activamos los divs que estaban en modo "pendiente"
     founderCerts.querySelectorAll('[data-credly-badge]').forEach(function (el) {
       el.removeAttribute('data-credly-badge');
     });
 
-    // Cargamos el script oficial de Credly (una sola vez)
     const script = document.createElement('script');
     script.type = 'text/javascript';
     script.async = true;
@@ -626,7 +662,7 @@ document.addEventListener('DOMContentLoaded', function () {
             credlyObserver.disconnect();
           }
         });
-      }, { rootMargin: '200px 0px' }); // Precarga 200px antes
+      }, { rootMargin: '200px 0px' });
       credlyObserver.observe(founderCerts);
     } else {
       loadCredly();
@@ -634,7 +670,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* ============================================
-     11. LAZY LOAD: GR WIDGET (solo cuando #resenas es visible)
+     11. LAZY LOAD: GR WIDGET
      ============================================ */
   const reviewsSection = document.getElementById('resenas');
   let grWidgetLoaded = false;
@@ -659,7 +695,7 @@ document.addEventListener('DOMContentLoaded', function () {
             grObserver.disconnect();
           }
         });
-      }, { rootMargin: '300px 0px' }); // Precarga 300px antes (el widget pesa más)
+      }, { rootMargin: '300px 0px' });
       grObserver.observe(reviewsSection);
     } else {
       loadGrWidget();
