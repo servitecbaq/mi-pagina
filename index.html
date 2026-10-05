@@ -6,7 +6,7 @@
 
   <title>Reparación de Computadores en Barranquilla | Servitec.baq</title>
   <meta name="description" content="Servicio técnico a domicilio en Barranquilla. Reparación de computadores, redes, impresoras, soporte de aplicativos y desarrollo de software para hogares y negocios.">
-  <meta name="keywords" content="reparación de computadores Barranquilla, servicio técnico a domicilio, soporte técnico Barranquilla, redes, impresoras, soporte aplicativos, desarrollo de software">
+  <meta name="keywords" content="reparación de computadores Barranquilla, servicio técnico a domicilio, soporte técnico Barranquilla, redes, impresoras, soporte aplicativos, desarrollo de software, tips windows corporativo">
   <meta name="author" content="Servitec.baq">
   <meta name="robots" content="index, follow">
 
@@ -33,6 +33,7 @@
 
   <link rel="stylesheet" href="css/styles.css">
 
+  <!-- Schema: LocalBusiness -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -77,6 +78,56 @@
     }
   }
   </script>
+
+  <!-- Schema: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "¿Atienden a domicilio en Barranquilla?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sí, trabajamos a domicilio en Barranquilla, Soledad, Puerto Colombia y municipios cercanos del área metropolitana."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Cómo puedo pedir una cotización?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Puedes escribirnos por WhatsApp al +57 315 850 5020 y enviarnos una foto o descripción del problema. Te damos una idea del precio sin compromiso."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Qué garantía tienen los servicios?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Te explicamos qué encontramos, qué vamos a hacer y qué incluye el servicio antes de realizarlo. Si algo no queda bien, lo revisamos."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Cuánto tarda una reparación típica?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "La mayoría de servicios se resuelven el mismo día o en un plazo de 24 a 48 horas, según la complejidad y la disponibilidad de repuestos."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Trabajan con empresas o solo con hogares?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Atendemos ambos. Tenemos experiencia en soporte a hogares y también en infraestructura, redes y mantenimiento para pequeñas y medianas empresas de Barranquilla."
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
 
@@ -99,13 +150,15 @@
         <a href="#servicios">Servicios</a>
         <a href="#nosotros">Nosotros</a>
         <a href="#fundador">Fundador</a>
+        <a href="#tips">Tips</a>
+        <a href="#faq">FAQ</a>
         <a href="#resenas">Reseñas</a>
         <a href="#contacto">Contacto</a>
       </nav>
       <div class="header-actions">
         <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema claro/oscuro" title="Cambiar tema">
-          <span class="theme-icon-light">🌚</span>
-          <span class="theme-icon-dark">🌞</span>
+          <span class="theme-icon-light">☀️</span>
+          <span class="theme-icon-dark">🌙</span>
         </button>
         <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">☰</button>
       </div>
@@ -144,7 +197,6 @@
 
       <div class="services-grid">
 
-        <!-- 1. Reparación -->
         <article class="service-card" data-service="reparacion" tabindex="0" role="button" aria-label="Ver detalle de Reparación de computadores">
           <div class="service-icon">💻</div>
           <h3>Reparación de computadores</h3>
@@ -152,7 +204,6 @@
           <span class="service-more">Ver detalles →</span>
         </article>
 
-        <!-- 2. Mantenimiento -->
         <article class="service-card" data-service="mantenimiento" tabindex="0" role="button" aria-label="Ver detalle de Mantenimiento">
           <div class="service-icon">⚡</div>
           <h3>Mantenimiento</h3>
@@ -160,7 +211,6 @@
           <span class="service-more">Ver detalles →</span>
         </article>
 
-        <!-- 3. Redes -->
         <article class="service-card" data-service="redes" tabindex="0" role="button" aria-label="Ver detalle de Redes e Internet">
           <div class="service-icon">🌐</div>
           <h3>Redes e Internet</h3>
@@ -168,7 +218,6 @@
           <span class="service-more">Ver detalles →</span>
         </article>
 
-        <!-- 4. Impresoras -->
         <article class="service-card" data-service="impresoras" tabindex="0" role="button" aria-label="Ver detalle de Impresoras">
           <div class="service-icon">🖨️</div>
           <h3>Impresoras</h3>
@@ -176,7 +225,6 @@
           <span class="service-more">Ver detalles →</span>
         </article>
 
-        <!-- 5. Instalación y configuración -->
         <article class="service-card" data-service="instalacion" tabindex="0" role="button" aria-label="Ver detalle de Instalación y configuración">
           <div class="service-icon">🔧</div>
           <h3>Instalación y configuración</h3>
@@ -184,7 +232,6 @@
           <span class="service-more">Ver detalles →</span>
         </article>
 
-        <!-- 6. Seguridad y respaldo -->
         <article class="service-card" data-service="seguridad" tabindex="0" role="button" aria-label="Ver detalle de Seguridad y respaldo">
           <div class="service-icon">🔒</div>
           <h3>Seguridad y respaldo</h3>
@@ -192,7 +239,6 @@
           <span class="service-more">Ver detalles →</span>
         </article>
 
-        <!-- 7. Soporte de aplicativos -->
         <article class="service-card" data-service="aplicativos" tabindex="0" role="button" aria-label="Ver detalle de Soporte de aplicativos">
           <div class="service-icon">🧩</div>
           <h3>Soporte de aplicativos</h3>
@@ -200,7 +246,6 @@
           <span class="service-more">Ver detalles →</span>
         </article>
 
-        <!-- 8. Desarrollo de software -->
         <article class="service-card" data-service="desarrollo" tabindex="0" role="button" aria-label="Ver detalle de Desarrollo de software">
           <div class="service-icon">👨‍💻</div>
           <h3>Desarrollo de software</h3>
@@ -280,7 +325,7 @@
     </div>
   </section>
 
-  <!-- Cobertura -->
+  <!-- Zona de cobertura -->
   <section class="coverage">
     <div class="container">
       <h2 class="section-title">📍 Atendemos en Barranquilla y área metropolitana</h2>
@@ -334,6 +379,93 @@
       <p class="reviews-note">
         También puedes ver las reseñas actuales de otros clientes en Google.
       </p>
+    </div>
+  </section>
+
+  <!-- Módulo ¿Sabías que? -->
+  <section class="tips" id="tips">
+    <div class="container">
+      <h2 class="section-title">💡 ¿Sabías que...?</h2>
+      <p class="section-subtitle">
+        Tips de tecnología y Windows que aplicamos a nivel corporativo. Pequeños cambios, gran impacto.
+      </p>
+
+      <div class="tip-carousel" id="tipCarousel">
+        <div class="tip-track" id="tipTrack"></div>
+        <button class="tip-nav tip-nav-prev" id="tipPrev" aria-label="Tip anterior">‹</button>
+        <button class="tip-nav tip-nav-next" id="tipNext" aria-label="Tip siguiente">›</button>
+        <div class="tip-dots" id="tipDots"></div>
+      </div>
+
+      <button class="btn btn-outline tips-expand-btn" id="tipsExpandBtn" aria-expanded="false">
+        <span class="tips-expand-text">Ver todos los tips</span> <span class="tips-expand-icon">▾</span>
+      </button>
+
+      <div class="tips-grid-wrapper" id="tipsGridWrapper">
+        <div class="tips-grid" id="tipsGrid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq" id="faq">
+    <div class="container">
+      <h2 class="section-title">Preguntas frecuentes</h2>
+      <p class="section-subtitle">
+        Las dudas más comunes que nos llegan por WhatsApp, resueltas al instante.
+      </p>
+
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>
+            <span>¿Atienden a domicilio en Barranquilla?</span>
+            <span class="faq-icon" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq-answer">
+            Sí, trabajamos a domicilio en Barranquilla, Soledad, Puerto Colombia y municipios cercanos del área metropolitana.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>
+            <span>¿Cómo puedo pedir una cotización?</span>
+            <span class="faq-icon" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq-answer">
+            Puedes escribirnos por WhatsApp al +57 315 850 5020 y enviarnos una foto o descripción del problema. Te damos una idea del precio sin compromiso.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>
+            <span>¿Qué garantía tienen los servicios?</span>
+            <span class="faq-icon" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq-answer">
+            Te explicamos qué encontramos, qué vamos a hacer y qué incluye el servicio antes de realizarlo. Si algo no queda bien, lo revisamos.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>
+            <span>¿Cuánto tarda una reparación típica?</span>
+            <span class="faq-icon" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq-answer">
+            La mayoría de servicios se resuelven el mismo día o en un plazo de 24 a 48 horas, según la complejidad y la disponibilidad de repuestos.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>
+            <span>¿Trabajan con empresas o solo con hogares?</span>
+            <span class="faq-icon" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq-answer">
+            Atendemos ambos. Tenemos experiencia en soporte a hogares y también en infraestructura, redes y mantenimiento para pequeñas y medianas empresas de Barranquilla.
+          </div>
+        </details>
+      </div>
     </div>
   </section>
 

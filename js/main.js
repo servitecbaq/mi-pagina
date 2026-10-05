@@ -36,34 +36,19 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   /* ============================================
-     3. HEADER CON SOMBRA AL HACER SCROLL
+     3. HEADER CON SOMBRA AL SCROLL
      ============================================ */
   const header = document.querySelector('.header');
   if (header) {
     window.addEventListener('scroll', function () {
-      if (window.scrollY > 20) {
-        header.classList.add('scrolled');
-      } else {
-        header.classList.remove('scrolled');
-      }
+      if (window.scrollY > 20) header.classList.add('scrolled');
+      else header.classList.remove('scrolled');
     }, { passive: true });
   }
 
   /* ============================================
-     4. REVEAL ON SCROLL (IntersectionObserver)
+     4. REVEAL ON SCROLL
      ============================================ */
-  const revealSelectors = [
-    '.hero h1', '.hero-subtitle', '.hero-cta', '.hero-badges',
-    '.section-title', '.section-subtitle',
-    '.service-card',
-    '.feature',
-    '.founder-card',
-    '.testimonial',
-    '.contact-card',
-    '.reviews-cta-buttons', '.reviews-note'
-  ];
-
-  // Añade la clase reveal con delays escalonados a las tarjetas
   document.querySelectorAll('.service-card').forEach(function (el, i) {
     el.classList.add('reveal');
     if (i < 8) el.classList.add('reveal-delay-' + (i % 8 + 1));
@@ -91,23 +76,19 @@ document.addEventListener('DOMContentLoaded', function () {
           observer.unobserve(entry.target);
         }
       });
-    }, {
-      threshold: 0.12,
-      rootMargin: '0px 0px -40px 0px'
-    });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
     document.querySelectorAll('.reveal').forEach(function (el) {
       observer.observe(el);
     });
   } else {
-    // Fallback navegadores antiguos
     document.querySelectorAll('.reveal').forEach(function (el) {
       el.classList.add('visible');
     });
   }
 
   /* ============================================
-     5. TOGGLE DE TEMA CLARO / OSCURO
+     5. TOGGLE DE TEMA
      ============================================ */
   const themeToggle = document.getElementById('themeToggle');
   if (themeToggle) {
@@ -240,23 +221,19 @@ document.addEventListener('DOMContentLoaded', function () {
   function openModal(key) {
     const data = servicesData[key];
     if (!data || !modal) return;
-
     modalIcon.textContent = data.icon;
     modalTitle.textContent = data.title;
     modalDesc.textContent = data.description;
-
     modalList.innerHTML = '';
     data.items.forEach(function (item) {
       const li = document.createElement('li');
       li.textContent = item;
       modalList.appendChild(li);
     });
-
     if (modalCta) {
       const msg = encodeURIComponent('Hola Servitec.baq, necesito información sobre: ' + data.title);
       modalCta.href = 'https://wa.me/573158505020?text=' + msg;
     }
-
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
     document.body.classList.add('modal-open');
@@ -288,6 +265,198 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
     });
+  }
+
+  /* ============================================
+     7. MÓDULO ¿SABÍAS QUE?
+     ============================================ */
+  const tipsData = [
+    {
+      category: 'Seguridad',
+      icon: '🔐',
+      title: 'BitLocker cifra todo tu disco',
+      desc: 'Windows Pro incluye BitLocker para cifrar el disco completo. Si roban un portátil corporativo, los datos son ilegibles sin la clave.',
+      benefit: 'Evita filtraciones en caso de robo'
+    },
+    {
+      category: 'Seguridad',
+      icon: '🛡️',
+      title: 'LAPS: contraseña única por equipo',
+      desc: 'Local Administrator Password Solution (LAPS) asigna una contraseña distinta a cada PC, gestionada desde Active Directory. Adiós a la clave "Admin123" compartida.',
+      benefit: 'Bloquea movimientos laterales en la red'
+    },
+    {
+      category: 'Seguridad',
+      icon: '🚫',
+      title: 'Windows Defender Application Control',
+      desc: 'Bloquea la ejecución de programas no firmados. Es una de las defensas más efectivas contra ransomware en entornos corporativos.',
+      benefit: 'Detiene malware antes de que se ejecute'
+    },
+    {
+      category: 'Productividad',
+      icon: '⏰',
+      title: 'Task Scheduler + PowerShell',
+      desc: 'Automatiza backups, limpiezas, reportes y tareas repetitivas con scripts programados. Una vez configurado, trabaja solo.',
+      benefit: 'Ahorra horas de trabajo manual al mes'
+    },
+    {
+      category: 'Productividad',
+      icon: '🪟',
+      title: 'Snap Layouts con Win + Z',
+      desc: 'Organiza múltiples ventanas al instante en plantillas predefinidas. Perfecto para comparar documentos o trabajar con varias apps.',
+      benefit: 'Ahorra minutos en cada tarea'
+    },
+    {
+      category: 'Productividad',
+      icon: '🗂️',
+      title: 'Escritorios virtuales con Win + Tab',
+      desc: 'Separa contextos: un escritorio para "Trabajo", otro para "Reuniones", otro para "Personal". Cambias entre ellos al instante.',
+      benefit: 'Menos distracciones, más foco'
+    },
+    {
+      category: 'Redes',
+      icon: '🖥️',
+      title: 'RDP sobre VPN para soporte remoto',
+      desc: 'Administra equipos de sucursales sin desplazarte. Con RDP sobre VPN accedes al escritorio remoto de cualquier PC de la empresa.',
+      benefit: 'Soporte inmediato sin viajar'
+    },
+    {
+      category: 'Redes',
+      icon: '📋',
+      title: 'Group Policy (GPO) centraliza todo',
+      desc: 'Aplica configuraciones, restricciones y políticas a toda la empresa desde un solo lugar. Usuarios, contraseñas, permisos, todo.',
+      benefit: 'Gestión masiva desde un punto'
+    },
+    {
+      category: 'Redes',
+      icon: '🌐',
+      title: 'Reservas DHCP por MAC',
+      desc: 'Asigna una IP fija a un equipo sin configurarla manualmente. Ideal para impresoras, servidores y cámaras de seguridad.',
+      benefit: 'IPs estables sin tocar cada PC'
+    },
+    {
+      category: 'Datos',
+      icon: '💾',
+      title: 'File History + OneDrive KFM',
+      desc: 'Respaldo automático de Escritorio, Documentos e Imágenes con OneDrive Known Folder Move. Restauras un archivo borrado en segundos.',
+      benefit: 'Nunca más "se me borró el archivo"'
+    },
+    {
+      category: 'Datos',
+      icon: '🧹',
+      title: 'Storage Sense libera espacio solo',
+      desc: 'Windows elimina automáticamente archivos temporales, papelera y descargas antiguas. Útil en servidores y PCs con disco limitado.',
+      benefit: 'Menos mantenimiento manual'
+    },
+    {
+      category: 'Datos',
+      icon: '🕰️',
+      title: 'Versiones anteriores (Shadow Copies)',
+      desc: 'Recupera versiones previas de archivos o carpetas sin necesidad de backup externo. Windows las guarda por defecto si están activadas.',
+      benefit: 'Restauras archivos en segundos'
+    }
+  ];
+
+  const tipTrack = document.getElementById('tipTrack');
+  const tipDots = document.getElementById('tipDots');
+  const tipPrev = document.getElementById('tipPrev');
+  const tipNext = document.getElementById('tipNext');
+  const tipsGrid = document.getElementById('tipsGrid');
+  const tipsExpandBtn = document.getElementById('tipsExpandBtn');
+  const tipsGridWrapper = document.getElementById('tipsGridWrapper');
+  const tipsExpandText = tipsExpandBtn ? tipsExpandBtn.querySelector('.tips-expand-text') : null;
+
+  let currentTip = 0;
+  let autoplayTimer = null;
+  const AUTOPLAY_INTERVAL = 8000;
+
+  if (tipTrack && tipDots) {
+    tipsData.forEach(function (tip, i) {
+      const card = document.createElement('article');
+      card.className = 'tip-card' + (i === 0 ? ' active' : '');
+      card.innerHTML =
+        '<span class="tip-category">' + tip.category + '</span>' +
+        '<div class="tip-icon">' + tip.icon + '</div>' +
+        '<h3 class="tip-title">' + tip.title + '</h3>' +
+        '<p class="tip-desc">' + tip.desc + '</p>' +
+        '<span class="tip-benefit">✨ ' + tip.benefit + '</span>';
+      tipTrack.appendChild(card);
+
+      const dot = document.createElement('button');
+      dot.className = 'tip-dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', 'Ir al tip ' + (i + 1));
+      dot.addEventListener('click', function () { goToTip(i); });
+      tipDots.appendChild(dot);
+    });
+
+    if (tipsGrid) {
+      tipsData.forEach(function (tip) {
+        const mini = document.createElement('article');
+        mini.className = 'tip-mini';
+        mini.innerHTML =
+          '<span class="tip-mini-icon">' + tip.icon + '</span>' +
+          '<h4>' + tip.title + '</h4>' +
+          '<p>' + tip.desc + '</p>';
+        tipsGrid.appendChild(mini);
+      });
+    }
+
+    const cards = tipTrack.querySelectorAll('.tip-card');
+    const dots = tipDots.querySelectorAll('.tip-dot');
+
+    function goToTip(index) {
+      if (index === currentTip) return;
+      cards[currentTip].classList.remove('active');
+      dots[currentTip].classList.remove('active');
+      currentTip = (index + cards.length) % cards.length;
+      cards[currentTip].classList.add('active');
+      dots[currentTip].classList.add('active');
+      restartAutoplay();
+    }
+
+    function nextTip() { goToTip(currentTip + 1); }
+    function prevTip() { goToTip(currentTip - 1); }
+
+    function startAutoplay() {
+      autoplayTimer = setInterval(nextTip, AUTOPLAY_INTERVAL);
+    }
+    function stopAutoplay() {
+      if (autoplayTimer) clearInterval(autoplayTimer);
+    }
+    function restartAutoplay() {
+      stopAutoplay();
+      startAutoplay();
+    }
+
+    if (tipNext) tipNext.addEventListener('click', nextTip);
+    if (tipPrev) tipPrev.addEventListener('click', prevTip);
+
+    const carousel = document.getElementById('tipCarousel');
+    if (carousel) {
+      carousel.addEventListener('mouseenter', stopAutoplay);
+      carousel.addEventListener('mouseleave', startAutoplay);
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (!carousel) return;
+      const rect = carousel.getBoundingClientRect();
+      const inView = rect.top < window.innerHeight && rect.bottom > 0;
+      if (!inView) return;
+      if (e.key === 'ArrowRight') nextTip();
+      if (e.key === 'ArrowLeft') prevTip();
+    });
+
+    if (tipsExpandBtn && tipsGridWrapper) {
+      tipsExpandBtn.addEventListener('click', function () {
+        const isOpen = tipsGridWrapper.classList.toggle('open');
+        tipsExpandBtn.setAttribute('aria-expanded', isOpen);
+        if (tipsExpandText) {
+          tipsExpandText.textContent = isOpen ? 'Ocultar tips' : 'Ver todos los tips';
+        }
+      });
+    }
+
+    startAutoplay();
   }
 
 });
