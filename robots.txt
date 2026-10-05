@@ -1,0 +1,11 @@
+# robots.txt para servitecbaq.github.io/mi-pagina
+# Más info: https://www.robotstxt.org/
+
+User-agent: *
+Allow: /
+
+# Bloquear archivos internos de GitHub Pages
+Disallow: /mi-pagina/.git/
+
+# Sitemap oficial
+Sitemap: https://servitecbaq.github.io/mi-pagina/sitemap.xml
