@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* ============================================
-     2. SCROLL SUAVE
+     2. SCROLL SUAVE CON OFFSET DEL HEADER
      ============================================ */
   document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
     anchor.addEventListener('click', function (e) {
@@ -30,7 +30,10 @@ document.addEventListener('DOMContentLoaded', function () {
       const target = document.querySelector(targetId);
       if (target) {
         e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const header = document.querySelector('.header');
+        const offset = header ? header.offsetHeight + 12 : 0;
+        const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({ top: top, behavior: 'smooth' });
       }
     });
   });
@@ -56,9 +59,6 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.feature').forEach(function (el, i) {
     el.classList.add('reveal', 'reveal-delay-' + (i + 1));
   });
-  document.querySelectorAll('.testimonial').forEach(function (el, i) {
-    el.classList.add('reveal', 'reveal-delay-' + (i + 1));
-  });
   document.querySelectorAll('.contact-card').forEach(function (el, i) {
     el.classList.add('reveal', 'reveal-delay-' + (i + 1));
   });
@@ -72,17 +72,17 @@ document.addEventListener('DOMContentLoaded', function () {
   if (founderCard) founderCard.classList.add('reveal');
 
   if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(function (entries) {
+    const revealObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
+          revealObserver.unobserve(entry.target);
         }
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
     document.querySelectorAll('.reveal').forEach(function (el) {
-      observer.observe(el);
+      revealObserver.observe(el);
     });
   } else {
     document.querySelectorAll('.reveal').forEach(function (el) {
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* ============================================
-     5. TOGGLE DE TEMA
+     5. TOGGLE DE TEMA CLARO / OSCURO
      ============================================ */
   const themeToggle = document.getElementById('themeToggle');
   if (themeToggle) {
@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* ============================================
-     7. MÓDULO ¿SABÍAS QUE? — Cargado desde tips.json
+     7. MÓDULO ¿SABÍAS QUE? — desde tips.json
      ============================================ */
   const tipTrack = document.getElementById('tipTrack');
   const tipDots = document.getElementById('tipDots');
@@ -294,17 +294,16 @@ document.addEventListener('DOMContentLoaded', function () {
     return array;
   }
 
-  fetch('tips.json')
-    .then(function (response) {
-      if (!response.ok) throw new Error('No se pudo cargar tips.json');
-      return response.json();
-    })
-    .then(function (tipsData) {
-      if (!Array.isArray(tipsData) || tipsData.length === 0) return;
+  if (tipTrack && tipDots) {
+    fetch('tips.json')
+      .then(function (response) {
+        if (!response.ok) throw new Error('No se pudo cargar tips.json');
+        return response.json();
+      })
+      .then(function (tipsData) {
+        if (!Array.isArray(tipsData) || tipsData.length === 0) return;
+        shuffleArray(tipsData);
 
-      shuffleArray(tipsData);
-
-      if (tipTrack && tipDots) {
         tipsData.forEach(function (tip, i) {
           const card = document.createElement('article');
           card.className = 'tip-card' + (i === 0 ? ' active' : '');
@@ -322,86 +321,86 @@ document.addEventListener('DOMContentLoaded', function () {
           dot.addEventListener('click', function () { goToTip(i); });
           tipDots.appendChild(dot);
         });
-      }
 
-      if (tipsGrid) {
-        tipsData.forEach(function (tip) {
-          const mini = document.createElement('article');
-          mini.className = 'tip-mini';
-          mini.innerHTML =
-            '<span class="tip-mini-icon">' + tip.icon + '</span>' +
-            '<h4>' + tip.title + '</h4>' +
-            '<p>' + tip.desc + '</p>';
-          tipsGrid.appendChild(mini);
+        if (tipsGrid) {
+          tipsData.forEach(function (tip) {
+            const mini = document.createElement('article');
+            mini.className = 'tip-mini';
+            mini.innerHTML =
+              '<span class="tip-mini-icon">' + tip.icon + '</span>' +
+              '<h4>' + tip.title + '</h4>' +
+              '<p>' + tip.desc + '</p>';
+            tipsGrid.appendChild(mini);
+          });
+        }
+
+        const cards = tipTrack.querySelectorAll('.tip-card');
+        const dots = tipDots.querySelectorAll('.tip-dot');
+
+        function goToTip(index) {
+          if (!cards.length || index === currentTip) return;
+          cards[currentTip].classList.remove('active');
+          dots[currentTip].classList.remove('active');
+          currentTip = (index + cards.length) % cards.length;
+          cards[currentTip].classList.add('active');
+          dots[currentTip].classList.add('active');
+          restartAutoplay();
+        }
+
+        function nextTip() { goToTip(currentTip + 1); }
+        function prevTip() { goToTip(currentTip - 1); }
+
+        function startAutoplay() {
+          autoplayTimer = setInterval(nextTip, AUTOPLAY_INTERVAL);
+        }
+        function stopAutoplay() {
+          if (autoplayTimer) clearInterval(autoplayTimer);
+        }
+        function restartAutoplay() {
+          stopAutoplay();
+          startAutoplay();
+        }
+
+        if (tipNext) tipNext.addEventListener('click', nextTip);
+        if (tipPrev) tipPrev.addEventListener('click', prevTip);
+
+        const carousel = document.getElementById('tipCarousel');
+        if (carousel) {
+          carousel.addEventListener('mouseenter', stopAutoplay);
+          carousel.addEventListener('mouseleave', startAutoplay);
+        }
+
+        document.addEventListener('keydown', function (e) {
+          if (!carousel) return;
+          const rect = carousel.getBoundingClientRect();
+          const inView = rect.top < window.innerHeight && rect.bottom > 0;
+          if (!inView) return;
+          if (e.key === 'ArrowRight') nextTip();
+          if (e.key === 'ArrowLeft') prevTip();
         });
-      }
 
-      const cards = tipTrack ? tipTrack.querySelectorAll('.tip-card') : [];
-      const dots = tipDots ? tipDots.querySelectorAll('.tip-dot') : [];
+        if (tipsExpandBtn && tipsGridWrapper) {
+          tipsExpandBtn.addEventListener('click', function () {
+            const isOpen = tipsGridWrapper.classList.toggle('open');
+            tipsExpandBtn.setAttribute('aria-expanded', isOpen);
+            if (tipsExpandText) {
+              tipsExpandText.textContent = isOpen ? 'Ocultar tips' : 'Ver todos los tips';
+            }
+          });
+        }
 
-      function goToTip(index) {
-        if (!cards.length || index === currentTip) return;
-        cards[currentTip].classList.remove('active');
-        dots[currentTip].classList.remove('active');
-        currentTip = (index + cards.length) % cards.length;
-        cards[currentTip].classList.add('active');
-        dots[currentTip].classList.add('active');
-        restartAutoplay();
-      }
-
-      function nextTip() { goToTip(currentTip + 1); }
-      function prevTip() { goToTip(currentTip - 1); }
-
-      function startAutoplay() {
-        autoplayTimer = setInterval(nextTip, AUTOPLAY_INTERVAL);
-      }
-      function stopAutoplay() {
-        if (autoplayTimer) clearInterval(autoplayTimer);
-      }
-      function restartAutoplay() {
-        stopAutoplay();
         startAutoplay();
-      }
-
-      if (tipNext) tipNext.addEventListener('click', nextTip);
-      if (tipPrev) tipPrev.addEventListener('click', prevTip);
-
-      const carousel = document.getElementById('tipCarousel');
-      if (carousel) {
-        carousel.addEventListener('mouseenter', stopAutoplay);
-        carousel.addEventListener('mouseleave', startAutoplay);
-      }
-
-      document.addEventListener('keydown', function (e) {
-        if (!carousel) return;
-        const rect = carousel.getBoundingClientRect();
-        const inView = rect.top < window.innerHeight && rect.bottom > 0;
-        if (!inView) return;
-        if (e.key === 'ArrowRight') nextTip();
-        if (e.key === 'ArrowLeft') prevTip();
+      })
+      .catch(function (error) {
+        console.error('Error cargando tips:', error);
+        if (tipTrack) {
+          tipTrack.innerHTML = '<p style="text-align:center;color:var(--color-text-light);padding:40px 20px;">No se pudieron cargar los tips en este momento.</p>';
+        }
       });
-
-      if (tipsExpandBtn && tipsGridWrapper) {
-        tipsExpandBtn.addEventListener('click', function () {
-          const isOpen = tipsGridWrapper.classList.toggle('open');
-          tipsExpandBtn.setAttribute('aria-expanded', isOpen);
-          if (tipsExpandText) {
-            tipsExpandText.textContent = isOpen ? 'Ocultar tips' : 'Ver todos los tips';
-          }
-        });
-      }
-
-      startAutoplay();
-    })
-    .catch(function (error) {
-      console.error('Error cargando tips:', error);
-      if (tipTrack) {
-        tipTrack.innerHTML = '<p style="text-align:center;color:var(--color-text-light);padding:40px 20px;">No se pudieron cargar los tips en este momento.</p>';
-      }
-    });
+  }
 
   /* ============================================
-     8. APLICATIVOS RECOMENDADOS (desde apps.json)
+     8. APLICATIVOS RECOMENDADOS — desde apps.json
      ============================================ */
   const appsGrid = document.getElementById('appsGrid');
   const appsFilters = document.getElementById('appsFilters');
@@ -592,6 +591,78 @@ document.addEventListener('DOMContentLoaded', function () {
           item.dataset.animating = 'false';
         }, 400);
       }, 100);
+    }
+  }
+
+  /* ============================================
+     10. LAZY LOAD: CREDLY (solo cuando #fundador es visible)
+     ============================================ */
+  const founderCerts = document.getElementById('founderCerts');
+  let credlyLoaded = false;
+
+  function loadCredly() {
+    if (credlyLoaded || !founderCerts) return;
+    credlyLoaded = true;
+
+    // Activamos los divs que estaban en modo "pendiente"
+    founderCerts.querySelectorAll('[data-credly-badge]').forEach(function (el) {
+      el.removeAttribute('data-credly-badge');
+    });
+
+    // Cargamos el script oficial de Credly (una sola vez)
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.async = true;
+    script.src = 'https://cdn.credly.com/assets/utilities/embed.js';
+    document.body.appendChild(script);
+  }
+
+  if (founderCerts) {
+    if ('IntersectionObserver' in window) {
+      const credlyObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            loadCredly();
+            credlyObserver.disconnect();
+          }
+        });
+      }, { rootMargin: '200px 0px' }); // Precarga 200px antes
+      credlyObserver.observe(founderCerts);
+    } else {
+      loadCredly();
+    }
+  }
+
+  /* ============================================
+     11. LAZY LOAD: GR WIDGET (solo cuando #resenas es visible)
+     ============================================ */
+  const reviewsSection = document.getElementById('resenas');
+  let grWidgetLoaded = false;
+
+  function loadGrWidget() {
+    if (grWidgetLoaded || !reviewsSection) return;
+    grWidgetLoaded = true;
+
+    const script = document.createElement('script');
+    script.src = 'https://grwidget.com/v1/grwidget.js';
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+  }
+
+  if (reviewsSection) {
+    if ('IntersectionObserver' in window) {
+      const grObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            loadGrWidget();
+            grObserver.disconnect();
+          }
+        });
+      }, { rootMargin: '300px 0px' }); // Precarga 300px antes (el widget pesa más)
+      grObserver.observe(reviewsSection);
+    } else {
+      loadGrWidget();
     }
   }
 

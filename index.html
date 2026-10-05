@@ -9,6 +9,7 @@
   <meta name="keywords" content="reparación de computadores Barranquilla, servicio técnico a domicilio, soporte técnico Barranquilla, redes, impresoras, soporte aplicativos, desarrollo de software, tips windows corporativo">
   <meta name="author" content="Servitec.baq">
   <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0B1F3A">
 
   <meta property="og:title" content="Servitec.baq - Reparación de Computadores en Barranquilla">
   <meta property="og:description" content="Servicio técnico a domicilio en Barranquilla y área metropolitana. Reparación, mantenimiento, soporte de aplicativos y desarrollo de software.">
@@ -18,6 +19,10 @@
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
 
+  <!-- Preload del CSS -->
+  <link rel="preload" href="css/styles.css" as="style">
+
+  <!-- Tema antes de pintar (evita FOUC) -->
   <script>
     (function() {
       try {
@@ -85,46 +90,11 @@
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "¿Atienden a domicilio en Barranquilla?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Sí, trabajamos a domicilio en Barranquilla, Soledad, Puerto Colombia y municipios cercanos del área metropolitana."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Cómo puedo pedir una cotización?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Puedes escribirnos por WhatsApp al +57 315 850 5020 y enviarnos una foto o descripción del problema. Te damos una idea del precio sin compromiso."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Qué garantía tienen los servicios?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Te explicamos qué encontramos, qué vamos a hacer y qué incluye el servicio antes de realizarlo. Si algo no queda bien, lo revisamos."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Cuánto tarda una reparación típica?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "La mayoría de servicios se resuelven el mismo día o en un plazo de 24 a 48 horas, según la complejidad y la disponibilidad de repuestos."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Trabajan con empresas o solo con hogares?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Atendemos ambos. Tenemos experiencia en soporte a hogares y también en infraestructura, redes y mantenimiento para pequeñas y medianas empresas de Barranquilla."
-        }
-      }
+      { "@type": "Question", "name": "¿Atienden a domicilio en Barranquilla?", "acceptedAnswer": { "@type": "Answer", "text": "Sí, trabajamos a domicilio en Barranquilla, Soledad, Puerto Colombia y municipios cercanos del área metropolitana." } },
+      { "@type": "Question", "name": "¿Cómo puedo pedir una cotización?", "acceptedAnswer": { "@type": "Answer", "text": "Puedes escribirnos por WhatsApp al +57 315 850 5020 y enviarnos una foto o descripción del problema. Te damos una idea del precio sin compromiso." } },
+      { "@type": "Question", "name": "¿Qué garantía tienen los servicios?", "acceptedAnswer": { "@type": "Answer", "text": "Te explicamos qué encontramos, qué vamos a hacer y qué incluye el servicio antes de realizarlo. Si algo no queda bien, lo revisamos." } },
+      { "@type": "Question", "name": "¿Cuánto tarda una reparación típica?", "acceptedAnswer": { "@type": "Answer", "text": "La mayoría de servicios se resuelven el mismo día o en un plazo de 24 a 48 horas, según la complejidad y la disponibilidad de repuestos." } },
+      { "@type": "Question", "name": "¿Trabajan con empresas o solo con hogares?", "acceptedAnswer": { "@type": "Answer", "text": "Atendemos ambos. Tenemos experiencia en soporte a hogares y también en infraestructura, redes y mantenimiento para pequeñas y medianas empresas de Barranquilla." } }
     ]
   }
   </script>
@@ -187,6 +157,18 @@
         <span>📍 Barranquilla</span>
         <span>✓ Servicio garantizado</span>
       </div>
+    </div>
+  </section>
+
+  <!-- Cobertura (movida justo debajo del hero) -->
+  <section class="coverage">
+    <div class="container">
+      <h2 class="section-title">📍 Atendemos en Barranquilla y área metropolitana</h2>
+      <p class="section-subtitle">Consulta disponibilidad para servicio a domicilio o atención según tus necesidades.</p>
+      <a href="https://wa.me/573158505020?text=Hola%2C%20quisiera%20saber%20si%20atienden%20en%20mi%20zona"
+         class="btn btn-whatsapp" target="_blank" rel="noopener">
+        Consultar disponibilidad
+      </a>
     </div>
   </section>
 
@@ -291,7 +273,7 @@
 
       <div class="founder-card">
         <div class="founder-photo">
-          <img src="img/david.jpg" alt="David Fragozo, fundador de Servitec.baq" loading="lazy">
+          <img src="img/david.jpg" alt="David Fragozo, fundador de Servitec.baq" loading="lazy" decoding="async">
         </div>
         <div class="founder-info">
           <h3>David Fragozo</h3>
@@ -315,15 +297,17 @@
             <span>ITIL</span>
           </div>
 
-          <!-- Certificaciones verificadas -->
-          <div class="founder-certs">
+          <!-- Certificaciones verificadas (lazy load con data-src) -->
+          <div class="founder-certs" id="founderCerts">
             <h4 class="founder-certs-title">
               <span aria-hidden="true">🏅</span> Certificaciones verificadas
             </h4>
             <div class="founder-certs-grid">
               <div class="cert-badge">
                 <div class="cert-embed">
+                  <!-- Los datos del iframe se inyectan cuando la sección es visible -->
                   <div
+                    data-credly-badge
                     data-iframe-width="150"
                     data-iframe-height="270"
                     data-share-badge-id="c98f5dc1-7de0-4c18-96d7-27d513a103b8"
@@ -344,54 +328,6 @@
           </a>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- Zona de cobertura -->
-  <section class="coverage">
-    <div class="container">
-      <h2 class="section-title">📍 Atendemos en Barranquilla y área metropolitana</h2>
-      <p class="section-subtitle">Consulta disponibilidad para servicio a domicilio o atención según tus necesidades.</p>
-      <a href="https://wa.me/573158505020?text=Hola%2C%20quisiera%20saber%20si%20atienden%20en%20mi%20zona"
-         class="btn btn-whatsapp" target="_blank" rel="noopener">
-        Consultar disponibilidad
-      </a>
-    </div>
-  </section>
-
-  <!-- Testimonios / Reseñas Google -->
-  <section class="testimonials" id="testimonios">
-    <div class="container">
-      <h2 class="section-title">Lo que dicen nuestros clientes</h2>
-      <p class="section-subtitle">Reseñas reales de Google. Se actualizan automáticamente.</p>
-
-      <div class="grwidget-wrapper">
-        <div class="grwidget-embed" data-grwidget-key="G0gOrv6WNkt5ry1ARyK4NQHH"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Reseñas en Google (CTA) -->
-  <section class="reviews-cta" id="resenas">
-    <div class="container">
-      <h2 class="section-title">¿Ya usaste nuestros servicios?</h2>
-      <p class="section-subtitle">
-        Tu opinión nos ayuda a mejorar y a que más personas en Barranquilla nos encuentren.
-        Toma menos de un minuto y nos ayuda muchísimo.
-      </p>
-      <div class="reviews-cta-buttons">
-        <a href="https://g.page/r/CRBuazdosaVREAE/review"
-           class="btn btn-review" target="_blank" rel="noopener">
-          ⭐ Escribir reseña en Google
-        </a>
-        <a href="https://maps.app.goo.gl/bVDcFfRkvRaywEDJ7"
-           class="btn btn-outline" target="_blank" rel="noopener">
-          📍 Ver mi ficha en Google Maps
-        </a>
-      </div>
-      <p class="reviews-note">
-        También puedes ver las reseñas actuales de otros clientes en Google.
-      </p>
     </div>
   </section>
 
@@ -513,6 +449,38 @@
     </div>
   </section>
 
+  <!-- Reseñas (fusionado: widget GR + CTA) -->
+  <section class="reviews" id="resenas">
+    <div class="container">
+      <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+      <p class="section-subtitle">Reseñas reales de Google. Se actualizan automáticamente.</p>
+
+      <!-- Widget de GR (lazy load) -->
+      <div class="grwidget-wrapper">
+        <div class="grwidget-embed" data-grwidget-key="G0gOrv6WNkt5ry1ARyK4NQHH" id="grWidgetContainer"></div>
+      </div>
+
+      <!-- CTA para dejar reseña -->
+      <div class="reviews-cta-inner">
+        <h3 class="reviews-cta-title">¿Ya usaste nuestros servicios?</h3>
+        <p class="reviews-cta-subtitle">
+          Tu opinión nos ayuda a mejorar y a que más personas en Barranquilla nos encuentren.
+          Toma menos de un minuto y nos ayuda muchísimo.
+        </p>
+        <div class="reviews-cta-buttons">
+          <a href="https://g.page/r/CRBuazdosaVREAE/review"
+             class="btn btn-review" target="_blank" rel="noopener">
+            ⭐ Escribir reseña en Google
+          </a>
+          <a href="https://maps.app.goo.gl/bVDcFfRkvRaywEDJ7"
+             class="btn btn-outline" target="_blank" rel="noopener">
+            📍 Ver mi ficha en Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Contacto -->
   <section class="contact" id="contacto">
     <div class="container">
@@ -572,11 +540,5 @@
   </div>
 
   <script src="js/main.js"></script>
-
-  <!-- Credly embed script (una sola vez) -->
-  <script type="text/javascript" async src="https://cdn.credly.com/assets/utilities/embed.js"></script>
-
-  <!-- GR Widget script (una sola vez) -->
-  <script src="https://grwidget.com/v1/grwidget.js" async defer></script>
 </body>
 </html>
