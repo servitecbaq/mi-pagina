@@ -11,7 +11,6 @@
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0B1F3A">
 
-  <!-- Verificación de Google Search Console -->
   <meta name="google-site-verification" content="UroQP0TYR1nk7Vt3Ws_MzWo_x_mi3C6uYbYdDphph58" />
 
   <meta property="og:title" content="Servitec.baq - Reparación de Computadores en Barranquilla">
@@ -289,23 +288,27 @@
             <span>ITIL</span>
           </div>
 
-          <div class="founder-certs" id="founderCerts">
+          <!-- Certificaciones verificadas -->
+          <div class="founder-certs">
             <h4 class="founder-certs-title">
               <span aria-hidden="true">🏅</span> Certificaciones verificadas
             </h4>
             <div class="founder-certs-grid">
-              <div class="cert-badge">
+              <a href="https://www.credly.com/badges/c98f5dc1-7de0-4c18-96d7-27d513a103b8"
+                 class="cert-badge"
+                 target="_blank"
+                 rel="noopener"
+                 aria-label="Ver certificación Google IT Support Professional Certificate en Credly">
                 <div class="cert-embed">
-                  <div
-                    data-credly-badge
-                    data-iframe-width="150"
-                    data-iframe-height="270"
-                    data-share-badge-id="c98f5dc1-7de0-4c18-96d7-27d513a103b8"
-                    data-share-badge-host="https://www.credly.com">
-                  </div>
+                  <img src="img/google-it-support-professional-certificate-v2.png"
+                       alt="Badge de Google IT Support Professional Certificate"
+                       loading="lazy"
+                       decoding="async"
+                       width="1000"
+                       height="1000">
                 </div>
                 <p class="cert-name">Google IT Support Professional Certificate</p>
-              </div>
+              </a>
             </div>
           </div>
 
@@ -497,38 +500,18 @@
           class="contact-form"
           id="contactForm"
         >
-          <!-- Access Key de Web3Forms -->
           <input type="hidden" name="access_key" value="59cca39b-b622-4efd-a919-7bc2be70da10">
-
-          <!-- Asunto del correo que te llegará -->
           <input type="hidden" name="subject" value="Nuevo mensaje desde servitec.baq">
-
-          <!-- Antispam: campo honeypot invisible para bots -->
           <input type="checkbox" name="botcheck" style="display: none !important;" tabindex="-1" autocomplete="off">
 
           <div class="form-row">
             <div class="form-field">
               <label for="form-name">Nombre *</label>
-              <input
-                type="text"
-                id="form-name"
-                name="name"
-                required
-                placeholder="Tu nombre"
-                autocomplete="name"
-              >
+              <input type="text" id="form-name" name="name" required placeholder="Tu nombre" autocomplete="name">
             </div>
-
             <div class="form-field">
               <label for="form-contact">Correo o teléfono *</label>
-              <input
-                type="text"
-                id="form-contact"
-                name="contact"
-                required
-                placeholder="correo@ejemplo.com o +57 ..."
-                autocomplete="email"
-              >
+              <input type="text" id="form-contact" name="contact" required placeholder="correo@ejemplo.com o +57 ..." autocomplete="email">
             </div>
           </div>
 
@@ -550,13 +533,7 @@
 
           <div class="form-field">
             <label for="form-message">Cuéntanos qué necesitas *</label>
-            <textarea
-              id="form-message"
-              name="message"
-              required
-              rows="5"
-              placeholder="Describe el problema o lo que necesitas…"
-            ></textarea>
+            <textarea id="form-message" name="message" required rows="5" placeholder="Describe el problema o lo que necesitas…"></textarea>
           </div>
 
           <button type="submit" class="btn btn-whatsapp form-submit" id="formSubmit">

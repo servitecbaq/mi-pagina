@@ -792,63 +792,144 @@ section {
 }
 
 /* ============================================
-   CERTIFICACIONES
+   CERTIFICACIONES VERIFICADAS (badge como imagen)
    ============================================ */
 .founder-certs {
   margin-bottom: 26px;
   padding-top: 22px;
   border-top: 1px solid var(--color-border);
 }
+
 .founder-certs-title {
   font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--color-text-light);
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   display: flex;
   align-items: center;
   gap: 8px;
 }
-.founder-certs-title span { font-size: 1.05rem; letter-spacing: 0; }
+
+.founder-certs-title span {
+  font-size: 1.05rem;
+  letter-spacing: 0;
+}
+
 .founder-certs-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 22px;
   min-height: 60px;
 }
+
 .cert-badge {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  max-width: 150px;
-}
-.cert-embed {
-  width: 150px;
-  height: 270px;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  background: var(--acrylic-bg);
-  border: 1px solid var(--acrylic-border);
-  box-shadow: var(--elev-2);
+  gap: 12px;
+  padding: 16px 14px 14px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg,
+    rgba(0, 184, 212, 0.05) 0%,
+    transparent 60%);
+  border: 1px solid var(--color-border);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform 0.35s var(--ease-material),
+    box-shadow 0.35s var(--ease-material),
+    border-color 0.35s var(--ease-material);
   position: relative;
+  overflow: hidden;
+  cursor: pointer;
 }
-.cert-embed iframe { display: block; border: 0; width: 100%; height: 100%; }
-.cert-embed:empty::before {
+
+.cert-badge::before {
   content: "";
   position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, var(--acrylic-border), transparent);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 3px;
+  background: linear-gradient(90deg,
+    transparent,
+    var(--color-accent),
+    transparent);
+  border-radius: 0 0 3px 3px;
+  opacity: 0.7;
+  transition: opacity 0.35s var(--ease-material), left 0.4s var(--ease-material), right 0.4s var(--ease-material);
 }
+
+.cert-badge:hover {
+  transform: translateY(-6px);
+  border-color: var(--color-accent);
+  box-shadow:
+    0 12px 28px rgba(11,31,58,0.12),
+    0 0 0 4px rgba(0,184,212,0.08);
+}
+
+.cert-badge:hover::before {
+  opacity: 1;
+  left: 10%;
+  right: 10%;
+}
+
+.cert-embed {
+  width: 150px;
+  height: 150px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.35s var(--ease-material);
+}
+
+.cert-embed img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 4px 12px rgba(0,184,212,0.15));
+  transition: filter 0.35s var(--ease-material);
+}
+
+.cert-badge:hover .cert-embed {
+  transform: scale(1.04);
+}
+
+.cert-badge:hover .cert-embed img {
+  filter: drop-shadow(0 8px 20px rgba(0,184,212,0.35));
+}
+
 .cert-name {
   font-size: 0.78rem;
   color: var(--color-text-light);
   text-align: center;
   line-height: 1.4;
   font-weight: 500;
+  max-width: 150px;
+  padding: 0 4px;
+  transition: color 0.25s var(--ease-material);
+}
+
+.cert-badge:hover .cert-name {
+  color: var(--color-accent);
+}
+
+[data-theme="dark"] .cert-badge {
+  background: linear-gradient(180deg,
+    rgba(0, 184, 212, 0.08) 0%,
+    transparent 60%);
+}
+
+[data-theme="dark"] .cert-badge:hover {
+  box-shadow:
+    0 12px 28px rgba(0,0,0,0.5),
+    0 0 0 4px rgba(0, 184, 212, 0.12);
 }
 
 /* ============================================
@@ -1517,7 +1598,7 @@ section {
 }
 
 /* ============================================
-   MÓVIL - SIN BLUR, SIN content-visibility
+   MÓVIL - SIN BLUR
    ============================================ */
 @media (max-width: 640px) {
   :root {
@@ -1545,7 +1626,6 @@ section {
   .founder-card,
   .founder-skills span,
   .hero-badges span,
-  .cert-embed,
   .modal-box,
   .btn-outline,
   .btn-review,
@@ -1583,7 +1663,6 @@ section {
     background: var(--color-bg-alt);
     border: 1px solid var(--color-border);
   }
-  .cert-embed { background: var(--color-bg-alt); }
   .modal-box { background: var(--color-card-solid); }
   .btn-outline,
   .btn-review { background: var(--color-card-solid); }
@@ -1643,6 +1722,37 @@ section {
   .founder-certs-title { justify-content: center; }
   .founder-certs-grid { justify-content: center; }
 
+  /* Certificado en móvil: sin hover */
+  .cert-badge {
+    padding: 14px 12px 12px;
+    background: var(--color-card-solid);
+  }
+  .cert-badge:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  .cert-badge:hover::before {
+    left: 20%;
+    right: 20%;
+    opacity: 0.7;
+  }
+  .cert-badge:hover .cert-embed {
+    transform: none;
+  }
+  .cert-badge:hover .cert-embed img {
+    filter: drop-shadow(0 4px 12px rgba(0,184,212,0.15));
+  }
+  .cert-badge:hover .cert-name {
+    color: var(--color-text-light);
+  }
+  .cert-embed {
+    width: 130px;
+    height: 130px;
+  }
+  .cert-name {
+    max-width: 130px;
+  }
+
   .whatsapp-float {
     width: 54px;
     height: 54px;
@@ -1678,9 +1788,7 @@ section {
   .grwidget-wrapper { padding: 22px 16px; }
   .reviews-cta-inner { padding: 32px 16px 0; }
 
-  .cert-embed { width: 130px; height: 234px; }
-
-  /* Formulario de contacto en móvil */
+  /* Formulario en móvil */
   .contact-form-wrapper {
     padding: 28px 20px;
     margin-top: 40px;

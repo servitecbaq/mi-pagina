@@ -468,44 +468,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   /* ============================================
-     10. LAZY LOAD: CREDLY
-     ============================================ */
-  const founderCerts = document.getElementById('founderCerts');
-  let credlyLoaded = false;
-
-  function loadCredly() {
-    if (credlyLoaded || !founderCerts) return;
-    credlyLoaded = true;
-
-    founderCerts.querySelectorAll('[data-credly-badge]').forEach(function (el) {
-      el.removeAttribute('data-credly-badge');
-    });
-
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.async = true;
-    script.src = 'https://cdn.credly.com/assets/utilities/embed.js';
-    document.body.appendChild(script);
-  }
-
-  if (founderCerts) {
-    if ('IntersectionObserver' in window) {
-      const credlyObserver = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            loadCredly();
-            credlyObserver.disconnect();
-          }
-        });
-      }, { rootMargin: '200px 0px' });
-      credlyObserver.observe(founderCerts);
-    } else {
-      loadCredly();
-    }
-  }
-
-  /* ============================================
-     11. LAZY LOAD: GR WIDGET
+     10. LAZY LOAD: GR WIDGET
      ============================================ */
   const reviewsSection = document.getElementById('resenas');
   let grWidgetLoaded = false;
@@ -538,7 +501,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* ============================================
-     12. FORMULARIO DE CONTACTO (Web3Forms)
+     11. FORMULARIO DE CONTACTO (Web3Forms)
      ============================================ */
   const contactForm = document.getElementById('contactForm');
   const formStatus = document.getElementById('formStatus');
@@ -548,7 +511,6 @@ document.addEventListener('DOMContentLoaded', function () {
     contactForm.addEventListener('submit', function (e) {
       e.preventDefault();
 
-      // Estado: enviando
       formSubmit.disabled = true;
       formSubmit.textContent = '⏳ Enviando…';
       if (formStatus) {
@@ -567,7 +529,6 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(function (response) { return response.json(); })
         .then(function (data) {
           if (data.success) {
-            // Éxito
             if (formStatus) {
               formStatus.hidden = false;
               formStatus.className = 'form-status success';
@@ -578,7 +539,6 @@ document.addEventListener('DOMContentLoaded', function () {
             formSubmit.disabled = false;
             formSubmit.textContent = '✉️ Enviar mensaje';
 
-            // Ocultar el mensaje después de 8 segundos
             setTimeout(function () {
               if (formStatus) formStatus.hidden = true;
             }, 8000);
