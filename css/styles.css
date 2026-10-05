@@ -960,8 +960,10 @@ section { padding: 80px 0; position: relative; z-index: 1; }
 .coverage .section-subtitle { color: var(--color-text-light); }
 
 /* ============================================
-   TESTIMONIOS
+   TESTIMONIOS / GR WIDGET
    ============================================ */
+.testimonials { background: transparent; }
+
 .testimonials-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -1005,6 +1007,42 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   color: var(--color-text-light);
   font-style: normal;
   font-weight: 500;
+}
+
+/* Envoltorio del widget de GR */
+.grwidget-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  background: var(--color-card-bg);
+  backdrop-filter: var(--acrylic-blur);
+  -webkit-backdrop-filter: var(--acrylic-blur);
+  border: 1px solid var(--acrylic-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--elev-3);
+  padding: 32px 24px;
+  transition: background 0.3s var(--ease-material), border-color 0.3s var(--ease-material), box-shadow 0.3s var(--ease-material);
+  overflow: hidden;
+}
+
+.grwidget-wrapper:hover {
+  box-shadow: var(--elev-4);
+  border-color: var(--color-accent);
+}
+
+/* El widget inyectado por GR */
+.grwidget-embed {
+  width: 100%;
+  min-height: 200px;
+  color: var(--color-text);
+}
+
+/* Ajustes visuales al contenido inyectado por GR (si aplica) */
+.grwidget-embed * {
+  max-width: 100%;
+}
+
+.grwidget-embed img {
+  border-radius: var(--radius-sm);
 }
 
 /* ============================================
@@ -1742,6 +1780,8 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   .faq-item > summary { padding: 18px 18px; font-size: 0.95rem; }
   .faq-answer { padding: 0 18px 18px; font-size: 0.9rem; }
   .faq-icon { width: 28px; height: 28px; font-size: 1rem; }
+
+  .grwidget-wrapper { padding: 22px 16px; }
 }
 
 /* ============================================
@@ -1755,7 +1795,8 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   .reveal { opacity: 1; transform: none; }
   .faq-content, .faq-answer, .faq-icon, .faq-item::before,
   .app-card, .app-logo, .apps-filter, .apps-search-input,
-  .cert-badge, .cert-embed {
+  .cert-badge, .cert-embed,
+  .grwidget-wrapper {
     transition: none !important;
   }
 }
