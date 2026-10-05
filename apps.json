@@ -1,0 +1,194 @@
+[
+  {
+    "category": "Seguridad",
+    "icon": "🛡️",
+    "name": "Bitdefender GravityZone",
+    "desc": "Antivirus corporativo con consola central. Excelente para gestionar protección en varias PCs desde un solo panel.",
+    "badges": ["Windows", "Pago"],
+    "url": "https://www.bitdefender.com/business/"
+  },
+  {
+    "category": "Seguridad",
+    "icon": "🔐",
+    "name": "KeePassXC",
+    "desc": "Gestor de contraseñas offline, gratuito y de código abierto. Ideal para bóvedas locales o equipos aislados.",
+    "badges": ["Windows", "macOS", "Linux", "Gratis"],
+    "url": "https://keepassxc.org"
+  },
+  {
+    "category": "Seguridad",
+    "icon": "🔑",
+    "name": "Microsoft Authenticator",
+    "desc": "Autenticación multifactor (MFA) gratuita para Microsoft 365 y Azure AD. Bloquea el 99% de ataques de phishing.",
+    "badges": ["Windows", "iOS", "Android", "Gratis"],
+    "url": "https://www.microsoft.com/en-us/security/mobile-authenticator-app"
+  },
+  {
+    "category": "Seguridad",
+    "icon": "🕵️",
+    "name": "Malwarebytes",
+    "desc": "Detector especializado de malware, adware y PUPs que otros antivirus pasan por alto. Ideal como segunda capa.",
+    "badges": ["Windows", "macOS", "Gratis"],
+    "url": "https://www.malwarebytes.com"
+  },
+  {
+    "category": "Productividad",
+    "icon": "⚡",
+    "name": "Microsoft PowerToys",
+    "desc": "Suite gratuita de utilidades: FancyZones, PowerRename, Color Picker, Run, Awake y más. Aumenta la productividad sin costo.",
+    "badges": ["Windows", "Gratis"],
+    "url": "https://learn.microsoft.com/windows/powertoys/"
+  },
+  {
+    "category": "Productividad",
+    "icon": "📋",
+    "name": "Microsoft 365 Business Standard",
+    "desc": "Suite completa: Word, Excel, Teams, Outlook y OneDrive con 1 TB por usuario. Incluye Copilot Chat sin costo adicional.",
+    "badges": ["Windows", "macOS", "iOS", "Android", "Pago"],
+    "url": "https://www.microsoft.com/microsoft-365/business/microsoft-365-business-standard"
+  },
+  {
+    "category": "Productividad",
+    "icon": "🧠",
+    "name": "Notion",
+    "desc": "Notas, tareas, bases de datos y colaboración en un solo lugar. Con IA integrada para resumir, escribir y organizar.",
+    "badges": ["Web", "Windows", "macOS", "iOS", "Android"],
+    "url": "https://www.notion.com"
+  },
+  {
+    "category": "Productividad",
+    "icon": "⏱️",
+    "name": "TickTick",
+    "desc": "Gestor de tareas con recordatorios, etiquetas, prioridades y Pomodoro. Sincroniza en todos los dispositivos.",
+    "badges": ["Web", "Windows", "iOS", "Android", "Gratis"],
+    "url": "https://ticktick.com"
+  },
+  {
+    "category": "Productividad",
+    "icon": "📄",
+    "name": "LibreOffice",
+    "desc": "Suite ofimática gratuita y de código abierto. Compatible con formatos de Word, Excel y PowerPoint.",
+    "badges": ["Windows", "macOS", "Linux", "Gratis"],
+    "url": "https://www.libreoffice.org"
+  },
+  {
+    "category": "Redes",
+    "icon": "🔗",
+    "name": "Splashtop Remote Support",
+    "desc": "Acceso remoto desatendido para MSPs. Actualiza sistemas, instala software y resuelve problemas sin interrumpir al cliente.",
+    "badges": ["Windows", "macOS", "Pago"],
+    "url": "https://www.splashtop.com/remote-support"
+  },
+  {
+    "category": "Redes",
+    "icon": "🖥️",
+    "name": "Zoho Assist",
+    "desc": "Soporte remoto profesional y acceso desatendido que funciona a través de firewalls. Fácil implementación.",
+    "badges": ["Web", "Windows", "macOS", "Pago"],
+    "url": "https://www.zoho.com/assist/"
+  },
+  {
+    "category": "Redes",
+    "icon": "📡",
+    "name": "Wireshark",
+    "desc": "Analizador de protocolos de red. Imprescindible para diagnosticar problemas de conectividad y seguridad.",
+    "badges": ["Windows", "macOS", "Linux", "Gratis"],
+    "url": "https://www.wireshark.org"
+  },
+  {
+    "category": "Redes",
+    "icon": "🧭",
+    "name": "Advanced IP Scanner",
+    "desc": "Escaneo de red rápido para descubrir todos los dispositivos conectados, sus IPs y fabricantes en segundos.",
+    "badges": ["Windows", "Gratis"],
+    "url": "https://www.advanced-ip-scanner.com"
+  },
+  {
+    "category": "Redes",
+    "icon": "🔍",
+    "name": "Angry IP Scanner",
+    "desc": "Escáner de puertos y rangos IP multiplataforma. Código abierto, ligero y muy rápido.",
+    "badges": ["Windows", "macOS", "Linux", "Gratis"],
+    "url": "https://angryip.org"
+  },
+  {
+    "category": "Contabilidad",
+    "icon": "🇨🇴",
+    "name": "Siigo Facturación Electrónica",
+    "desc": "Software de facturación electrónica avalado por la DIAN. Ideal para empresas colombianas que necesitan cumplir normativa.",
+    "badges": ["Web", "Pago"],
+    "url": "https://www.siigo.com/facturacion-electronica/"
+  },
+  {
+    "category": "Contabilidad",
+    "icon": "📊",
+    "name": "Alegra",
+    "desc": "Software de gestión todo-en-uno para pymes colombianas: facturación DIAN, contabilidad, POS, nómina e inventario.",
+    "badges": ["Web", "iOS", "Android", "Pago"],
+    "url": "https://www.alegra.com/colombia/"
+  },
+  {
+    "category": "Contabilidad",
+    "icon": "🧾",
+    "name": "World Office",
+    "desc": "Sistema contable y administrativo usado por miles de empresas en Colombia. Facturación electrónica integrada.",
+    "badges": ["Windows", "Pago"],
+    "url": "https://www.worldoffice.com.co"
+  },
+  {
+    "category": "Sistemas",
+    "icon": "🧰",
+    "name": "Sysinternals Suite",
+    "desc": "Suite gratuita de Microsoft: Process Explorer, Autoruns, TCPView, PsExec y más. Diagnóstico profesional sin costo.",
+    "badges": ["Windows", "Gratis"],
+    "url": "https://learn.microsoft.com/sysinternals/"
+  },
+  {
+    "category": "Sistemas",
+    "icon": "🧹",
+    "name": "Glary Utilities",
+    "desc": "Utilidad todo-en-uno para limpiar, optimizar y proteger Windows. Más de 20 herramientas en una sola interfaz.",
+    "badges": ["Windows", "Gratis"],
+    "url": "https://www.glarysoft.com"
+  },
+  {
+    "category": "Sistemas",
+    "icon": "🧪",
+    "name": "Windows Sandbox",
+    "desc": "Entorno aislado para ejecutar software dudoso sin arriesgar el sistema real. Incluido en Windows Pro y Enterprise.",
+    "badges": ["Windows", "Gratis"],
+    "url": "https://learn.microsoft.com/windows/security/application-security/application-isolation/windows-sandbox/"
+  },
+  {
+    "category": "Sistemas",
+    "icon": "📈",
+    "name": "Performance Monitor",
+    "desc": "Herramienta nativa de Windows para monitorear CPU, RAM, disco y red en tiempo real. Detecta cuellos de botella.",
+    "badges": ["Windows", "Gratis"],
+    "url": "https://learn.microsoft.com/windows-server/administration/windows-commands/perfmon"
+  },
+  {
+    "category": "Sistemas",
+    "icon": "🎛️",
+    "name": "CPU-Z",
+    "desc": "Utilidad que muestra en detalle el hardware de tu PC: procesador, RAM, placa base, gráfica y más.",
+    "badges": ["Windows", "Gratis"],
+    "url": "https://www.cpuid.com/softwares/cpu-z.html"
+  },
+  {
+    "category": "Sistemas",
+    "icon": "💽",
+    "name": "CrystalDiskInfo",
+    "desc": "Monitorea la salud de tus discos duros y SSD. Predice fallas antes de que ocurran usando los datos S.M.A.R.T.",
+    "badges": ["Windows", "Gratis"],
+    "url": "https://crystalmark.info/en/software/crystaldiskinfo/"
+  },
+  {
+    "category": "Sistemas",
+    "icon": "🔎",
+    "name": "Everything",
+    "desc": "Buscador de archivos instantáneo para Windows. Encuentra cualquier archivo en segundos, sin indexar como Windows Search.",
+    "badges": ["Windows", "Gratis"],
+    "url": "https://www.voidtools.com"
+  }
+]

@@ -286,7 +286,6 @@ document.addEventListener('DOMContentLoaded', function () {
   let autoplayTimer = null;
   const AUTOPLAY_INTERVAL = 8000;
 
-  // Mezcla aleatoria (Fisher-Yates)
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -295,7 +294,6 @@ document.addEventListener('DOMContentLoaded', function () {
     return array;
   }
 
-  // Cargar tips desde tips.json
   fetch('tips.json')
     .then(function (response) {
       if (!response.ok) throw new Error('No se pudo cargar tips.json');
@@ -304,10 +302,8 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(function (tipsData) {
       if (!Array.isArray(tipsData) || tipsData.length === 0) return;
 
-      // Mezclar al azar
       shuffleArray(tipsData);
 
-      // Renderizar carrusel
       if (tipTrack && tipDots) {
         tipsData.forEach(function (tip, i) {
           const card = document.createElement('article');
@@ -328,7 +324,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
       }
 
-      // Renderizar grid completa
       if (tipsGrid) {
         tipsData.forEach(function (tip) {
           const mini = document.createElement('article');
@@ -406,11 +401,118 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
   /* ============================================
-     8. FAQ - Acordeón Material con animación suave
+     8. APLICATIVOS RECOMENDADOS (desde apps.json)
+     ============================================ */
+  const appsGrid = document.getElementById('appsGrid');
+  const appsFilters = document.getElementById('appsFilters');
+  const appsSearch = document.getElementById('appsSearch');
+  const appsEmpty = document.getElementById('appsEmpty');
+
+  if (appsGrid && appsFilters) {
+    let allApps = [];
+    let activeCategory = 'all';
+    let searchTerm = '';
+
+    fetch('apps.json')
+      .then(function (response) {
+        if (!response.ok) throw new Error('No se pudo cargar apps.json');
+        return response.json();
+      })
+      .then(function (data) {
+        if (!Array.isArray(data) || data.length === 0) return;
+        allApps = data;
+
+        const categories = ['all'];
+        data.forEach(function (app) {
+          if (!categories.includes(app.category)) categories.push(app.category);
+        });
+
+        appsFilters.innerHTML = '';
+        categories.forEach(function (cat) {
+          const btn = document.createElement('button');
+          btn.className = 'apps-filter' + (cat === 'all' ? ' active' : '');
+          btn.dataset.category = cat;
+          btn.textContent = cat === 'all' ? 'Todos' : cat;
+          btn.addEventListener('click', function () {
+            appsFilters.querySelectorAll('.apps-filter').forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            activeCategory = cat;
+            renderApps();
+          });
+          appsFilters.appendChild(btn);
+        });
+
+        renderApps();
+      })
+      .catch(function (error) {
+        console.error('Error cargando apps:', error);
+        if (appsGrid) {
+          appsGrid.innerHTML = '<p class="apps-empty">No se pudieron cargar los aplicativos en este momento.</p>';
+        }
+      });
+
+    function renderApps() {
+      if (!appsGrid) return;
+
+      const term = searchTerm.toLowerCase().trim();
+      const filtered = allApps.filter(function (app) {
+        const matchesCategory = activeCategory === 'all' || app.category === activeCategory;
+        const matchesSearch = !term ||
+          app.name.toLowerCase().includes(term) ||
+          app.desc.toLowerCase().includes(term) ||
+          app.category.toLowerCase().includes(term);
+        return matchesCategory && matchesSearch;
+      });
+
+      appsGrid.innerHTML = '';
+
+      if (filtered.length === 0) {
+        if (appsEmpty) appsEmpty.hidden = false;
+        return;
+      }
+      if (appsEmpty) appsEmpty.hidden = true;
+
+      filtered.forEach(function (app, i) {
+        const card = document.createElement('a');
+        card.className = 'app-card';
+        card.href = app.url;
+        card.target = '_blank';
+        card.rel = 'noopener';
+        card.style.animation = 'fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) ' + Math.min(i * 0.04, 0.4) + 's both';
+
+        const badgesHTML = (app.badges || []).map(function (b) {
+          const isFree = b.toLowerCase() === 'gratis' || b.toLowerCase() === 'free';
+          return '<span class="app-badge' + (isFree ? ' free' : '') + '">' + b + '</span>';
+        }).join('');
+
+        card.innerHTML =
+          '<div class="app-logo">' + app.icon + '</div>' +
+          '<h3 class="app-name">' + app.name + '</h3>' +
+          '<p class="app-desc">' + app.desc + '</p>' +
+          '<div class="app-meta">' + badgesHTML + '</div>' +
+          '<span class="app-link">Sitio oficial →</span>';
+
+        appsGrid.appendChild(card);
+      });
+    }
+
+    if (appsSearch) {
+      let debounceTimer;
+      appsSearch.addEventListener('input', function (e) {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function () {
+          searchTerm = e.target.value;
+          renderApps();
+        }, 200);
+      });
+    }
+  }
+
+  /* ============================================
+     9. FAQ - Acordeón Material con animación suave
      ============================================ */
   const faqItems = document.querySelectorAll('.faq-item');
 
-  // Envolver el contenido de cada respuesta en un contenedor animable
   faqItems.forEach(function (item) {
     const answer = item.querySelector('.faq-answer');
     if (!answer) return;
@@ -424,7 +526,6 @@ document.addEventListener('DOMContentLoaded', function () {
     item.dataset.animating = 'false';
   });
 
-  // Interceptar comportamiento nativo de <details>
   faqItems.forEach(function (item) {
     const summary = item.querySelector('summary');
     if (!summary) return;
@@ -452,7 +553,6 @@ document.addEventListener('DOMContentLoaded', function () {
     item.dataset.animating = 'true';
 
     if (isOpen) {
-      // --- Cerrar ---
       content.style.maxHeight = content.scrollHeight + 'px';
       void content.offsetHeight;
       content.style.maxHeight = '0px';
@@ -465,7 +565,6 @@ document.addEventListener('DOMContentLoaded', function () {
         item.dataset.animating = 'false';
       }, 400);
     } else {
-      // --- Cerrar los demás primero ---
       faqItems.forEach(function (other) {
         if (other !== item && other.hasAttribute('open')) {
           const otherContent = other.querySelector('.faq-content');
@@ -483,7 +582,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       });
 
-      // --- Abrir ---
       setTimeout(function () {
         item.setAttribute('open', '');
         content.style.maxHeight = content.scrollHeight + 'px';

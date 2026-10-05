@@ -56,7 +56,6 @@
   --max-width: 1100px;
   --transition: cubic-bezier(0.2, 0, 0, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  /* Curva Material Design 3 estándar */
   --ease-material: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -294,15 +293,16 @@ body::after {
 }
 .logo:hover span::after { transform: scaleX(1); }
 
-.nav { display: flex; align-items: center; }
+.nav { display: flex; align-items: center; flex-wrap: wrap; }
 .nav a {
-  margin-left: 18px;
+  margin-left: 16px;
   text-decoration: none;
   color: var(--color-text);
   font-weight: 500;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   position: relative;
   transition: color 0.2s var(--transition);
+  white-space: nowrap;
 }
 .nav a:hover { color: var(--color-accent); }
 .nav a::after {
@@ -1178,6 +1178,211 @@ section { padding: 80px 0; position: relative; z-index: 1; }
 }
 
 /* ============================================
+   SECCIÓN APLICATIVOS RECOMENDADOS
+   ============================================ */
+.apps {
+  background: transparent;
+  padding: 80px 0;
+}
+
+.apps-search {
+  max-width: 520px;
+  margin: 0 auto 28px;
+  position: relative;
+}
+
+.apps-search-input {
+  width: 100%;
+  padding: 14px 22px 14px 46px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--color-text);
+  background: var(--acrylic-bg);
+  backdrop-filter: var(--acrylic-blur);
+  -webkit-backdrop-filter: var(--acrylic-blur);
+  border: 1px solid var(--acrylic-border);
+  border-radius: var(--radius-full);
+  box-shadow: var(--elev-1);
+  outline: none;
+  transition: box-shadow 0.3s var(--ease-material), border-color 0.3s var(--ease-material), background 0.3s var(--ease-material);
+}
+
+.apps-search-input::placeholder { color: var(--color-text-light); }
+
+.apps-search-input:focus {
+  border-color: var(--color-accent);
+  box-shadow: var(--elev-3), 0 0 0 4px rgba(0, 184, 212, 0.15);
+}
+
+.apps-search::before {
+  content: "🔍";
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.apps-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 36px;
+}
+
+.apps-filter {
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-light);
+  background: var(--acrylic-bg);
+  backdrop-filter: var(--acrylic-blur);
+  -webkit-backdrop-filter: var(--acrylic-blur);
+  border: 1px solid var(--acrylic-border);
+  padding: 8px 18px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.25s var(--ease-material);
+}
+
+.apps-filter:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+.apps-filter.active {
+  background: var(--color-accent);
+  color: #fff;
+  border-color: var(--color-accent);
+  box-shadow: 0 4px 14px rgba(0, 184, 212, 0.3);
+}
+
+.apps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.app-card {
+  background: var(--color-card-bg);
+  backdrop-filter: var(--acrylic-blur);
+  -webkit-backdrop-filter: var(--acrylic-blur);
+  border: 1px solid var(--acrylic-border);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--elev-1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+.app-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-accent), transparent);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-material);
+}
+
+.app-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--elev-4);
+  border-color: var(--color-accent);
+}
+
+.app-card:hover::before { opacity: 1; }
+
+.app-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  background: var(--md-secondary-container);
+  color: var(--color-accent);
+  transition: transform 0.4s var(--ease-out);
+}
+
+.app-card:hover .app-logo {
+  transform: scale(1.1) rotate(-6deg);
+}
+
+.app-name {
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.app-desc {
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+  line-height: 1.5;
+  flex-grow: 1;
+  margin: 0;
+}
+
+.app-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.app-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-alt);
+  color: var(--color-text-light);
+  border: 1px solid var(--color-border);
+}
+
+.app-badge.free {
+  background: var(--md-secondary-container);
+  color: var(--color-accent);
+  border-color: transparent;
+}
+
+.app-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: gap 0.25s var(--ease-material);
+}
+
+.app-card:hover .app-link { gap: 10px; }
+
+.apps-empty {
+  text-align: center;
+  color: var(--color-text-light);
+  font-size: 0.95rem;
+  padding: 40px 20px;
+}
+
+/* ============================================
    SECCIÓN FAQ - Material Design + Acrylic
    ============================================ */
 .faq {
@@ -1209,7 +1414,6 @@ section { padding: 80px 0; position: relative; z-index: 1; }
     background-color 0.3s var(--ease-material);
 }
 
-/* Barra lateral Material que crece al abrir */
 .faq-item::before {
   content: "";
   position: absolute;
@@ -1237,9 +1441,7 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   transform: translateY(0);
 }
 
-.faq-item[open]::before {
-  height: 60%;
-}
+.faq-item[open]::before { height: 60%; }
 
 .faq-item > summary {
   list-style: none;
@@ -1269,10 +1471,8 @@ section { padding: 80px 0; position: relative; z-index: 1; }
 }
 
 .faq-item > summary:hover { color: var(--color-accent); }
-
 .faq-item[open] > summary { color: var(--color-accent); }
 
-/* Ícono + que rota 135° a × */
 .faq-icon {
   flex-shrink: 0;
   width: 32px;
@@ -1301,7 +1501,6 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   box-shadow: 0 0 0 6px rgba(0, 184, 212, 0.12);
 }
 
-/* Contenedor del contenido animable */
 .faq-content {
   overflow: hidden;
   max-height: 0;
@@ -1405,8 +1604,12 @@ section { padding: 80px 0; position: relative; z-index: 1; }
 /* ============================================
    RESPONSIVE
    ============================================ */
+@media (max-width: 1024px) {
+  .nav a { margin-left: 12px; font-size: 0.82rem; }
+}
+
 @media (max-width: 900px) {
-  .nav a { margin-left: 14px; font-size: 0.85rem; }
+  .nav a { margin-left: 10px; font-size: 0.78rem; }
 }
 
 @media (max-width: 640px) {
@@ -1455,6 +1658,10 @@ section { padding: 80px 0; position: relative; z-index: 1; }
   .tip-track { min-height: 340px; }
   .tips-grid { grid-template-columns: 1fr; }
 
+  .apps-grid { grid-template-columns: 1fr; }
+  .apps-filters { gap: 6px; }
+  .apps-filter { font-size: 0.78rem; padding: 7px 14px; }
+
   .faq-item > summary { padding: 18px 18px; font-size: 0.95rem; }
   .faq-answer { padding: 0 18px 18px; font-size: 0.9rem; }
   .faq-icon { width: 28px; height: 28px; font-size: 1rem; }
@@ -1469,10 +1676,8 @@ section { padding: 80px 0; position: relative; z-index: 1; }
     animation: none !important;
   }
   .reveal { opacity: 1; transform: none; }
-  .faq-content,
-  .faq-answer,
-  .faq-icon,
-  .faq-item::before {
+  .faq-content, .faq-answer, .faq-icon, .faq-item::before,
+  .app-card, .app-logo, .apps-filter, .apps-search-input {
     transition: none !important;
   }
 }

@@ -151,6 +151,7 @@
         <a href="#nosotros">Nosotros</a>
         <a href="#fundador">Fundador</a>
         <a href="#tips">Tips</a>
+        <a href="#apps">Apps</a>
         <a href="#faq">FAQ</a>
         <a href="#resenas">Reseñas</a>
         <a href="#contacto">Contacto</a>
@@ -404,6 +405,37 @@
       <div class="tips-grid-wrapper" id="tipsGridWrapper">
         <div class="tips-grid" id="tipsGrid"></div>
       </div>
+    </div>
+  </section>
+
+  <!-- Aplicativos Recomendados -->
+  <section class="apps" id="apps">
+    <div class="container">
+      <h2 class="section-title">🧰 Aplicativos que recomendamos</h2>
+      <p class="section-subtitle">
+        Herramientas que usamos y recomendamos a diario en soporte técnico, seguridad y productividad.
+        Muchas son gratuitas o tienen versión de prueba.
+      </p>
+
+      <div class="apps-search">
+        <input
+          type="search"
+          id="appsSearch"
+          class="apps-search-input"
+          placeholder="Buscar aplicativo… (ej: PowerToys, Wireshark)"
+          aria-label="Buscar aplicativo"
+        >
+      </div>
+
+      <div class="apps-filters" id="appsFilters">
+        <button class="apps-filter active" data-category="all">Todos</button>
+      </div>
+
+      <div class="apps-grid" id="appsGrid"></div>
+
+      <p class="apps-empty" id="appsEmpty" hidden>
+        No encontramos aplicativos con ese criterio. Prueba con otra búsqueda.
+      </p>
     </div>
   </section>
 
