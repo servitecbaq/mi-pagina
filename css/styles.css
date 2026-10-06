@@ -141,7 +141,6 @@ body.nav-open {
   overflow: hidden;
 }
 
-/* Capa 1: Gradientes animados */
 body::before {
   content: "";
   position: fixed;
@@ -163,7 +162,6 @@ body::before {
     radial-gradient(700px circle at 50% 100%, rgba(0,184,212,0.12), transparent 50%);
 }
 
-/* Capa 2: Cuadrícula con pulso sutil */
 body::after {
   content: "";
   position: fixed;
@@ -264,7 +262,7 @@ body::after {
 .reveal-delay-8 { transition-delay: 0.48s; }
 
 /* ============================================
-   WHATSAPP FLOTANTE (con anillo expansivo)
+   WHATSAPP FLOTANTE
    ============================================ */
 .whatsapp-float {
   position: fixed;
@@ -315,6 +313,83 @@ body::after {
   display: block;
   position: relative;
   z-index: 1;
+}
+
+/* ============================================
+   BOTÓN FLOTANTE DE JIRA SERVICE MANAGEMENT
+   Idéntico al de WhatsApp, apilado encima
+   ============================================ */
+.jira-float {
+  position: fixed;
+  bottom: 96px;
+  right: 24px;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #0052CC 0%, #0747A6 100%);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow:
+    0 8px 24px rgba(0,82,204,0.45),
+    0 4px 8px rgba(0,0,0,0.12),
+    inset 0 1px 1px rgba(255,255,255,0.3);
+  z-index: 9998;
+  transition: box-shadow 0.25s var(--transition), color 0.25s var(--transition);
+  animation: pulseScale 3s ease-in-out infinite;
+  will-change: transform;
+  transform: translateZ(0);
+  padding: 0;
+  margin: 0;
+  font: inherit;
+}
+
+.jira-float::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid #0052CC;
+  pointer-events: none;
+  animation: ringExpand 3s ease-out infinite;
+  will-change: transform, opacity;
+}
+
+.jira-float:hover {
+  box-shadow:
+    0 12px 32px rgba(0,82,204,0.6),
+    0 6px 12px rgba(0,0,0,0.18),
+    inset 0 1px 1px rgba(255,255,255,0.3);
+  animation-play-state: paused;
+}
+
+.jira-float svg {
+  width: 30px;
+  height: 30px;
+  display: block;
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ============================================
+   IFRAME NATIVO DE JIRA — OCULTO
+   ============================================ */
+#jsd-widget,
+iframe[title="Jira Service Management Widget"],
+iframe[id*="jsd"],
+iframe[src*="jsd-widget"] {
+  position: fixed !important;
+  bottom: -9999px !important;
+  right: -9999px !important;
+  width: 60px !important;
+  height: 60px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
 }
 
 /* ============================================
@@ -446,7 +521,7 @@ body::after {
 }
 
 /* ============================================
-   HERO (con doble aura animada)
+   HERO
    ============================================ */
 .hero {
   padding: 100px 0 80px;
@@ -1863,55 +1938,37 @@ section {
 }
 
 /* ============================================
-   MÓVIL - BLUR OFF, ANIMACIONES DECORATIVAS ON
+   MÓVIL
    ============================================ */
 @media (max-width: 640px) {
   :root {
     --header-offset: 64px;
-    --whatsapp-pulse: none; /* El pulso grande del botón principal apagado */
+    --whatsapp-pulse: none;
   }
 
-  /* Fondos simplificados pero animados */
   body::before {
     background:
       radial-gradient(400px circle at 20% 10%, rgba(0,184,212,0.15), transparent 50%),
       radial-gradient(500px circle at 80% 40%, rgba(11,31,58,0.08), transparent 50%);
-    animation-duration: 30s; /* Más lento en móvil */
+    animation-duration: 30s;
   }
   body::after {
     opacity: 0.3;
-    animation-duration: 10s; /* Pulso más lento */
+    animation-duration: 10s;
   }
 
-  /* Aura giratoria desactivada (conic-gradient rotando es muy caro) */
   .hero::after { display: none; }
-
-  /* Aura pulsante activa pero más pequeña */
   .hero::before {
     width: 400px;
     height: 400px;
     filter: blur(50px);
   }
-
-  /* Animación del gradiente del hero más lenta */
   .hero { animation-duration: 20s; }
+  .hero-badges span { animation-duration: 5s; }
+  .logo span::after { animation-duration: 4s; }
+  .whatsapp-float::before { animation-duration: 4s; }
+  .jira-float::before { animation-duration: 4s; }
 
-  /* Badges del hero: flotación más lenta */
-  .hero-badges span {
-    animation-duration: 5s;
-  }
-
-  /* Logo: pulso más lento */
-  .logo span::after {
-    animation-duration: 4s;
-  }
-
-  /* WhatsApp: anillo expansivo más lento */
-  .whatsapp-float::before {
-    animation-duration: 4s;
-  }
-
-  /* Feedback táctil en tarjetas al tocar */
   .service-card:active,
   .app-card:active,
   .contact-card:active {
@@ -1919,7 +1976,6 @@ section {
     transition: transform 0.15s var(--ease-out);
   }
 
-  /* Desactivar blur */
   .header,
   .theme-toggle,
   .nav-toggle,
@@ -1949,7 +2005,6 @@ section {
     -webkit-backdrop-filter: none !important;
   }
 
-  /* Fondos sólidos */
   .header {
     background: var(--color-bg);
     border-bottom: 1px solid var(--color-border);
@@ -2000,7 +2055,6 @@ section {
   .btn-outline,
   .btn-review { background: var(--color-card-solid); }
 
-  /* Menú móvil */
   .nav {
     display: none;
     position: fixed;
@@ -2084,6 +2138,14 @@ section {
   }
   .whatsapp-float svg { width: 28px; height: 28px; }
 
+  .jira-float {
+    width: 54px;
+    height: 54px;
+    bottom: 84px;
+    right: 18px;
+  }
+  .jira-float svg { width: 26px; height: 26px; }
+
   .modal-box { padding: 30px 22px 24px; border-radius: var(--radius); }
   .modal-title { font-size: 1.2rem; }
 
@@ -2128,29 +2190,21 @@ section {
 
 /* ============================================
    DISPOSITIVOS DE GAMA BAJA
-   El JS añade .low-power si detecta pocos núcleos/RAM
    ============================================ */
 .low-power .logo span::after,
 .low-power .hero-badges span,
 .low-power .hero::before,
 .low-power .whatsapp-float::before,
+.low-power .jira-float::before,
 .low-power body::before,
 .low-power body::after {
   animation: none !important;
 }
 
-.low-power .hero-badges span {
-  transform: none !important;
-}
-
-.low-power .logo span::after {
-  opacity: 0.7;
-  transform: scaleX(1);
-}
-
-.low-power .whatsapp-float::before {
-  display: none;
-}
+.low-power .hero-badges span { transform: none !important; }
+.low-power .logo span::after { opacity: 0.7; transform: scaleX(1); }
+.low-power .whatsapp-float::before { display: none; }
+.low-power .jira-float::before { display: none; }
 
 /* ============================================
    ACCESIBILIDAD
@@ -2162,11 +2216,13 @@ section {
   }
   .reveal { opacity: 1; transform: none; }
   .whatsapp-float { animation: none !important; }
+  .jira-float { animation: none !important; }
   .logo span::after,
   .hero-badges span,
   .hero::before,
   .hero::after,
   .whatsapp-float::before,
+  .jira-float::before,
   body::before,
   body::after {
     animation: none !important;

@@ -4,6 +4,24 @@ document.addEventListener('DOMContentLoaded', function () {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ============================================
+     DETECCIÓN DE CAPACIDAD DEL DISPOSITIVO
+     ============================================ */
+  (function detectLowPowerDevice() {
+    if (prefersReducedMotion) {
+      document.documentElement.classList.add('low-power');
+      return;
+    }
+    if (!isMobile) return;
+
+    const cores = navigator.hardwareConcurrency || 8;
+    const memory = navigator.deviceMemory || 4;
+
+    if (cores <= 4 || memory < 4) {
+      document.documentElement.classList.add('low-power');
+    }
+  })();
+
+  /* ============================================
      1. MENÚ MÓVIL
      ============================================ */
   const toggle = document.getElementById('navToggle');
@@ -559,4 +577,19 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+    /* ============================================
+     12. BOTÓN FLOTANTE DE JIRA
+     Abre el portal de Jira Service Management en una pestaña nueva
+     ============================================ */
+  const jiraFloatBtn = document.getElementById('jiraFloatBtn');
+
+  if (jiraFloatBtn) {
+    jiraFloatBtn.addEventListener('click', function () {
+      window.open(
+        'https://servitecbaq.atlassian.net/servicedesk/customer/portal/3',
+        '_blank',
+        'noopener,noreferrer'
+      );
+    });
+  }
 });
