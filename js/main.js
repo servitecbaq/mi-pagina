@@ -577,7 +577,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-    /* ============================================
+  /* ============================================
      12. BOTÓN FLOTANTE DE JIRA
      Abre el portal de Jira Service Management en una pestaña nueva
      ============================================ */
@@ -592,4 +592,5 @@ document.addEventListener('DOMContentLoaded', function () {
       );
     });
   }
+
 });
