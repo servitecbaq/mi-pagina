@@ -73,6 +73,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('formFactura');
     if (form) form.addEventListener('submit', manejarEnvio);
 
+    // Inicializar botón de reset
+    inicializarBotonReset();
+
     // Consultar el último consecutivo del día al cargar la página
     consultarUltimoConsecutivo();
 });
@@ -348,21 +351,34 @@ function recolectarDatos() {
     };
 }
 
-// ===== PARSEAR MONEDA (limpia símbolos) =====
+// ===== PARSEAR MONEDA =====
 function parsearMoneda(texto) {
     const limpio = texto.replace(/[^\d]/g, '');
     return parseInt(limpio, 10) || 0;
 }
 
-// ===== CONSULTAR ÚLTIMO CONSECUTIVO DEL DÍA DESDE EL SHEETS =====
-async function consultarUltimoConsecutivo() {
+// ===== CALCULAR CLAVE DE FECHA DEL DÍA =====
+function obtenerFechaClave() {
     const hoy = new Date();
     const año = hoy.getFullYear();
     const mes = String(hoy.getMonth() + 1).padStart(2, '0');
     const dia = String(hoy.getDate()).padStart(2, '0');
-    const fechaClave = `${año}${mes}${dia}`;
+    return `${año}${mes}${dia}`;
+}
 
+// ===== CONSULTAR ÚLTIMO CONSECUTIVO DEL DÍA DESDE EL SHEETS =====
+async function consultarUltimoConsecutivo() {
+    const fechaClave = obtenerFechaClave();
     const claveStorage = `consecutivo_${fechaClave}`;
+    const claveReset = `reset_${fechaClave}`;
+
+    // Si hay una bandera de reset para hoy, NO consultar el Sheet
+    if (localStorage.getItem(claveReset) === 'true') {
+        console.log(`🔒 Reset activo para ${fechaClave} - no se consulta el Sheet`);
+        localStorage.setItem(claveStorage, '0');
+        return 0;
+    }
+
     let ultimoLocal = parseInt(localStorage.getItem(claveStorage) || '0', 10);
 
     try {
@@ -385,15 +401,8 @@ async function consultarUltimoConsecutivo() {
 }
 
 // ===== GENERAR NÚMERO CONSECUTIVO =====
-// Formato: CC-AAAAMMDD####
-// Ejemplo: CC-202610080001
 function generarNumeroConsecutivo() {
-    const hoy = new Date();
-    const año = hoy.getFullYear();
-    const mes = String(hoy.getMonth() + 1).padStart(2, '0');
-    const dia = String(hoy.getDate()).padStart(2, '0');
-    const fechaClave = `${año}${mes}${dia}`;
-
+    const fechaClave = obtenerFechaClave();
     const claveStorage = `consecutivo_${fechaClave}`;
     let ultimoNumero = parseInt(localStorage.getItem(claveStorage) || '0', 10);
 
@@ -697,7 +706,6 @@ function generarPDF(datos, numeroDocumento) {
     doc.setLineWidth(0.3);
     doc.line(margen + 6, y + 9, margen + 60, y + 9);
 
-    // Bancolombia
     doc.setTextColor(51, 65, 85);
     doc.setFontSize(8.5);
     doc.setFont('helvetica', 'bold');
@@ -712,7 +720,6 @@ function generarPDF(datos, numeroDocumento) {
         margen + 6, y + 24
     );
 
-    // Nequi (columna derecha)
     const colDerX = margen + (paginaAncho - margen * 2) / 2 + 5;
     doc.setFont('helvetica', 'bold');
     doc.text('Nequi', colDerX, y + 14);
@@ -720,7 +727,6 @@ function generarPDF(datos, numeroDocumento) {
     doc.text(`Celular: ${DATOS_BANCARIOS.nequi.celular}`, colDerX, y + 19);
     doc.text(`Titular: ${DATOS_BANCARIOS.nequi.titular}`, colDerX, y + 24);
 
-    // Nota
     doc.setFont('helvetica', 'italic');
     doc.setFontSize(7.5);
     doc.setTextColor(100, 116, 139);
@@ -746,7 +752,7 @@ function generarPDF(datos, numeroDocumento) {
         y += obsLineas.length * 4 + 6;
     }
 
-    // ===== FIRMA (alineada a la derecha, posición fija) =====
+    // ===== FIRMA =====
     const firmaAncho = 70;
     const firmaX = paginaAncho - margen - firmaAncho;
     const firmaY = paginaAlto - 45;
@@ -786,6 +792,69 @@ function generarPDF(datos, numeroDocumento) {
     // ===== GUARDAR =====
     const nombreArchivo = `CuentaCobro_${numeroDocumento}_${datos.cliente.nombre.replace(/\s+/g, '_')}.pdf`;
     doc.save(nombreArchivo);
+}
+
+// ===== BOTÓN DE RESET DEL CONSECUTIVO =====
+function inicializarBotonReset() {
+    const btn = document.getElementById('btnReset');
+    if (!btn) return;
+
+    btn.addEventListener('click', mostrarModalReset);
+}
+
+function mostrarModalReset() {
+    const fechaClave = obtenerFechaClave();
+    const claveStorage = `consecutivo_${fechaClave}`;
+    const actual = parseInt(localStorage.getItem(claveStorage) || '0', 10);
+
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.innerHTML = `
+        <div class="modal-box">
+            <h3>
+                <span class="modal-icon">
+                    <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
+                        <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                              stroke="currentColor" stroke-width="2"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                Reiniciar consecutivo
+            </h3>
+            <p>Esto reiniciará el contador del día <strong>${fechaClave}</strong> para que la próxima cuenta de cobro vuelva a empezar en <strong>0001</strong>.</p>
+            <div class="modal-info">
+                <div>Último consecutivo hoy: <strong>${actual === 0 ? 'ninguno' : 'CC-' + fechaClave + String(actual).padStart(4, '0')}</strong></div>
+                <div style="margin-top:6px; font-size:0.8rem; color: var(--gris-500);">El historial en Google Sheets no se modifica.</div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancelar" id="modalCancelar">Cancelar</button>
+                <button type="button" class="btn-confirmar" id="modalConfirmar">Sí, reiniciar</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+    setTimeout(() => overlay.classList.add('active'), 10);
+
+    const cerrar = () => {
+        overlay.classList.remove('active');
+        setTimeout(() => overlay.remove(), 200);
+    };
+
+    overlay.querySelector('#modalCancelar').addEventListener('click', cerrar);
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) cerrar();
+    });
+
+    overlay.querySelector('#modalConfirmar').addEventListener('click', () => {
+        localStorage.removeItem(claveStorage);
+        localStorage.setItem(`reset_${fechaClave}`, 'true');
+        cerrar();
+
+        setTimeout(() => {
+            alert(`✅ Consecutivo reiniciado.\n\nLa próxima cuenta de cobro del ${fechaClave} será CC-${fechaClave}0001.`);
+        }, 250);
+    });
 }
 
 // ===== LIMPIAR FORMULARIO =====
