@@ -9,12 +9,12 @@ const EMISOR_DEFAULT = {
     cedula: '1143260112',
     telefono: '315 850 5020',
     email: 'servitecbaq@gmail.com',
-    ciudad: 'Barranquilla, Atlántico'
+    ciudad: 'Barranquilla, Atlántico',
+    website: 'https://servitecbaq.com'
 };
 
 // ===== INICIALIZACIÓN =====
 document.addEventListener('DOMContentLoaded', () => {
-    // Mostrar fecha actual en el formulario
     const hoy = new Date();
     const fechaFormateada = hoy.toLocaleDateString('es-CO', {
         year: 'numeric',
@@ -34,16 +34,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Cédula por defecto en el campo emisor
     const emisorDoc = document.getElementById('emisor_documento');
     if (emisorDoc && emisorDoc.value === 'TU_CEDULA_AQUI') {
         emisorDoc.value = EMISOR_DEFAULT.cedula;
     }
 
-    // Agregar una fila inicial vacía
     agregarFila();
 
-    // Escuchar el envío del formulario
     const form = document.getElementById('formFactura');
     if (form) form.addEventListener('submit', manejarEnvio);
 });
@@ -122,24 +119,18 @@ function calcularTotales() {
 
     const total = subtotal + ivaTotal;
 
-    // Actualizar totales en el formulario
     document.getElementById('subtotal').textContent = formatearMoneda(subtotal);
     document.getElementById('iva').textContent      = formatearMoneda(ivaTotal);
     document.getElementById('total').textContent    = formatearMoneda(total);
 
-    // Mostrar total en letras
     const totalLetras = document.getElementById('totalLetras');
     if (totalLetras) {
-        totalLetras.textContent = total > 0
-            ? numeroALetras(total)
-            : '—';
+        totalLetras.textContent = total > 0 ? numeroALetras(total) : '—';
     }
 
-    // Actualizar tarjeta de estadística
     const totalStat = document.getElementById('totalStat');
     if (totalStat) totalStat.textContent = formatearMoneda(total);
 
-    // Actualizar contador de servicios
     const contador = document.getElementById('contadorServicios');
     if (contador) {
         const n = filas.length;
@@ -157,12 +148,11 @@ function formatearMoneda(valor) {
     }).format(valor);
 }
 
-// ===== FORMATEAR MONEDA PARA PDF (sin símbolo, para alinear) =====
 function formatearMonedaPDF(valor) {
     return '$' + Math.round(valor).toLocaleString('es-CO');
 }
 
-// ===== CONVERTIR NÚMERO A LETRAS (ESPAÑOL - COLOMBIA) =====
+// ===== CONVERTIR NÚMERO A LETRAS =====
 function numeroALetras(numero) {
     const entero = Math.floor(numero);
     const centavos = Math.round((numero - entero) * 100);
@@ -195,8 +185,6 @@ function convertirEntero(numero) {
         if (n === 100) return 'CIEN';
 
         let resultado = '';
-
-        // Centenas
         const centena = Math.floor(n / 100);
         const resto = n % 100;
 
@@ -205,7 +193,6 @@ function convertirEntero(numero) {
             if (resto > 0) resultado += ' ';
         }
 
-        // Decenas y unidades
         if (resto > 0) {
             if (ESPECIALES[resto]) {
                 resultado += ESPECIALES[resto];
@@ -220,11 +207,9 @@ function convertirEntero(numero) {
                 }
             }
         }
-
         return resultado;
     }
 
-    // Millones
     if (numero >= 1000000) {
         const millones = Math.floor(numero / 1000000);
         const resto = numero % 1000000;
@@ -242,7 +227,6 @@ function convertirEntero(numero) {
         return textoMillones;
     }
 
-    // Miles
     if (numero >= 1000) {
         const miles = Math.floor(numero / 1000);
         const resto = numero % 1000;
@@ -260,11 +244,10 @@ function convertirEntero(numero) {
         return textoMiles;
     }
 
-    // Menor a 1000
     return convertirGrupo(numero);
 }
 
-// ===== RECOLECTAR DATOS DEL FORMULARIO =====
+// ===== RECOLECTAR DATOS =====
 function recolectarDatos() {
     const servicios = [];
 
@@ -283,17 +266,14 @@ function recolectarDatos() {
         });
     });
 
-    const totalTexto = document.getElementById('total').textContent;
-    const subtotalTexto = document.getElementById('subtotal').textContent;
-    const ivaTexto = document.getElementById('iva').textContent;
-
     return {
         emisor: {
             nombre:   document.getElementById('emisor_nombre').value,
             cedula:   document.getElementById('emisor_documento').value,
             telefono: document.getElementById('emisor_telefono').value,
             email:    document.getElementById('emisor_email').value,
-            ciudad:   document.getElementById('emisor_ciudad').value
+            ciudad:   document.getElementById('emisor_ciudad').value,
+            website:  document.getElementById('emisor_website').value
         },
         cliente: {
             nombre:    document.getElementById('cliente_nombre').value.trim(),
@@ -305,9 +285,9 @@ function recolectarDatos() {
         },
         servicios: servicios,
         totales: {
-            subtotal: parsearMoneda(subtotalTexto),
-            iva:      parsearMoneda(ivaTexto),
-            total:    parsearMoneda(totalTexto)
+            subtotal: parsearMoneda(document.getElementById('subtotal').textContent),
+            iva:      parsearMoneda(document.getElementById('iva').textContent),
+            total:    parsearMoneda(document.getElementById('total').textContent)
         },
         totalLetras: document.getElementById('totalLetras').textContent,
         observaciones: document.getElementById('observaciones').value.trim(),
@@ -316,7 +296,6 @@ function recolectarDatos() {
 }
 
 function parsearMoneda(texto) {
-    // Convierte "$1.234" a 1234
     return parseFloat(texto.replace(/[^0-9.-]/g, '')) || 0;
 }
 
@@ -324,7 +303,6 @@ function parsearMoneda(texto) {
 function manejarEnvio(evento) {
     evento.preventDefault();
 
-    // Validar que haya al menos un servicio con descripción y valor
     const filas = document.querySelectorAll('#cuerpoServicios tr');
     let serviciosValidos = 0;
 
@@ -339,7 +317,6 @@ function manejarEnvio(evento) {
         return;
     }
 
-    // Validar campos requeridos del cliente
     const nombreCliente = document.getElementById('cliente_nombre').value.trim();
     const docCliente = document.getElementById('cliente_documento').value.trim();
     const emailCliente = document.getElementById('cliente_email').value.trim();
@@ -349,13 +326,13 @@ function manejarEnvio(evento) {
         return;
     }
 
-    // Recolectar datos
     const datos = recolectarDatos();
-
-    // Generar número temporal (en el futuro lo asigna el backend)
     const numeroDocumento = `CC-${Date.now().toString().slice(-6)}`;
 
-    // Generar y descargar el PDF
+    // Actualizar stat de número de documento
+    const numeroStat = document.getElementById('numeroStat');
+    if (numeroStat) numeroStat.textContent = numeroDocumento;
+
     try {
         generarPDF(datos, numeroDocumento);
         alert(`✅ Cuenta de cobro generada correctamente.\n\nNúmero: ${numeroDocumento}\nTotal: ${formatearMoneda(datos.totales.total)}`);
@@ -370,26 +347,30 @@ function generarPDF(datos, numeroDocumento) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p', 'mm', 'a4');
 
-    const paginaAncho = doc.internal.pageSize.getWidth();  // 210
-    const paginaAlto  = doc.internal.pageSize.getHeight(); // 297
+    const paginaAncho = doc.internal.pageSize.getWidth();
+    const paginaAlto  = doc.internal.pageSize.getHeight();
     const margen = 18;
     let y = 20;
 
     // ===== ENCABEZADO =====
-    doc.setFillColor(10, 37, 64); // azul-900
-    doc.rect(0, 0, paginaAncho, 32, 'F');
+    doc.setFillColor(10, 37, 64);
+    doc.rect(0, 0, paginaAncho, 34, 'F');
 
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(18);
     doc.setFont('helvetica', 'bold');
-    doc.text('SERVITEC.BAQ', margen, 15);
+    doc.text('SERVITEC.BAQ', margen, 14);
 
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
-    doc.text('Reparación, Mantenimiento y Soporte Tecnológico', margen, 21);
-    doc.text('Barranquilla, Atlántico · Colombia', margen, 26);
+    doc.text('Reparación, Mantenimiento y Soporte Tecnológico', margen, 20);
+    doc.text('Barranquilla, Atlántico · Colombia', margen, 25);
 
-    // Número de cuenta de cobro (a la derecha)
+    doc.setTextColor(100, 181, 246);
+    doc.setFontSize(8.5);
+    doc.text('www.servitecbaq.com', margen, 30);
+
+    doc.setTextColor(255, 255, 255);
     doc.setFontSize(11);
     doc.setFont('helvetica', 'bold');
     doc.text('CUENTA DE COBRO', paginaAncho - margen, 14, { align: 'right' });
@@ -398,10 +379,10 @@ function generarPDF(datos, numeroDocumento) {
     doc.text(`No. ${numeroDocumento}`, paginaAncho - margen, 20, { align: 'right' });
     doc.text(`Fecha: ${datos.fecha}`, paginaAncho - margen, 26, { align: 'right' });
 
-    y = 45;
+    y = 48;
 
     // ===== DATOS DEL EMISOR =====
-    doc.setTextColor(21, 101, 192); // azul-700
+    doc.setTextColor(21, 101, 192);
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
     doc.text('DATOS DEL EMISOR', margen, y);
@@ -411,30 +392,21 @@ function generarPDF(datos, numeroDocumento) {
     doc.line(margen, y, margen + 50, y);
     y += 6;
 
-    doc.setTextColor(51, 65, 85); // gris-700
+    doc.setTextColor(51, 65, 85);
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
 
-    const emisorIzq = [
-        `Nombre: ${datos.emisor.nombre}`,
-        `Cédula: ${datos.emisor.cedula}`,
-        `Teléfono: ${datos.emisor.telefono}`
-    ];
-    const emisorDer = [
-        `Correo: ${datos.emisor.email}`,
-        `Ciudad: ${datos.emisor.ciudad}`,
-        ``
-    ];
-
     const anchoCol = (paginaAncho - margen * 2) / 2;
 
-    emisorIzq.forEach((linea, i) => {
-        doc.text(linea, margen, y + i * 5);
-    });
-    emisorDer.forEach((linea, i) => {
-        if (linea) doc.text(linea, margen + anchoCol, y + i * 5);
-    });
-    y += 20;
+    doc.text(`Nombre: ${datos.emisor.nombre}`, margen, y);
+    doc.text(`Correo: ${datos.emisor.email}`, margen + anchoCol, y);
+    y += 5;
+    doc.text(`Cédula: ${datos.emisor.cedula}`, margen, y);
+    doc.text(`Sitio web: ${datos.emisor.website}`, margen + anchoCol, y);
+    y += 5;
+    doc.text(`Teléfono: ${datos.emisor.telefono}`, margen, y);
+    doc.text(`Ciudad: ${datos.emisor.ciudad}`, margen + anchoCol, y);
+    y += 14;
 
     // ===== DATOS DEL CLIENTE =====
     doc.setTextColor(21, 101, 192);
@@ -449,24 +421,17 @@ function generarPDF(datos, numeroDocumento) {
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
 
-    const clienteIzq = [
-        `Nombre: ${datos.cliente.nombre}`,
-        `${datos.cliente.tipoDoc}: ${datos.cliente.documento}`,
-        datos.cliente.direccion ? `Dirección: ${datos.cliente.direccion}` : ''
-    ];
-    const clienteDer = [
-        `Correo: ${datos.cliente.email}`,
-        datos.cliente.telefono ? `Teléfono: ${datos.cliente.telefono}` : '',
-        ''
-    ];
-
-    clienteIzq.forEach((linea, i) => {
-        if (linea) doc.text(linea, margen, y + i * 5);
-    });
-    clienteDer.forEach((linea, i) => {
-        if (linea) doc.text(linea, margen + anchoCol, y + i * 5);
-    });
-    y += 20;
+    doc.text(`Nombre: ${datos.cliente.nombre}`, margen, y);
+    doc.text(`Correo: ${datos.cliente.email}`, margen + anchoCol, y);
+    y += 5;
+    doc.text(`${datos.cliente.tipoDoc}: ${datos.cliente.documento}`, margen, y);
+    if (datos.cliente.telefono) doc.text(`Teléfono: ${datos.cliente.telefono}`, margen + anchoCol, y);
+    y += 5;
+    if (datos.cliente.direccion) {
+        doc.text(`Dirección: ${datos.cliente.direccion}`, margen, y);
+        y += 5;
+    }
+    y += 8;
 
     // ===== TABLA DE SERVICIOS =====
     doc.setTextColor(21, 101, 192);
@@ -475,7 +440,6 @@ function generarPDF(datos, numeroDocumento) {
     doc.text('DETALLE DE SERVICIOS', margen, y);
     y += 7;
 
-    // Encabezados de la tabla
     const colDesc = margen + 3;
     const colCant = margen + 105;
     const colValor = margen + 125;
@@ -492,19 +456,16 @@ function generarPDF(datos, numeroDocumento) {
     doc.text('Total', colTotal, y + 5.5, { align: 'right' });
     y += 8;
 
-    // Filas de servicios
     doc.setTextColor(51, 65, 85);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
 
     datos.servicios.forEach((servicio, idx) => {
-        // Salto de página si es necesario
         if (y > paginaAlto - 60) {
             doc.addPage();
             y = 25;
         }
 
-        // Fondo alternado
         if (idx % 2 === 0) {
             doc.setFillColor(248, 250, 252);
             doc.rect(margen, y, paginaAncho - margen * 2, 8, 'F');
@@ -519,7 +480,6 @@ function generarPDF(datos, numeroDocumento) {
         doc.text(formatearMonedaPDF(servicio.valor_unitario), colValor, y + 5.5);
         doc.text(formatearMonedaPDF(servicio.total_linea), colTotal, y + 5.5, { align: 'right' });
 
-        // Línea divisoria
         doc.setDrawColor(226, 232, 240);
         doc.setLineWidth(0.2);
         doc.line(margen, y + 8, paginaAncho - margen, y + 8);
@@ -548,7 +508,6 @@ function generarPDF(datos, numeroDocumento) {
     doc.text(formatearMonedaPDF(datos.totales.iva), colTotal, y, { align: 'right' });
     y += 8;
 
-    // Total destacado
     doc.setFillColor(10, 37, 64);
     doc.rect(totalesX - 3, y - 5, 63, 12, 'F');
     doc.setTextColor(255, 255, 255);
@@ -558,7 +517,7 @@ function generarPDF(datos, numeroDocumento) {
     doc.text(formatearMonedaPDF(datos.totales.total), colTotal, y + 2, { align: 'right' });
     y += 18;
 
-    // Monto en letras
+    // ===== MONTO EN LETRAS =====
     doc.setTextColor(51, 65, 85);
     doc.setFont('helvetica', 'italic');
     doc.setFontSize(8.5);
@@ -614,7 +573,7 @@ function generarPDF(datos, numeroDocumento) {
         doc.setTextColor(148, 163, 184);
         doc.setFont('helvetica', 'normal');
         doc.text(
-            `Servitec.baq · ${datos.emisor.email} · ${datos.emisor.telefono}`,
+            `Servitec.baq · ${datos.emisor.email} · ${datos.emisor.telefono} · www.servitecbaq.com`,
             paginaAncho / 2,
             paginaAlto - 8,
             { align: 'center' }
@@ -627,7 +586,7 @@ function generarPDF(datos, numeroDocumento) {
         );
     }
 
-    // ===== GUARDAR (descarga automática) =====
+    // ===== GUARDAR =====
     const nombreArchivo = `CuentaCobro_${numeroDocumento}_${datos.cliente.nombre.replace(/\s+/g, '_')}.pdf`;
     doc.save(nombreArchivo);
 }
@@ -638,9 +597,8 @@ function limpiarFormulario() {
 
     document.getElementById('formFactura').reset();
     document.getElementById('cuerpoServicios').innerHTML = '';
-
-    // Restaurar cédula del emisor
     document.getElementById('emisor_documento').value = EMISOR_DEFAULT.cedula;
+    document.getElementById('emisor_website').value = EMISOR_DEFAULT.website;
 
     agregarFila();
     calcularTotales();

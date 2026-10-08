@@ -125,6 +125,26 @@ body {
     gap: 14px;
 }
 
+.btn-volver {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    text-decoration: none;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all var(--transicion);
+}
+
+.btn-volver:hover {
+    background: rgba(255, 255, 255, 0.22);
+    transform: translateX(-2px);
+}
+
 .badge-version {
     background: rgba(255, 255, 255, 0.15);
     padding: 4px 10px;
@@ -679,6 +699,11 @@ textarea {
         padding: 4px;
         background: transparent;
         border: none;
+    }
+    .btn-volver span,
+    .btn-volver {
+        padding: 6px 10px;
+        font-size: 0.75rem;
     }
     .grid-2 {
         grid-template-columns: 1fr;
