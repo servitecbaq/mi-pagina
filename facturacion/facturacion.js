@@ -1,7 +1,17 @@
 /* ============================================
-   SERVITEC.BAQ · MÓDULO DE FACTURACIÓN
-   JavaScript completo con generación de PDF
+   SERVITEC.BAQ · GENERADOR DE CUENTAS DE COBRO
+   
+   Este módulo NO es facturación electrónica.
+   Genera cuentas de cobro en PDF, que son el
+   documento correcto para personas naturales
+   no responsables de IVA según la DIAN.
+   
+   Guarda un registro automático en Google Sheets
+   a través de Google Apps Script.
    ============================================ */
+
+// ===== CONFIGURACIÓN =====
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJjXoPmpuN5fHB_uE1rA7AJXplPA7-z0MoKqPh8Qu0XX8j3BtfpkXhAvFZPqeR0XDpIw/exec';
 
 // ===== DATOS POR DEFECTO DEL EMISOR =====
 const EMISOR_DEFAULT = {
@@ -329,10 +339,13 @@ function manejarEnvio(evento) {
     const datos = recolectarDatos();
     const numeroDocumento = `CC-${Date.now().toString().slice(-6)}`;
 
-    // Actualizar stat de número de documento
     const numeroStat = document.getElementById('numeroStat');
     if (numeroStat) numeroStat.textContent = numeroDocumento;
 
+    // ===== ENVIAR DATOS A GOOGLE SHEETS =====
+    enviarDatosAGoogle(datos, numeroDocumento);
+
+    // ===== GENERAR PDF =====
     try {
         generarPDF(datos, numeroDocumento);
         alert(`✅ Cuenta de cobro generada correctamente.\n\nNúmero: ${numeroDocumento}\nTotal: ${formatearMoneda(datos.totales.total)}`);
@@ -340,6 +353,43 @@ function manejarEnvio(evento) {
         console.error('Error al generar el PDF:', error);
         alert('Hubo un error al generar el PDF. Revisa la consola para más detalles.');
     }
+}
+
+// ===== ENVIAR DATOS A GOOGLE SHEETS =====
+function enviarDatosAGoogle(datos, numeroDocumento) {
+    // Prepara los datos que se enviarán al script de Google
+    const formData = new URLSearchParams();
+
+    formData.append('NumeroCuenta', numeroDocumento);
+    formData.append('Fecha', datos.fecha);
+    formData.append('ClienteNombre', datos.cliente.nombre);
+    formData.append('ClienteTipoDoc', datos.cliente.tipoDoc);
+    formData.append('ClienteDocumento', datos.cliente.documento);
+    formData.append('ClienteEmail', datos.cliente.email);
+    formData.append('ClienteTelefono', datos.cliente.telefono || '');
+    formData.append('ClienteDireccion', datos.cliente.direccion || '');
+    formData.append('Subtotal', datos.totales.subtotal);
+    formData.append('IVA', datos.totales.iva);
+    formData.append('Total', datos.totales.total);
+    formData.append('TotalLetras', datos.totalLetras);
+    formData.append('Observaciones', datos.observaciones || '');
+    formData.append('Servicios', JSON.stringify(datos.servicios));
+
+    // Envía los datos al script de Google
+    fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors', // Necesario para evitar bloqueos CORS con Apps Script
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formData.toString()
+    })
+    .then(() => {
+        console.log('✅ Datos enviados a Google Sheets:', numeroDocumento);
+    })
+    .catch(error => {
+        console.error('❌ Error al enviar a Google Sheets:', error);
+    });
 }
 
 // ===== GENERAR PDF =====
