@@ -183,7 +183,7 @@ function formatearMoneda(valor) {
     }).format(valor);
 }
 
-// ===== FORMATEAR MONEDA PARA PDF (MANUAL, SIN DEPENDER DE LOCALE) =====
+// ===== FORMATEAR MONEDA PARA PDF (MANUAL) =====
 function formatearMonedaPDF(valor) {
     const num = Math.round(valor);
     const str = Math.abs(num).toString();
@@ -372,7 +372,6 @@ async function consultarUltimoConsecutivo() {
     const claveStorage = `consecutivo_${fechaClave}`;
     const claveReset = `reset_${fechaClave}`;
 
-    // Si hay una bandera de reset para hoy, NO consultar el Sheet
     if (localStorage.getItem(claveReset) === 'true') {
         console.log(`🔒 Reset activo para ${fechaClave} - no se consulta el Sheet`);
         localStorage.setItem(claveStorage, '0');
@@ -415,7 +414,7 @@ function generarNumeroConsecutivo() {
 }
 
 // ===== MANEJAR ENVÍO =====
-function manejarEnvio(evento) {
+async function manejarEnvio(evento) {
     evento.preventDefault();
 
     const filas = document.querySelectorAll('#cuerpoServicios tr');
@@ -447,12 +446,12 @@ function manejarEnvio(evento) {
     const numeroStat = document.getElementById('numeroStat');
     if (numeroStat) numeroStat.textContent = numeroDocumento;
 
-    // ===== ENVIAR DATOS A GOOGLE SHEETS =====
+    // Enviar a Sheets
     enviarDatosAGoogle(datos, numeroDocumento);
 
-    // ===== GENERAR PDF =====
+    // Generar PDF (con await porque carga el logo)
     try {
-        generarPDF(datos, numeroDocumento);
+        await generarPDF(datos, numeroDocumento);
         alert(`✅ Cuenta de cobro generada correctamente.\n\nNúmero: ${numeroDocumento}\nTotal: ${formatearMoneda(datos.totales.total)}`);
     } catch (error) {
         console.error('Error al generar el PDF:', error);
@@ -460,7 +459,7 @@ function manejarEnvio(evento) {
     }
 }
 
-// ===== ENVIAR DATOS A GOOGLE SHEETS (MÉTODO IFRAME) =====
+// ===== ENVIAR DATOS A GOOGLE SHEETS (IFRAME) =====
 function enviarDatosAGoogle(datos, numeroDocumento) {
     const serviciosTexto = datos.servicios.map((s, idx) => {
         const cant = s.cantidad;
@@ -515,8 +514,31 @@ function enviarDatosAGoogle(datos, numeroDocumento) {
     console.log('✅ Datos enviados a Google Sheets:', numeroDocumento);
 }
 
+// ===== CARGAR LOGO COMO BASE64 =====
+function cargarLogo() {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            try {
+                const dataURL = canvas.toDataURL('image/png');
+                resolve(dataURL);
+            } catch (e) {
+                reject(e);
+            }
+        };
+        img.onerror = () => reject(new Error('No se pudo cargar el logo'));
+        img.src = 'img/logo.png';
+    });
+}
+
 // ===== GENERAR PDF =====
-function generarPDF(datos, numeroDocumento) {
+async function generarPDF(datos, numeroDocumento) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p', 'mm', 'a4');
 
@@ -525,24 +547,40 @@ function generarPDF(datos, numeroDocumento) {
     const margen = 18;
     let y = 20;
 
+    // ===== CARGAR LOGO =====
+    let logoBase64 = null;
+    try {
+        logoBase64 = await cargarLogo();
+    } catch (error) {
+        console.warn('⚠️ No se pudo cargar el logo:', error);
+    }
+
     // ===== ENCABEZADO =====
     doc.setFillColor(10, 37, 64);
     doc.rect(0, 0, paginaAncho, 34, 'F');
 
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(18);
-    doc.setFont('helvetica', 'bold');
-    doc.text('SERVITEC.BAQ', margen, 14);
+    // Logo (si se cargó)
+    let textoX = margen;
+    if (logoBase64) {
+        doc.addImage(logoBase64, 'PNG', margen, 7, 20, 20);
+        textoX = margen + 24;
+    }
 
-    doc.setFontSize(9);
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('SERVITEC.BAQ', textoX, 15);
+
+    doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
-    doc.text('Reparación, Mantenimiento y Soporte Tecnológico', margen, 20);
-    doc.text('Barranquilla, Atlántico · Colombia', margen, 25);
+    doc.text('Reparación, Mantenimiento y Soporte Tecnológico', textoX, 20);
+    doc.text('Barranquilla, Atlántico · Colombia', textoX, 24.5);
 
     doc.setTextColor(100, 181, 246);
-    doc.setFontSize(8.5);
-    doc.text('www.servitecbaq.com', margen, 30);
+    doc.setFontSize(8);
+    doc.text('www.servitecbaq.com', textoX, 29);
 
+    // Cuenta de cobro (derecha)
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(11);
     doc.setFont('helvetica', 'bold');
