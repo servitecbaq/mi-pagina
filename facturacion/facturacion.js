@@ -9,6 +9,9 @@
    Guarda un registro automático en Google Sheets
    a través de Google Apps Script usando un iframe
    oculto para evitar problemas de CORS.
+   
+   Sistema de numeración: CC-AAAAMMDD####
+   Ejemplo: CC-202610080001
    ============================================ */
 
 // ===== CONFIGURACIÓN =====
@@ -69,6 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const form = document.getElementById('formFactura');
     if (form) form.addEventListener('submit', manejarEnvio);
+
+    // Consultar el último consecutivo del día al cargar la página
+    consultarUltimoConsecutivo();
 });
 
 // ===== AGREGAR FILA DE SERVICIO =====
@@ -164,7 +170,7 @@ function calcularTotales() {
     }
 }
 
-// ===== FORMATEAR MONEDA =====
+// ===== FORMATEAR MONEDA (EN PANTALLA) =====
 function formatearMoneda(valor) {
     return new Intl.NumberFormat('es-CO', {
         style: 'currency',
@@ -174,8 +180,25 @@ function formatearMoneda(valor) {
     }).format(valor);
 }
 
+// ===== FORMATEAR MONEDA PARA PDF (MANUAL, SIN DEPENDER DE LOCALE) =====
 function formatearMonedaPDF(valor) {
-    return '$' + Math.round(valor).toLocaleString('es-CO');
+    const num = Math.round(valor);
+    const str = Math.abs(num).toString();
+    let resultado = '';
+    let contador = 0;
+
+    for (let i = str.length - 1; i >= 0; i--) {
+        resultado = str[i] + resultado;
+        contador++;
+        if (contador === 3 && i > 0) {
+            resultado = '.' + resultado;
+            contador = 0;
+        }
+    }
+
+    if (num < 0) resultado = '-' + resultado;
+
+    return '$' + resultado;
 }
 
 // ===== CONVERTIR NÚMERO A LETRAS =====
@@ -292,6 +315,10 @@ function recolectarDatos() {
         });
     });
 
+    const subtotalTexto = document.getElementById('subtotal').textContent;
+    const ivaTexto = document.getElementById('iva').textContent;
+    const totalTexto = document.getElementById('total').textContent;
+
     return {
         emisor: {
             nombre:   document.getElementById('emisor_nombre').value,
@@ -311,9 +338,9 @@ function recolectarDatos() {
         },
         servicios: servicios,
         totales: {
-            subtotal: parsearMoneda(document.getElementById('subtotal').textContent),
-            iva:      parsearMoneda(document.getElementById('iva').textContent),
-            total:    parsearMoneda(document.getElementById('total').textContent)
+            subtotal: parsearMoneda(subtotalTexto),
+            iva:      parsearMoneda(ivaTexto),
+            total:    parsearMoneda(totalTexto)
         },
         totalLetras: document.getElementById('totalLetras').textContent,
         observaciones: document.getElementById('observaciones').value.trim(),
@@ -321,8 +348,61 @@ function recolectarDatos() {
     };
 }
 
+// ===== PARSEAR MONEDA (limpia símbolos) =====
 function parsearMoneda(texto) {
-    return parseFloat(texto.replace(/[^0-9.-]/g, '')) || 0;
+    const limpio = texto.replace(/[^\d]/g, '');
+    return parseInt(limpio, 10) || 0;
+}
+
+// ===== CONSULTAR ÚLTIMO CONSECUTIVO DEL DÍA DESDE EL SHEETS =====
+async function consultarUltimoConsecutivo() {
+    const hoy = new Date();
+    const año = hoy.getFullYear();
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+    const dia = String(hoy.getDate()).padStart(2, '0');
+    const fechaClave = `${año}${mes}${dia}`;
+
+    const claveStorage = `consecutivo_${fechaClave}`;
+    let ultimoLocal = parseInt(localStorage.getItem(claveStorage) || '0', 10);
+
+    try {
+        const url = `${GOOGLE_SCRIPT_URL}?accion=ultimoConsecutivo&fecha=${fechaClave}`;
+        const respuesta = await fetch(url);
+        const data = await respuesta.json();
+
+        if (data.result === 'success') {
+            const ultimoSheet = parseInt(data.ultimoConsecutivo) || 0;
+            const ultimoReal = Math.max(ultimoLocal, ultimoSheet);
+            localStorage.setItem(claveStorage, ultimoReal.toString());
+            console.log(`📋 Consecutivo sincronizado (${fechaClave}): último = ${ultimoReal}`);
+            return ultimoReal;
+        }
+    } catch (error) {
+        console.warn('⚠️ No se pudo consultar el Sheets, usando localStorage:', error);
+    }
+
+    return ultimoLocal;
+}
+
+// ===== GENERAR NÚMERO CONSECUTIVO =====
+// Formato: CC-AAAAMMDD####
+// Ejemplo: CC-202610080001
+function generarNumeroConsecutivo() {
+    const hoy = new Date();
+    const año = hoy.getFullYear();
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+    const dia = String(hoy.getDate()).padStart(2, '0');
+    const fechaClave = `${año}${mes}${dia}`;
+
+    const claveStorage = `consecutivo_${fechaClave}`;
+    let ultimoNumero = parseInt(localStorage.getItem(claveStorage) || '0', 10);
+
+    let nuevoNumero = ultimoNumero + 1;
+    localStorage.setItem(claveStorage, nuevoNumero.toString());
+
+    const consecutivoFormateado = nuevoNumero.toString().padStart(4, '0');
+
+    return `CC-${fechaClave}${consecutivoFormateado}`;
 }
 
 // ===== MANEJAR ENVÍO =====
@@ -353,7 +433,7 @@ function manejarEnvio(evento) {
     }
 
     const datos = recolectarDatos();
-    const numeroDocumento = `CC-${Date.now().toString().slice(-6)}`;
+    const numeroDocumento = generarNumeroConsecutivo();
 
     const numeroStat = document.getElementById('numeroStat');
     if (numeroStat) numeroStat.textContent = numeroDocumento;
@@ -373,7 +453,6 @@ function manejarEnvio(evento) {
 
 // ===== ENVIAR DATOS A GOOGLE SHEETS (MÉTODO IFRAME) =====
 function enviarDatosAGoogle(datos, numeroDocumento) {
-    // Formatear los servicios como texto legible
     const serviciosTexto = datos.servicios.map((s, idx) => {
         const cant = s.cantidad;
         const valorUnit = formatearMonedaPDF(s.valor_unitario);
@@ -382,7 +461,6 @@ function enviarDatosAGoogle(datos, numeroDocumento) {
         return `${idx + 1}. ${s.descripcion} | Cant: ${cant} | V.Unit: ${valorUnit}${ivaTexto} | Total: ${total}`;
     }).join('\n');
 
-    // Construir el objeto con TODOS los campos
     const payload = {
         NumeroCuenta:     numeroDocumento,
         ClienteNombre:    datos.cliente.nombre,
@@ -391,29 +469,26 @@ function enviarDatosAGoogle(datos, numeroDocumento) {
         ClienteEmail:     datos.cliente.email,
         ClienteTelefono:  datos.cliente.telefono || '',
         ClienteDireccion: datos.cliente.direccion || '',
-        Subtotal:         datos.totales.subtotal,
-        IVA:              datos.totales.iva,
-        Total:            datos.totales.total,
+        Subtotal:         Number(datos.totales.subtotal) || 0,
+        IVA:              Number(datos.totales.iva) || 0,
+        Total:            Number(datos.totales.total) || 0,
         TotalLetras:      datos.totalLetras,
         Observaciones:    datos.observaciones || '',
         Servicios:        serviciosTexto
     };
 
-    // Crear un iframe oculto con nombre único
     const iframeName = 'google_sheet_frame_' + Date.now();
     const iframe = document.createElement('iframe');
     iframe.name = iframeName;
     iframe.style.display = 'none';
     document.body.appendChild(iframe);
 
-    // Crear un formulario que se enviará a través del iframe
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = GOOGLE_SCRIPT_URL;
     form.target = iframeName;
     form.style.display = 'none';
 
-    // Agregar el payload como un campo hidden
     const input = document.createElement('input');
     input.type = 'hidden';
     input.name = 'payload';
@@ -423,7 +498,6 @@ function enviarDatosAGoogle(datos, numeroDocumento) {
     document.body.appendChild(form);
     form.submit();
 
-    // Limpiar después de 5 segundos
     setTimeout(() => {
         if (document.body.contains(form)) document.body.removeChild(form);
         if (document.body.contains(iframe)) document.body.removeChild(iframe);
@@ -469,7 +543,7 @@ function generarPDF(datos, numeroDocumento) {
     doc.text(`No. ${numeroDocumento}`, paginaAncho - margen, 20, { align: 'right' });
     doc.text(`Fecha: ${datos.fecha}`, paginaAncho - margen, 26, { align: 'right' });
 
-    y = 48;
+    y = 44;
 
     // ===== DATOS DEL EMISOR =====
     doc.setTextColor(21, 101, 192);
@@ -480,7 +554,7 @@ function generarPDF(datos, numeroDocumento) {
     doc.setDrawColor(30, 136, 229);
     doc.setLineWidth(0.5);
     doc.line(margen, y, margen + 50, y);
-    y += 6;
+    y += 5;
 
     doc.setTextColor(51, 65, 85);
     doc.setFontSize(9);
@@ -490,13 +564,13 @@ function generarPDF(datos, numeroDocumento) {
 
     doc.text(`Nombre: ${datos.emisor.nombre}`, margen, y);
     doc.text(`Correo: ${datos.emisor.email}`, margen + anchoCol, y);
-    y += 5;
+    y += 4.5;
     doc.text(`Cédula: ${datos.emisor.cedula}`, margen, y);
     doc.text(`Sitio web: ${datos.emisor.website}`, margen + anchoCol, y);
-    y += 5;
+    y += 4.5;
     doc.text(`Teléfono: ${datos.emisor.telefono}`, margen, y);
     doc.text(`Ciudad: ${datos.emisor.ciudad}`, margen + anchoCol, y);
-    y += 14;
+    y += 10;
 
     // ===== DATOS DEL CLIENTE =====
     doc.setTextColor(21, 101, 192);
@@ -505,7 +579,7 @@ function generarPDF(datos, numeroDocumento) {
     doc.text('DATOS DEL CLIENTE', margen, y);
     y += 2;
     doc.line(margen, y, margen + 50, y);
-    y += 6;
+    y += 5;
 
     doc.setTextColor(51, 65, 85);
     doc.setFontSize(9);
@@ -513,22 +587,22 @@ function generarPDF(datos, numeroDocumento) {
 
     doc.text(`Nombre: ${datos.cliente.nombre}`, margen, y);
     doc.text(`Correo: ${datos.cliente.email}`, margen + anchoCol, y);
-    y += 5;
+    y += 4.5;
     doc.text(`${datos.cliente.tipoDoc}: ${datos.cliente.documento}`, margen, y);
     if (datos.cliente.telefono) doc.text(`Teléfono: ${datos.cliente.telefono}`, margen + anchoCol, y);
-    y += 5;
+    y += 4.5;
     if (datos.cliente.direccion) {
         doc.text(`Dirección: ${datos.cliente.direccion}`, margen, y);
-        y += 5;
+        y += 4.5;
     }
-    y += 8;
+    y += 6;
 
     // ===== TABLA DE SERVICIOS =====
     doc.setTextColor(21, 101, 192);
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
     doc.text('DETALLE DE SERVICIOS', margen, y);
-    y += 7;
+    y += 6;
 
     const colDesc = margen + 3;
     const colCant = margen + 105;
@@ -536,54 +610,44 @@ function generarPDF(datos, numeroDocumento) {
     const colTotal = paginaAncho - margen - 3;
 
     doc.setFillColor(30, 136, 229);
-    doc.rect(margen, y, paginaAncho - margen * 2, 8, 'F');
+    doc.rect(margen, y, paginaAncho - margen * 2, 7, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
-    doc.text('Descripción', colDesc, y + 5.5);
-    doc.text('Cant.', colCant, y + 5.5);
-    doc.text('Valor Unit.', colValor, y + 5.5);
-    doc.text('Total', colTotal, y + 5.5, { align: 'right' });
-    y += 8;
+    doc.text('Descripción', colDesc, y + 5);
+    doc.text('Cant.', colCant, y + 5);
+    doc.text('Valor Unit.', colValor, y + 5);
+    doc.text('Total', colTotal, y + 5, { align: 'right' });
+    y += 7;
 
     doc.setTextColor(51, 65, 85);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
 
     datos.servicios.forEach((servicio, idx) => {
-        if (y > paginaAlto - 100) {
-            doc.addPage();
-            y = 25;
-        }
-
         if (idx % 2 === 0) {
             doc.setFillColor(248, 250, 252);
-            doc.rect(margen, y, paginaAncho - margen * 2, 8, 'F');
+            doc.rect(margen, y, paginaAncho - margen * 2, 7, 'F');
         }
 
         const descCorta = servicio.descripcion.length > 48
             ? servicio.descripcion.substring(0, 45) + '...'
             : servicio.descripcion;
 
-        doc.text(descCorta, colDesc, y + 5.5);
-        doc.text(servicio.cantidad.toString(), colCant, y + 5.5);
-        doc.text(formatearMonedaPDF(servicio.valor_unitario), colValor, y + 5.5);
-        doc.text(formatearMonedaPDF(servicio.total_linea), colTotal, y + 5.5, { align: 'right' });
+        doc.text(descCorta, colDesc, y + 5);
+        doc.text(servicio.cantidad.toString(), colCant, y + 5);
+        doc.text(formatearMonedaPDF(servicio.valor_unitario), colValor, y + 5);
+        doc.text(formatearMonedaPDF(servicio.total_linea), colTotal, y + 5, { align: 'right' });
 
         doc.setDrawColor(226, 232, 240);
         doc.setLineWidth(0.2);
-        doc.line(margen, y + 8, paginaAncho - margen, y + 8);
-        y += 8;
+        doc.line(margen, y + 7, paginaAncho - margen, y + 7);
+        y += 7;
     });
 
-    y += 8;
+    y += 5;
 
     // ===== TOTALES =====
-    if (y > paginaAlto - 100) {
-        doc.addPage();
-        y = 25;
-    }
-
     const totalesX = paginaAncho - margen - 60;
 
     doc.setFontSize(9);
@@ -592,20 +656,20 @@ function generarPDF(datos, numeroDocumento) {
 
     doc.text('Subtotal:', totalesX, y);
     doc.text(formatearMonedaPDF(datos.totales.subtotal), colTotal, y, { align: 'right' });
-    y += 5;
+    y += 4.5;
 
     doc.text('IVA:', totalesX, y);
     doc.text(formatearMonedaPDF(datos.totales.iva), colTotal, y, { align: 'right' });
-    y += 8;
+    y += 7;
 
     doc.setFillColor(10, 37, 64);
-    doc.rect(totalesX - 3, y - 5, 63, 12, 'F');
+    doc.rect(totalesX - 3, y - 4, 63, 11, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(11);
     doc.setFont('helvetica', 'bold');
-    doc.text('TOTAL:', totalesX, y + 2);
-    doc.text(formatearMonedaPDF(datos.totales.total), colTotal, y + 2, { align: 'right' });
-    y += 18;
+    doc.text('TOTAL:', totalesX, y + 3);
+    doc.text(formatearMonedaPDF(datos.totales.total), colTotal, y + 3, { align: 'right' });
+    y += 14;
 
     // ===== MONTO EN LETRAS =====
     doc.setTextColor(51, 65, 85);
@@ -614,23 +678,16 @@ function generarPDF(datos, numeroDocumento) {
     const totalLetrasTexto = `Son: ${datos.totalLetras}`;
     const lineasLetras = doc.splitTextToSize(totalLetrasTexto, paginaAncho - margen * 2);
     doc.text(lineasLetras, margen, y);
-    y += lineasLetras.length * 4 + 10;
+    y += lineasLetras.length * 4 + 6;
 
     // ===== DATOS PARA PAGO =====
-    if (y > paginaAlto - 80) {
-        doc.addPage();
-        y = 25;
-    }
-
-    // Caja contenedora
-    const cajaAlto = 40;
+    const cajaAlto = 36;
     doc.setFillColor(240, 247, 255);
     doc.roundedRect(margen, y, paginaAncho - margen * 2, cajaAlto, 2, 2, 'F');
     doc.setDrawColor(30, 136, 229);
     doc.setLineWidth(0.4);
     doc.roundedRect(margen, y, paginaAncho - margen * 2, cajaAlto, 2, 2, 'S');
 
-    // Título de la caja
     doc.setTextColor(21, 101, 192);
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
@@ -644,24 +701,24 @@ function generarPDF(datos, numeroDocumento) {
     doc.setTextColor(51, 65, 85);
     doc.setFontSize(8.5);
     doc.setFont('helvetica', 'bold');
-    doc.text('Bancolombia', margen + 6, y + 15);
+    doc.text('Bancolombia', margen + 6, y + 14);
     doc.setFont('helvetica', 'normal');
     doc.text(
         `${DATOS_BANCARIOS.bancolombia.tipo}: ${DATOS_BANCARIOS.bancolombia.numero}`,
-        margen + 6, y + 20
+        margen + 6, y + 19
     );
     doc.text(
         `Titular: ${DATOS_BANCARIOS.bancolombia.titular} · C.C. ${DATOS_BANCARIOS.bancolombia.cedula}`,
-        margen + 6, y + 25
+        margen + 6, y + 24
     );
 
     // Nequi (columna derecha)
     const colDerX = margen + (paginaAncho - margen * 2) / 2 + 5;
     doc.setFont('helvetica', 'bold');
-    doc.text('Nequi', colDerX, y + 15);
+    doc.text('Nequi', colDerX, y + 14);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Celular: ${DATOS_BANCARIOS.nequi.celular}`, colDerX, y + 20);
-    doc.text(`Titular: ${DATOS_BANCARIOS.nequi.titular}`, colDerX, y + 25);
+    doc.text(`Celular: ${DATOS_BANCARIOS.nequi.celular}`, colDerX, y + 19);
+    doc.text(`Titular: ${DATOS_BANCARIOS.nequi.titular}`, colDerX, y + 24);
 
     // Nota
     doc.setFont('helvetica', 'italic');
@@ -669,17 +726,13 @@ function generarPDF(datos, numeroDocumento) {
     doc.setTextColor(100, 116, 139);
     doc.text(
         'Por favor envíe el comprobante de pago a servitecbaq@gmail.com o al WhatsApp 315 850 5020.',
-        margen + 6, y + 34
+        margen + 6, y + 31
     );
 
-    y += cajaAlto + 10;
+    y += cajaAlto + 8;
 
     // ===== OBSERVACIONES =====
     if (datos.observaciones) {
-        if (y > paginaAlto - 60) {
-            doc.addPage();
-            y = 25;
-        }
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(9.5);
         doc.setTextColor(21, 101, 192);
@@ -690,28 +743,24 @@ function generarPDF(datos, numeroDocumento) {
         doc.setTextColor(51, 65, 85);
         const obsLineas = doc.splitTextToSize(datos.observaciones, paginaAncho - margen * 2);
         doc.text(obsLineas, margen, y);
-        y += obsLineas.length * 4 + 10;
+        y += obsLineas.length * 4 + 6;
     }
 
-    // ===== FIRMA =====
-    if (y > paginaAlto - 50) {
-        doc.addPage();
-        y = 40;
-    }
+    // ===== FIRMA (alineada a la derecha, posición fija) =====
+    const firmaAncho = 70;
+    const firmaX = paginaAncho - margen - firmaAncho;
+    const firmaY = paginaAlto - 45;
 
-    y += 10;
     doc.setDrawColor(51, 65, 85);
     doc.setLineWidth(0.3);
-    doc.line(margen, y, margen + 60, y);
-    y += 5;
+    doc.line(firmaX, firmaY, firmaX + firmaAncho, firmaY);
+
     doc.setFontSize(8.5);
     doc.setTextColor(51, 65, 85);
     doc.setFont('helvetica', 'normal');
-    doc.text(datos.emisor.nombre, margen, y);
-    y += 4;
-    doc.text(`C.C. ${datos.emisor.cedula}`, margen, y);
-    y += 4;
-    doc.text('Firma del Prestador', margen, y);
+    doc.text(datos.emisor.nombre, firmaX + 5, firmaY + 5);
+    doc.text(`C.C. ${datos.emisor.cedula}`, firmaX + 5, firmaY + 9);
+    doc.text('Firma del Prestador', firmaX + 5, firmaY + 13);
 
     // ===== PIE DE PÁGINA =====
     const totalPaginas = doc.internal.getNumberOfPages();
