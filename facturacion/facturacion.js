@@ -72,6 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const form = document.getElementById('formFactura');
     if (form) form.addEventListener('submit', manejarEnvio);
+    
+    // Mostrar datos del usuario logueado
+    mostrarUsuarioLogueado();   
 
     // Inicializar botón de reset
     inicializarBotonReset();
@@ -924,6 +927,36 @@ function limpiarFormulario() {
 
     agregarFila();
     calcularTotales();
+}
+
+// ===== MOSTRAR USUARIO LOGUEADO EN EL CHIP =====
+function mostrarUsuarioLogueado() {
+    const usuario = sessionStorage.getItem('sb_usuario') || 'Usuario';
+    const userNombre = document.getElementById('userNombre');
+    const userAvatar = document.getElementById('userAvatar');
+
+    if (userNombre) {
+        // Si el usuario tiene formato tipo "dfragozo" o "david.fragozo", lo mostramos tal cual
+        // Pero si quieres mostrar con mayúscula inicial, usa la siguiente línea:
+        userNombre.textContent = usuario.charAt(0).toUpperCase() + usuario.slice(1);
+    }
+
+    if (userAvatar) {
+        // Tomar las primeras 2 letras del usuario para el avatar
+        // Si el usuario tiene espacios o puntos, tomamos las iniciales
+        const partes = usuario.split(/[.\s_-]+/).filter(p => p.length > 0);
+        let iniciales = '';
+
+        if (partes.length >= 2) {
+            iniciales = partes[0][0] + partes[1][0];
+        } else if (usuario.length >= 2) {
+            iniciales = usuario.substring(0, 2);
+        } else {
+            iniciales = usuario.substring(0, 1) || '?';
+        }
+
+        userAvatar.textContent = iniciales.toUpperCase();
+    }
 }
 
 // ===== EXPONER FUNCIONES GLOBALES =====
