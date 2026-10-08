@@ -170,6 +170,32 @@ body {
     transform: rotate(360deg) scale(0.95);
 }
 
+/* ===== BOTÓN DE LOGOUT ===== */
+.btn-logout {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all var(--transicion);
+    padding: 0;
+}
+
+.btn-logout:hover {
+    background: rgba(239, 68, 68, 0.3);
+    border-color: rgba(239, 68, 68, 0.5);
+    transform: scale(1.05);
+}
+
+.btn-logout:active {
+    transform: scale(0.95);
+}
+
 .user-chip {
     display: flex;
     align-items: center;
@@ -841,7 +867,8 @@ textarea {
         padding: 6px 10px;
         font-size: 0.75rem;
     }
-    .btn-reset {
+    .btn-reset,
+    .btn-logout {
         width: 32px;
         height: 32px;
     }

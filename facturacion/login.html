@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso · Servitec.baq</title>
+    <link rel="stylesheet" href="login.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="login-wrapper">
+    <div class="login-card">
+        <div class="login-header">
+            <div class="login-logo">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M12 12l9-5M12 12v10M12 12L3 7" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <h1>Servitec.baq</h1>
+            <p>Acceso al generador de cuentas de cobro</p>
+        </div>
+
+        <form id="loginForm" autocomplete="off">
+            <div class="campo">
+                <label for="usuario">Usuario</label>
+                <input type="text" id="usuario" name="usuario" required autofocus>
+            </div>
+            <div class="campo">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div id="mensajeError" class="mensaje-error" style="display:none;"></div>
+            <button type="submit" class="btn-login" id="btnLogin">
+                <span class="btn-text">Ingresar</span>
+                <span class="btn-loading" style="display:none;">Validando...</span>
+            </button>
+        </form>
+
+        <a href="../index.html" class="link-volver">← Volver al inicio</a>
+    </div>
+</div>
+
+<script src="login.js"></script>
+</body>
+</html>

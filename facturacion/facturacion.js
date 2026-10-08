@@ -76,9 +76,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicializar botón de reset
     inicializarBotonReset();
 
+    // Inicializar botón de logout
+    inicializarBotonLogout();
+
     // Consultar el último consecutivo del día al cargar la página
     consultarUltimoConsecutivo();
 });
+
+// ===== BOTÓN DE CERRAR SESIÓN =====
+function inicializarBotonLogout() {
+    const btnLogout = document.getElementById('btnLogout');
+    if (!btnLogout) return;
+
+    btnLogout.addEventListener('click', () => {
+        if (confirm('¿Seguro que quieres cerrar sesión?')) {
+            sessionStorage.removeItem('sb_autenticado');
+            sessionStorage.removeItem('sb_usuario');
+            sessionStorage.removeItem('sb_login_time');
+            window.location.href = 'login.html';
+        }
+    });
+}
 
 // ===== AGREGAR FILA DE SERVICIO =====
 function agregarFila(descripcion = '', cantidad = 1, valor = 0, iva = 0) {
@@ -449,7 +467,7 @@ async function manejarEnvio(evento) {
     // Enviar a Sheets
     enviarDatosAGoogle(datos, numeroDocumento);
 
-    // Generar PDF (con await porque carga el logo)
+    // Generar PDF
     try {
         await generarPDF(datos, numeroDocumento);
         alert(`✅ Cuenta de cobro generada correctamente.\n\nNúmero: ${numeroDocumento}\nTotal: ${formatearMoneda(datos.totales.total)}`);

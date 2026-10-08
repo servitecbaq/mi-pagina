@@ -5,13 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generador de Cuentas de Cobro · Servitec.baq</title>
     <meta name="description" content="Genera tu cuenta de cobro en PDF de forma rápida y profesional.">
-    <link rel="canonical" href="https://servitecbaq.com/" />
     <link rel="stylesheet" href="facturacion.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+
+<!-- ====== PROTECCIÓN DE ACCESO ====== -->
+<script>
+    // Verificar si hay sesión activa. Si no, redirigir al login.
+    if (sessionStorage.getItem('sb_autenticado') !== 'true') {
+        window.location.href = 'login.html';
+    }
+</script>
 
 <!-- ====== BARRA SUPERIOR ====== -->
 <header class="topbar">
@@ -36,6 +43,13 @@
             <button type="button" class="btn-reset" id="btnReset" title="Reiniciar consecutivo del día">
                 <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
                     <path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"
+                          stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <button type="button" class="btn-logout" id="btnLogout" title="Cerrar sesión">
+                <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"
                           stroke="currentColor" stroke-width="2"
                           stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
