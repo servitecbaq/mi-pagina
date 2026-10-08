@@ -7,7 +7,8 @@
    no responsables de IVA según la DIAN.
    
    Guarda un registro automático en Google Sheets
-   a través de Google Apps Script.
+   a través de Google Apps Script usando un iframe
+   oculto para evitar problemas de CORS.
    ============================================ */
 
 // ===== CONFIGURACIÓN =====
@@ -21,6 +22,21 @@ const EMISOR_DEFAULT = {
     email: 'servitecbaq@gmail.com',
     ciudad: 'Barranquilla, Atlántico',
     website: 'https://servitecbaq.com'
+};
+
+// ===== DATOS BANCARIOS =====
+const DATOS_BANCARIOS = {
+    bancolombia: {
+        banco: 'Bancolombia',
+        tipo: 'Cuenta de Ahorros',
+        numero: '478 0000 1250',
+        titular: 'David Fragozo',
+        cedula: '1143260112'
+    },
+    nequi: {
+        celular: '314 686 4986',
+        titular: 'David Fragozo'
+    }
 };
 
 // ===== INICIALIZACIÓN =====
@@ -355,41 +371,65 @@ function manejarEnvio(evento) {
     }
 }
 
-// ===== ENVIAR DATOS A GOOGLE SHEETS =====
+// ===== ENVIAR DATOS A GOOGLE SHEETS (MÉTODO IFRAME) =====
 function enviarDatosAGoogle(datos, numeroDocumento) {
-    // Prepara los datos que se enviarán al script de Google
-    const formData = new URLSearchParams();
+    // Formatear los servicios como texto legible
+    const serviciosTexto = datos.servicios.map((s, idx) => {
+        const cant = s.cantidad;
+        const valorUnit = formatearMonedaPDF(s.valor_unitario);
+        const ivaTexto = s.iva_porcentaje > 0 ? ` | IVA: ${s.iva_porcentaje}%` : '';
+        const total = formatearMonedaPDF(s.total_linea);
+        return `${idx + 1}. ${s.descripcion} | Cant: ${cant} | V.Unit: ${valorUnit}${ivaTexto} | Total: ${total}`;
+    }).join('\n');
 
-    formData.append('NumeroCuenta', numeroDocumento);
-    formData.append('Fecha', datos.fecha);
-    formData.append('ClienteNombre', datos.cliente.nombre);
-    formData.append('ClienteTipoDoc', datos.cliente.tipoDoc);
-    formData.append('ClienteDocumento', datos.cliente.documento);
-    formData.append('ClienteEmail', datos.cliente.email);
-    formData.append('ClienteTelefono', datos.cliente.telefono || '');
-    formData.append('ClienteDireccion', datos.cliente.direccion || '');
-    formData.append('Subtotal', datos.totales.subtotal);
-    formData.append('IVA', datos.totales.iva);
-    formData.append('Total', datos.totales.total);
-    formData.append('TotalLetras', datos.totalLetras);
-    formData.append('Observaciones', datos.observaciones || '');
-    formData.append('Servicios', JSON.stringify(datos.servicios));
+    // Construir el objeto con TODOS los campos
+    const payload = {
+        NumeroCuenta:     numeroDocumento,
+        ClienteNombre:    datos.cliente.nombre,
+        ClienteTipoDoc:   datos.cliente.tipoDoc,
+        ClienteDocumento: datos.cliente.documento,
+        ClienteEmail:     datos.cliente.email,
+        ClienteTelefono:  datos.cliente.telefono || '',
+        ClienteDireccion: datos.cliente.direccion || '',
+        Subtotal:         datos.totales.subtotal,
+        IVA:              datos.totales.iva,
+        Total:            datos.totales.total,
+        TotalLetras:      datos.totalLetras,
+        Observaciones:    datos.observaciones || '',
+        Servicios:        serviciosTexto
+    };
 
-    // Envía los datos al script de Google
-    fetch(GOOGLE_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors', // Necesario para evitar bloqueos CORS con Apps Script
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: formData.toString()
-    })
-    .then(() => {
-        console.log('✅ Datos enviados a Google Sheets:', numeroDocumento);
-    })
-    .catch(error => {
-        console.error('❌ Error al enviar a Google Sheets:', error);
-    });
+    // Crear un iframe oculto con nombre único
+    const iframeName = 'google_sheet_frame_' + Date.now();
+    const iframe = document.createElement('iframe');
+    iframe.name = iframeName;
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+
+    // Crear un formulario que se enviará a través del iframe
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = GOOGLE_SCRIPT_URL;
+    form.target = iframeName;
+    form.style.display = 'none';
+
+    // Agregar el payload como un campo hidden
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'payload';
+    input.value = JSON.stringify(payload);
+    form.appendChild(input);
+
+    document.body.appendChild(form);
+    form.submit();
+
+    // Limpiar después de 5 segundos
+    setTimeout(() => {
+        if (document.body.contains(form)) document.body.removeChild(form);
+        if (document.body.contains(iframe)) document.body.removeChild(iframe);
+    }, 5000);
+
+    console.log('✅ Datos enviados a Google Sheets:', numeroDocumento);
 }
 
 // ===== GENERAR PDF =====
@@ -511,7 +551,7 @@ function generarPDF(datos, numeroDocumento) {
     doc.setFontSize(9);
 
     datos.servicios.forEach((servicio, idx) => {
-        if (y > paginaAlto - 60) {
+        if (y > paginaAlto - 100) {
             doc.addPage();
             y = 25;
         }
@@ -539,7 +579,7 @@ function generarPDF(datos, numeroDocumento) {
     y += 8;
 
     // ===== TOTALES =====
-    if (y > paginaAlto - 80) {
+    if (y > paginaAlto - 100) {
         doc.addPage();
         y = 25;
     }
@@ -574,7 +614,65 @@ function generarPDF(datos, numeroDocumento) {
     const totalLetrasTexto = `Son: ${datos.totalLetras}`;
     const lineasLetras = doc.splitTextToSize(totalLetrasTexto, paginaAncho - margen * 2);
     doc.text(lineasLetras, margen, y);
-    y += lineasLetras.length * 4 + 8;
+    y += lineasLetras.length * 4 + 10;
+
+    // ===== DATOS PARA PAGO =====
+    if (y > paginaAlto - 80) {
+        doc.addPage();
+        y = 25;
+    }
+
+    // Caja contenedora
+    const cajaAlto = 40;
+    doc.setFillColor(240, 247, 255);
+    doc.roundedRect(margen, y, paginaAncho - margen * 2, cajaAlto, 2, 2, 'F');
+    doc.setDrawColor(30, 136, 229);
+    doc.setLineWidth(0.4);
+    doc.roundedRect(margen, y, paginaAncho - margen * 2, cajaAlto, 2, 2, 'S');
+
+    // Título de la caja
+    doc.setTextColor(21, 101, 192);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text('DATOS PARA PAGO', margen + 6, y + 7);
+
+    doc.setDrawColor(30, 136, 229);
+    doc.setLineWidth(0.3);
+    doc.line(margen + 6, y + 9, margen + 60, y + 9);
+
+    // Bancolombia
+    doc.setTextColor(51, 65, 85);
+    doc.setFontSize(8.5);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Bancolombia', margen + 6, y + 15);
+    doc.setFont('helvetica', 'normal');
+    doc.text(
+        `${DATOS_BANCARIOS.bancolombia.tipo}: ${DATOS_BANCARIOS.bancolombia.numero}`,
+        margen + 6, y + 20
+    );
+    doc.text(
+        `Titular: ${DATOS_BANCARIOS.bancolombia.titular} · C.C. ${DATOS_BANCARIOS.bancolombia.cedula}`,
+        margen + 6, y + 25
+    );
+
+    // Nequi (columna derecha)
+    const colDerX = margen + (paginaAncho - margen * 2) / 2 + 5;
+    doc.setFont('helvetica', 'bold');
+    doc.text('Nequi', colDerX, y + 15);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Celular: ${DATOS_BANCARIOS.nequi.celular}`, colDerX, y + 20);
+    doc.text(`Titular: ${DATOS_BANCARIOS.nequi.titular}`, colDerX, y + 25);
+
+    // Nota
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(7.5);
+    doc.setTextColor(100, 116, 139);
+    doc.text(
+        'Por favor envíe el comprobante de pago a servitecbaq@gmail.com o al WhatsApp 315 850 5020.',
+        margen + 6, y + 34
+    );
+
+    y += cajaAlto + 10;
 
     // ===== OBSERVACIONES =====
     if (datos.observaciones) {
