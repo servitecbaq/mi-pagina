@@ -579,7 +579,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* ============================================
      12. BOTÓN FLOTANTE DE JIRA
-     Abre el portal de Jira Service Management en una pestaña nueva
      ============================================ */
   const jiraFloatBtn = document.getElementById('jiraFloatBtn');
 
@@ -592,5 +591,300 @@ document.addEventListener('DOMContentLoaded', function () {
       );
     });
   }
+
+  /* ============================================
+     13. RADAR CANVAS EN HERO
+     ============================================ */
+  (function initHeroRadar() {
+    const canvas = document.getElementById('heroRadar');
+    if (!canvas) return;
+
+    if (prefersReducedMotion) return;
+    if (document.documentElement.classList.contains('low-power')) return;
+
+    const ctx = canvas.getContext('2d');
+    let W, H, dpr;
+    let t = 0;
+    const particles = [];
+    let isVisible = true;
+
+    const mouse = { x: -9999, y: -9999, radius: 160 };
+
+    function getColors() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      return {
+        dot: isDark ? 'rgba(77,216,255,0.95)' : 'rgba(37,99,235,0.85)',
+        dotCore: isDark ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.9)',
+        line: isDark ? 'rgba(77,216,255,' : 'rgba(37,99,235,',
+        ring: isDark ? 'rgba(77,216,255,0.20)' : 'rgba(37,99,235,0.16)',
+        sweep: isDark ? 'rgba(77,216,255,0.16)' : 'rgba(37,99,235,0.12)',
+        glow: isDark ? 'rgba(77,216,255,0.9)' : 'rgba(37,99,235,0.7)'
+      };
+    }
+
+    function resize() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const rect = canvas.getBoundingClientRect();
+      W = rect.width;
+      H = rect.height;
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const targetCount = Math.max(30, Math.min(60, Math.floor((W * H) / 14000)));
+      particles.length = 0;
+      for (let i = 0; i < targetCount; i++) {
+        particles.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.28,
+          vy: (Math.random() - 0.5) * 0.28,
+          baseR: 1 + Math.random() * 1.8,
+          phase: Math.random() * Math.PI * 2
+        });
+      }
+    }
+
+    function draw() {
+      if (!isVisible) {
+        requestAnimationFrame(draw);
+        return;
+      }
+
+      const colors = getColors();
+      ctx.clearRect(0, 0, W, H);
+
+      const cx = W / 2;
+      const cy = H / 2;
+      const maxR = Math.max(W, H) * 0.6;
+
+      // Anillos concéntricos
+      ctx.strokeStyle = colors.ring;
+      ctx.lineWidth = 1;
+      const ringCount = 5;
+      for (let i = 1; i <= ringCount; i++) {
+        const r = (maxR / ringCount) * i;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // Barrido cónico tipo radar
+      const sweepAngle = (t * 0.008) % (Math.PI * 2);
+      if (ctx.createConicGradient) {
+        const grad = ctx.createConicGradient(sweepAngle, cx, cy);
+        grad.addColorStop(0, colors.sweep);
+        grad.addColorStop(0.15, 'rgba(0,0,0,0)');
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(cx, cy, maxR, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Líneas entre partículas cercanas
+      const linkDist = 150;
+      for (let i = 0; i < particles.length; i++) {
+        const p1 = particles[i];
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dx = p1.x - p2.x;
+          const dy = p1.y - p2.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < linkDist) {
+            const alpha = (1 - dist / linkDist) * 0.4;
+            ctx.strokeStyle = colors.line + alpha + ')';
+            ctx.lineWidth = 0.6;
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Partículas
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0) p.x = W;
+        if (p.x > W) p.x = 0;
+        if (p.y < 0) p.y = H;
+        if (p.y > H) p.y = 0;
+
+        // Interacción con mouse
+        const dx = mouse.x - p.x;
+        const dy = mouse.y - p.y;
+        const distM = Math.sqrt(dx * dx + dy * dy);
+        if (distM < mouse.radius) {
+          const force = (mouse.radius - distM) / mouse.radius;
+          ctx.strokeStyle = colors.line + (force * 0.55) + ')';
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.stroke();
+        }
+
+        // Pulso
+        p.phase += 0.025;
+        const pulse = 1 + Math.sin(p.phase) * 0.35;
+        const r = Math.max(0.6, p.baseR * pulse);
+
+        // Glow
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = colors.glow;
+        ctx.fillStyle = colors.dot;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Núcleo interior
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = colors.dotCore;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r * 0.35, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      t += 1;
+      requestAnimationFrame(draw);
+    }
+
+    resize();
+    draw();
+
+    window.addEventListener('resize', resize);
+
+    const heroSection = canvas.parentElement;
+    if (heroSection) {
+      heroSection.addEventListener('mousemove', function (e) {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = e.clientX - rect.left;
+        mouse.y = e.clientY - rect.top;
+      });
+      heroSection.addEventListener('mouseleave', function () {
+        mouse.x = -9999;
+        mouse.y = -9999;
+      });
+    }
+
+    // Pausar cuando no está visible
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          isVisible = entry.isIntersecting;
+        });
+      }, { threshold: 0 });
+      io.observe(canvas);
+    }
+  })();
+    /* ============================================
+     14. CURSOR PERSONALIZADO (Apple style)
+     ============================================ */
+  (function initCustomCursor() {
+    const cursorRing = document.getElementById('cursorRing');
+    const cursorDot = document.getElementById('cursorDot');
+    if (!cursorRing || !cursorDot) return;
+
+    // Desactivar en móviles/táctiles
+    const isTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+    if (isTouch) return;
+
+    if (prefersReducedMotion) return;
+    if (document.documentElement.classList.contains('low-power')) return;
+
+    let mouseX = -100;
+    let mouseY = -100;
+    let ringX = -100;
+    let ringY = -100;
+    let dotX = -100;
+    let dotY = -100;
+    let rafId = null;
+    let isReady = false;
+
+    // Velocidades: anillo va más lento (suavidad Apple), dot va casi instantáneo
+    const RING_LERP = 0.14;
+    const DOT_LERP = 0.55;
+
+    function onMouseMove(e) {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      if (!isReady) {
+        // Posicionar directo la primera vez, sin animación
+        ringX = dotX = mouseX;
+        ringY = dotY = mouseY;
+        isReady = true;
+        document.body.classList.add('cursor-ready');
+      }
+    }
+
+    function onMouseLeaveWindow() {
+      document.body.classList.add('cursor-leaving');
+    }
+
+    function onMouseEnterWindow() {
+      document.body.classList.remove('cursor-leaving');
+    }
+
+    function onMouseDown() {
+      document.body.classList.add('cursor-down');
+    }
+
+    function onMouseUp() {
+      document.body.classList.remove('cursor-down');
+    }
+
+    function animate() {
+      ringX += (mouseX - ringX) * RING_LERP;
+      ringY += (mouseY - ringY) * RING_LERP;
+      dotX  += (mouseX - dotX)  * DOT_LERP;
+      dotY  += (mouseY - dotY)  * DOT_LERP;
+
+      cursorRing.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
+      cursorDot.style.transform  = `translate(${dotX}px, ${dotY}px) translate(-50%, -50%)`;
+
+      rafId = requestAnimationFrame(animate);
+    }
+
+    // Listeners
+    window.addEventListener('mousemove', onMouseMove, { passive: true });
+    window.addEventListener('mousedown', onMouseDown);
+    window.addEventListener('mouseup', onMouseUp);
+    document.addEventListener('mouseleave', onMouseLeaveWindow);
+    document.addEventListener('mouseenter', onMouseEnterWindow);
+
+    // Estados hover / view
+    document.querySelectorAll('[data-cursor="hover"]').forEach(function (el) {
+      el.addEventListener('mouseenter', function () {
+        document.body.classList.add('cursor-hover');
+      });
+      el.addEventListener('mouseleave', function () {
+        document.body.classList.remove('cursor-hover');
+      });
+    });
+
+    document.querySelectorAll('[data-cursor="view"]').forEach(function (el) {
+      el.addEventListener('mouseenter', function () {
+        document.body.classList.add('cursor-view');
+      });
+      el.addEventListener('mouseleave', function () {
+        document.body.classList.remove('cursor-view');
+      });
+    });
+
+    // Arrancar el bucle
+    animate();
+
+    // Pausar cuando la pestaña no está visible (performance)
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) {
+        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+      } else {
+        if (!rafId) animate();
+      }
+    });
+  })();
 
 });
