@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
       modalList.appendChild(li);
     });
     if (modalCta) {
-      const msg = encodeURIComponent('Hola Servitec.baq, necesito información sobre: ' + data.title);
+      const msg = encodeURIComponent('Hola Servitecbaq, necesito información sobre: ' + data.title);
       modalCta.href = 'https://wa.me/573158505020?text=' + msg;
     }
     modal.classList.add('open');
