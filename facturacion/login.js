@@ -1,5 +1,5 @@
 /* ============================================
-   SERVITEC.BAQ · LOGIN
+   SERVITECBAQ · LOGIN
    Valida el usuario y contraseña contra Google Sheets
    vía Apps Script.
    ============================================ */

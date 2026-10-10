@@ -1,5 +1,5 @@
 /* ============================================
-   SERVITEC.BAQ · GENERADOR DE CUENTAS DE COBRO
+   SERVITECBAQ · GENERADOR DE CUENTAS DE COBRO
    
    Este módulo NO es facturación electrónica.
    Genera cuentas de cobro en PDF, que son el
@@ -590,7 +590,7 @@ async function generarPDF(datos, numeroDocumento) {
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(16);
     doc.setFont('helvetica', 'bold');
-    doc.text('SERVITEC.BAQ', textoX, 15);
+    doc.text('SERVITECBAQ', textoX, 15);
 
     doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
@@ -835,7 +835,7 @@ async function generarPDF(datos, numeroDocumento) {
         doc.setTextColor(148, 163, 184);
         doc.setFont('helvetica', 'normal');
         doc.text(
-            `Servitec.baq · ${datos.emisor.email} · ${datos.emisor.telefono} · www.servitecbaq.com`,
+            `ServitecBAQ · ${datos.emisor.email} · ${datos.emisor.telefono} · www.servitecbaq.com`,
             paginaAncho / 2,
             paginaAlto - 8,
             { align: 'center' }
