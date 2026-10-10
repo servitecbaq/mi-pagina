@@ -22,7 +22,7 @@ const EMISOR_DEFAULT = {
     nombre: 'David Fragozo',
     cedula: '1143260112',
     telefono: '315 850 5020',
-    email: 'servitecbaq@gmail.com',
+    email: 'soporte@servitecbaq.com',
     ciudad: 'Barranquilla, Atlántico',
     website: 'https://servitecbaq.com'
 };
@@ -790,7 +790,7 @@ async function generarPDF(datos, numeroDocumento) {
     doc.setFontSize(7.5);
     doc.setTextColor(100, 116, 139);
     doc.text(
-        'Por favor envíe el comprobante de pago a servitecbaq@gmail.com o al WhatsApp 315 850 5020.',
+        'Por favor envíe el comprobante de pago a soporte@servitecbaq.com o al WhatsApp 315 850 5020.',
         margen + 6, y + 31
     );
 
